@@ -1,1 +1,20 @@
 @import "tailwindcss";
+
+
+.scale-wrapper {
+  transform: scale(1);
+}
+
+/* Scale proportionally after 1440px */
+@media (min-width: 1440px) {
+  .scale-wrapper {
+    transform: scale(calc(100vw / 1440));
+  }
+}
+
+/* Hard cap for very large screens */
+@media (min-width: 2560px) {
+  .scale-wrapper {
+    transform: scale(1.777); /* 2560 / 1440 */
+  }
+}
