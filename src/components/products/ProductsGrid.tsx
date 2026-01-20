@@ -38,7 +38,7 @@ export default function ProductsGrid() {
           {products.map((product) => (
             <div
               key={product.id}
-              tabIndex={0}   // ✅ makes it focusable on mobile tap
+              tabIndex={0}
               className="group bg-[#e6e6e6] rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 relative focus:outline-none"
             >
               {/* Badge */}
@@ -52,7 +52,7 @@ export default function ProductsGrid() {
                 </div>
               )}
 
-              {/* Image Container */}
+              {/* Image */}
               <div className="relative w-full h-[260px] overflow-hidden bg-white">
                 <Image
                   src={product.image}
@@ -69,15 +69,13 @@ export default function ProductsGrid() {
                     Contact Us
                   </button>
 
-                  {/* ICONS */}
+                  {/* Icons */}
                   <div className="flex gap-8 text-white">
-                    {/* SHARE */}
                     <button className="flex items-center gap-1 active:scale-125 md:hover:scale-125 transition-transform duration-300">
                       <Share2 size={18} />
                       <span className="text-sm">Share</span>
                     </button>
 
-                    {/* LIKE */}
                     <button
                       onClick={() =>
                         setLiked((prev) => ({
@@ -121,9 +119,35 @@ export default function ProductsGrid() {
           ))}
         </div>
 
+        {/* SHOW MORE BUTTON */}
         <div className="flex justify-center mt-12">
-          <button className="border border-[#e0b26f] text-[#e0b26f] px-8 py-2 rounded-md hover:bg-[#e0b26f] hover:text-white transition">
-            Show More
+          <button
+            className="
+              group relative overflow-hidden
+              inline-flex items-center justify-center
+              w-[220px] h-[56px]
+              bg-[#353F8C]
+              text-white text-[13px]
+              font-bold uppercase tracking-[2px]
+              transition-all duration-500
+              hover:tracking-[4px]
+              hover:shadow-[0_20px_40px_rgba(0,0,0,0.3)]
+              active:scale-[0.97]
+            "
+          >
+            <span className="relative z-10">Show More</span>
+
+            {/* Shine sweep (works on hover + tap) */}
+            <span
+              className="
+                absolute inset-0
+                bg-gradient-to-r from-transparent via-white/30 to-transparent
+                -translate-x-[120%]
+                group-hover:translate-x-[120%]
+                group-active:translate-x-[120%]
+                transition-transform duration-700
+              "
+            />
           </button>
         </div>
       </div>

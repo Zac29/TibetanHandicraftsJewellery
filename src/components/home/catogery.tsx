@@ -75,20 +75,18 @@ export default function Catogery() {
   return (
     <section
       ref={sectionRef}
-      className="w-full min-h-screen bg-white flex flex-col items-center justify-center overflow-hidden"
-    >
+      className="pt-6 pb-8 sm:pt-8 sm:pb-10 md:pt-10 md:pb-12 lg:pt-12 lg:pb-14 xl:pt-14 xl:pb-16 2xl:pt-16 2xl:pb-18">
       {/* Title */}
-      <div className="text-center mb-20 px-4">
+      <div className="text-center mb-10 sm:mb-12 md:mb-14 px-4">
         <h2 className="mb-4 text-[32px] font-bold text-[#333333]">Category</h2>
-        <p className="max-w-xl text-[18px] font-medium text-[#333333]">
+        <p className="max-w-xl mx-auto text-[18px] font-medium text-[#333333]">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus,
           luctus nec ullamcorper mattis.
         </p>
       </div>
 
       {/* Slider Container */}
-      <div className="relative w-full max-w-6xl flex items-center justify-center translate-y-[10px]">
-
+      <div className="relative w-full max-w-6xl mx-auto flex items-center justify-center">
         {/* Left Button (Desktop Only) */}
         {!isMobile && (
           <button
@@ -100,8 +98,7 @@ export default function Catogery() {
         )}
 
         {/* Slides */}
-        <div className="relative w-full h-[440px] flex items-center justify-center">
-
+        <div className="relative w-full h-[400px] sm:h-[420px] md:h-[440px] flex items-center justify-center">
           {items.map((item, i) => {
             const prevIndex = (active - 1 + items.length) % items.length;
             const nextIndex = (active + 1) % items.length;
@@ -127,62 +124,21 @@ export default function Catogery() {
                 variants={
                   isMobile
                     ? {
-                        center: {
-                          y: 0,
-                          scale: 1,
-                          opacity: 1,
-                          zIndex: 10,
-                        },
-                        left: {
-                          y: -40,
-                          scale: 0.95,
-                          opacity: 0.75,
-                          zIndex: 2,
-                        },
-                        right: {
-                          y: -80,
-                          scale: 0.9,
-                          opacity: 0.55,
-                          zIndex: 1,
-                        },
-                        hidden: {
-                          opacity: 0,
-                          scale: 0.7,
-                        },
+                        center: { y: 0, scale: 1, opacity: 1, zIndex: 10 },
+                        left: { y: -40, scale: 0.95, opacity: 0.75, zIndex: 2 },
+                        right: { y: -80, scale: 0.9, opacity: 0.55, zIndex: 1 },
+                        hidden: { opacity: 0, scale: 0.7 },
                       }
                     : {
-                        center: {
-                          x: 0,
-                          scale: 1.15,
-                          opacity: 1,
-                          zIndex: 10,
-                        },
-                        left: {
-                          x: -340,
-                          scale: 0.85,
-                          opacity: 0.9,
-                          zIndex: 1,
-                        },
-                        right: {
-                          x: 340,
-                          scale: 0.85,
-                          opacity: 0.9,
-                          zIndex: 1,
-                        },
-                        hidden: {
-                          opacity: 0,
-                          scale: 0.7,
-                        },
+                        center: { x: 0, scale: 1.15, opacity: 1, zIndex: 10 },
+                        left: { x: -340, scale: 0.85, opacity: 0.9, zIndex: 1 },
+                        right: { x: 340, scale: 0.85, opacity: 0.9, zIndex: 1 },
+                        hidden: { opacity: 0, scale: 0.7 },
                       }
                 }
                 transition={
                   state === "center"
-                    ? {
-                        type: "spring",
-                        stiffness: 260,
-                        damping: 18,
-                        bounce: 0.45,
-                      }
+                    ? { type: "spring", stiffness: 260, damping: 18, bounce: 0.45 }
                     : { duration: 0.6, ease: "easeInOut" }
                 }
                 className="absolute cursor-pointer"
