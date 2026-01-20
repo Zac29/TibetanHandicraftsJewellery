@@ -3,7 +3,7 @@ import Hero from "../components/home/Hero";
 import ProductsGrid from "../components/products/ProductsGrid";
 import ScaleWrapper from "../components/layout/ScaleWrapper";
 import ProductShowcase from "../components/home/ProductShowcase";
-
+import Footer from "../components/layout/Footer";
 export default function Home() {
   return (
     <ScaleWrapper>
@@ -11,6 +11,7 @@ export default function Home() {
       <Catogery />
       <ProductsGrid />
       <ProductShowcase />
+      <Footer />
     </ScaleWrapper>
   );
 }
