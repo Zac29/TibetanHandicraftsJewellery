@@ -60,31 +60,54 @@ export default function Hero() {
     tl.current?.kill();
 
     const ctx = gsap.context(() => {
-      tl.current = gsap.timeline({ defaults: { ease: "expo.out" } });
+      tl.current = gsap.timeline({
+        defaults: { ease: "power3.out" },
+      });
 
-      // IMAGE CINEMATIC PAN
+      /* IMAGE – cinematic slide + soft scale */
       tl.current.fromTo(
         imageRef.current,
-        { scale: 1.15, x: -20, opacity: 0 },
-        { scale: 1, x: 0, opacity: 1, duration: 3 },
+        { x: -80, opacity: 0, scale: 1.04 },
+        {
+          x: 0,
+          opacity: 1,
+          scale: 1,
+          duration: 2.8,
+        },
         0
       );
 
-      // TEXT REVEAL
+      /* TEXT – exclude button from stagger */
+      const textElements = Array.from(textRef.current!.children).slice(0, -1);
+
       tl.current.fromTo(
-        textRef.current.children,
-        { opacity: 0, y: 30, filter: "blur(6px)" },
+        textElements,
+        { opacity: 0, y: 24, filter: "blur(6px)" },
         {
           opacity: 1,
           y: 0,
           filter: "blur(0px)",
-          stagger: 0.35,
-          duration: 1.4,
+          stagger: 0.25,
+          duration: 1.2,
         },
-        0.8
+        0.6
       );
 
-      // PROGRESS BAR
+      /* BUTTON – clean single animation */
+      tl.current.fromTo(
+        textRef.current!.lastElementChild,
+        { opacity: 0, y: 18, scale: 0.95 },
+        {
+          opacity: 1,
+          y: 0,
+          scale: 1,
+          duration: 0.8,
+          ease: "power4.out",
+        },
+        1.4
+      );
+
+      /* PROGRESS BAR */
       tl.current.fromTo(
         progressRef.current,
         { scaleX: 0 },
@@ -101,21 +124,21 @@ export default function Hero() {
     return () => ctx.revert();
   }, [index]);
 
-  // AUTO SLIDE (SAFE)
+  /* AUTO SLIDE */
   useEffect(() => {
     const timer = setInterval(() => {
       setIndex((prev) => (prev + 1) % slides.length);
     }, SLIDE_DURATION * 1000);
 
     return () => clearInterval(timer);
-  }, [slides.length]);
+  }, []);
 
   return (
-    <section className={`w-full bg-[#00000] ${poppins.variable} font-sans`}>
+    <section className={`w-full bg-white ${poppins.variable} font-sans`}>
       <div className="relative max-w-[1440px] mx-auto px-4 py-10 lg:h-[760px] overflow-hidden">
 
         {/* IMAGE */}
-        <div className="relative w-full h-[300px] md:h-[440px] lg:absolute lg:left-[90px] lg:top-[20px] lg:w-[1100px] lg:h-[680px] overflow-hidden">
+        <div className="relative w-full h-[300px] md:h-[440px] lg:absolute lg:left-[90px] lg:top-[20px] lg:w-[1100px] lg:h-[680px] overflow-hidden rounded-[20px]">
           <div ref={imageRef} className="absolute inset-0">
             <Image
               src={currentSlide.image}
@@ -124,34 +147,43 @@ export default function Hero() {
               priority
               className="object-cover"
             />
-            <div className="absolute inset-0 bg-gradient-to-r from-black/20 via-transparent to-black/30" />
+            <div className="absolute inset-0 bg-gradient-to-r from-black/25 via-transparent to-black/30" />
           </div>
         </div>
 
         {/* GLASS CARD */}
-        <div className="
-          relative
-          backdrop-blur-xl
-          bg-white/70
-          border border-white/40
-          rounded-[18px]
-          shadow-[0_40px_80px_rgba(0,0,0,0.15)]
-          px-8 py-10
-          md:max-w-[640px]
-          md:mx-auto
-          lg:absolute
-          lg:top-[200px]
-          lg:right-[40px]
-          lg:h-[440px]
-        ">
+        <div
+          className="
+            relative
+            backdrop-blur-xl
+            bg-white/70
+            border border-white/40
+            rounded-[18px]
+            shadow-[0_40px_80px_rgba(0,0,0,0.15)]
+            px-8 py-10
+            md:max-w-[640px]
+            mx-auto
 
-          {/* PROGRESS */}
+            -translate-y-[25%]
+            sm:-translate-y-[22%]
+            md:-translate-y-[20%]
+            lg:translate-y-0
+
+            lg:absolute
+            lg:top-[200px]
+            lg:right-[40px]
+            lg:h-[440px]
+            overflow-hidden
+          "
+        >
+          {/* PROGRESS BAR */}
           <div
             ref={progressRef}
             className="
-              absolute top-0 left-0 h-[2px] w-full
-              bg-gradient-to-r from-[#C9A24D] via-[#E8C872] to-[#C9A24D]
+              absolute top-0 left-0 h-[3px] w-full
+              bg-gradient-to-r from-[#C9A24D] via-[#F5D98B] to-[#C9A24D]
               scale-x-0
+              rounded-t-[18px]
             "
           />
 
@@ -169,10 +201,11 @@ export default function Hero() {
               {currentSlide.description}
             </p>
 
+            {/* BUTTON */}
             <Link
               href={currentSlide.link}
               className="
-                relative overflow-hidden
+                group relative overflow-hidden
                 inline-flex items-center justify-center
                 w-[220px] h-[56px]
                 bg-[#2E2E2E]
@@ -180,18 +213,23 @@ export default function Hero() {
                 font-bold uppercase tracking-[2px]
                 transition-all duration-500
                 hover:tracking-[4px]
+                hover:shadow-[0_20px_40px_rgba(0,0,0,0.3)]
+                active:scale-[0.97]
               "
             >
               <span className="relative z-10">
                 {currentSlide.button}
               </span>
-              <span className="
-                absolute inset-0
-                bg-gradient-to-r from-transparent via-white/30 to-transparent
-                translate-x-[-120%]
-                hover:translate-x-[120%]
-                transition-transform duration-700
-              " />
+
+              <span
+                className="
+                  absolute inset-0
+                  bg-gradient-to-r from-transparent via-white/30 to-transparent
+                  translate-x-[-120%]
+                  group-hover:translate-x-[120%]
+                  transition-transform duration-700
+                "
+              />
             </Link>
           </div>
         </div>
