@@ -2,7 +2,7 @@
 
 import { useState, useEffect, useRef } from "react";
 import { motion } from "framer-motion";
-import { ChevronLeft, ChevronRight, ChevronUp, ChevronDown } from "lucide-react";
+import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 
 type Item = {
@@ -43,9 +43,7 @@ export default function Catogery() {
     if (!el) return;
 
     const observer = new IntersectionObserver(
-      ([entry]) => {
-        setIsInView(entry.isIntersecting);
-      },
+      ([entry]) => setIsInView(entry.isIntersecting),
       { threshold: 0.5 }
     );
 
@@ -62,11 +60,8 @@ export default function Catogery() {
 
       lockRef.current = true;
 
-      if (e.deltaY > 0) {
-        next();
-      } else {
-        prev();
-      }
+      if (e.deltaY > 0) next();
+      else prev();
 
       setTimeout(() => {
         lockRef.current = false;
@@ -83,10 +78,8 @@ export default function Catogery() {
       className="w-full min-h-screen bg-white flex flex-col items-center justify-center overflow-hidden"
     >
       {/* Title */}
-      <div className="text-center mb-12 px-4">
-        <h2 className="mb-4 text-[32px] font-bold text-[#333333]">
-          Category
-        </h2>
+      <div className="text-center mb-20 px-4">
+        <h2 className="mb-4 text-[32px] font-bold text-[#333333]">Category</h2>
         <p className="max-w-xl text-[18px] font-medium text-[#333333]">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus,
           luctus nec ullamcorper mattis.
@@ -94,29 +87,16 @@ export default function Catogery() {
       </div>
 
       {/* Slider Container */}
-      <div className="relative w-full max-w-6xl flex items-center justify-center">
+      <div className="relative w-full max-w-6xl flex items-center justify-center translate-y-[10px]">
 
         {/* Left Button (Desktop Only) */}
-        <button
-          onClick={prev}
-          className="hidden md:block absolute left-0 z-20 p-3 rounded-full bg-black/5 hover:bg-black/10 transition"
-        >
-          <ChevronLeft size={32} />
-        </button>
-
-        {/* LEFT DOTS (MOBILE ONLY, NEXT TO IMAGE) */}
-        {isMobile && (
-          <div className="absolute left-1/2 -translate-x-[208px] sm:-translate-x-[248px] top-1/2 -translate-y-1/2 z-20 flex flex-col gap-3">
-            {items.map((_, i) => (
-              <button
-                key={i}
-                onClick={() => setActive(i)}
-                className={`w-3 h-3 rounded-full transition-all ${
-                  i === active ? "bg-[#333333] scale-125" : "bg-[#999999]"
-                }`}
-              />
-            ))}
-          </div>
+        {!isMobile && (
+          <button
+            onClick={prev}
+            className="absolute left-0 z-20 p-3 rounded-full bg-black/5 hover:bg-black/10 transition"
+          >
+            <ChevronLeft size={32} />
+          </button>
         )}
 
         {/* Slides */}
@@ -135,50 +115,58 @@ export default function Catogery() {
             return (
               <motion.div
                 key={i}
+                onClick={() => setActive(i)}
                 animate={state}
+                whileHover={
+                  !isMobile
+                    ? {
+                        scale: state === "center" ? 1.18 : 0.92,
+                      }
+                    : undefined
+                }
                 variants={
                   isMobile
                     ? {
                         center: {
                           y: 0,
-                          scale: 1.05,
+                          scale: 1,
                           opacity: 1,
                           zIndex: 10,
                         },
                         left: {
-                          y: 240,
-                          scale: 0.9,
-                          opacity: 0,
-                          zIndex: 1,
+                          y: -40,
+                          scale: 0.95,
+                          opacity: 0.75,
+                          zIndex: 2,
                         },
                         right: {
-                          y: -240,
+                          y: -80,
                           scale: 0.9,
-                          opacity: 0,
+                          opacity: 0.55,
                           zIndex: 1,
                         },
                         hidden: {
                           opacity: 0,
-                          scale: 0.8,
+                          scale: 0.7,
                         },
                       }
                     : {
                         center: {
                           x: 0,
-                          scale: 1.1,
+                          scale: 1.15,
                           opacity: 1,
                           zIndex: 10,
                         },
                         left: {
                           x: -340,
                           scale: 0.85,
-                          opacity: 0.5,
+                          opacity: 0.9,
                           zIndex: 1,
                         },
                         right: {
                           x: 340,
                           scale: 0.85,
-                          opacity: 0.5,
+                          opacity: 0.9,
                           zIndex: 1,
                         },
                         hidden: {
@@ -187,65 +175,54 @@ export default function Catogery() {
                         },
                       }
                 }
-                transition={{ duration: 0.6, ease: "easeInOut" }}
-                className="absolute"
+                transition={
+                  state === "center"
+                    ? {
+                        type: "spring",
+                        stiffness: 260,
+                        damping: 18,
+                        bounce: 0.45,
+                      }
+                    : { duration: 0.6, ease: "easeInOut" }
+                }
+                className="absolute cursor-pointer"
               >
-                <div className="relative w-[280px] sm:w-[320px] h-[360px] sm:h-[400px] rounded-3xl overflow-hidden shadow-xl">
+                <div
+                  className={`relative w-[260px] sm:w-[300px] h-[340px] sm:h-[380px] rounded-[10px] overflow-hidden transition-all duration-300 ${
+                    state === "center"
+                      ? "shadow-[0_30px_80px_rgba(0,0,0,0.35)]"
+                      : "shadow-[0_20px_50px_rgba(0,0,0,0.25)]"
+                  } hover:shadow-[0_40px_100px_rgba(0,0,0,0.45)]`}
+                >
                   <Image
                     src={item.image}
                     alt={item.title}
                     fill
-                    className="object-cover"
+                    className="object-cover transition-transform duration-500 hover:scale-[1.05]"
                     priority={i === active}
                   />
                 </div>
 
-                <p className="text-center mt-6 text-[24px] font-semibold text-[#333333]">
-                  {item.title}
-                </p>
+                {/* NAME: ALWAYS VISIBLE ON DESKTOP, ONLY CENTER ON MOBILE */}
+                {(!isMobile || state === "center") && (
+                  <p className="text-center mt-5 text-[20px] font-semibold text-[#333333]">
+                    {item.title}
+                  </p>
+                )}
               </motion.div>
             );
           })}
         </div>
 
-        {/* RIGHT UP/DOWN BUTTONS (MOBILE ONLY, NEXT TO IMAGE) */}
-        {isMobile && (
-          <div className="absolute right-1/2 translate-x-[208px] sm:translate-x-[248px] top-1/2 -translate-y-1/2 z-20 flex flex-col gap-4">
-            <button
-              onClick={prev}
-              className="p-3 rounded-full bg-black/5 active:bg-black/10 transition"
-            >
-              <ChevronUp size={26} />
-            </button>
-            <button
-              onClick={next}
-              className="p-3 rounded-full bg-black/5 active:bg-black/10 transition"
-            >
-              <ChevronDown size={26} />
-            </button>
-          </div>
-        )}
-
         {/* Right Button (Desktop Only) */}
-        <button
-          onClick={next}
-          className="hidden md:block absolute right-0 z-20 p-3 rounded-full bg-black/5 hover:bg-black/10 transition"
-        >
-          <ChevronRight size={32} />
-        </button>
-      </div>
-
-      {/* Dots (Desktop Only) */}
-      <div className="hidden md:flex gap-3 mt-10">
-        {items.map((_, i) => (
+        {!isMobile && (
           <button
-            key={i}
-            onClick={() => setActive(i)}
-            className={`w-3 h-3 rounded-full transition-all ${
-              i === active ? "bg-[#333333] scale-125" : "bg-[#999999]"
-            }`}
-          />
-        ))}
+            onClick={next}
+            className="absolute right-0 z-20 p-3 rounded-full bg-black/5 hover:bg-black/10 transition"
+          >
+            <ChevronRight size={32} />
+          </button>
+        )}
       </div>
     </section>
   );
