@@ -1,6 +1,8 @@
 "use client";
 
+import { useState } from "react";
 import Image from "next/image";
+import { Heart, Share2 } from "lucide-react";
 
 type Product = {
   id: number;
@@ -23,10 +25,11 @@ const products: Product[] = [
 ];
 
 export default function ProductsGrid() {
+  const [liked, setLiked] = useState<Record<number, boolean>>({});
+
   return (
     <section className="w-full bg-white py-16">
       <div className="max-w-7xl mx-auto px-4">
-
         <h2 className="text-center text-[32px] font-bold text-[#333333] mb-12">
           Our Products
         </h2>
@@ -35,7 +38,8 @@ export default function ProductsGrid() {
           {products.map((product) => (
             <div
               key={product.id}
-              className="group bg-[#e6e6e6] rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 relative"
+              tabIndex={0}   // ✅ makes it focusable on mobile tap
+              className="group bg-[#e6e6e6] rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 relative focus:outline-none"
             >
               {/* Badge */}
               {product.tag && (
@@ -50,29 +54,55 @@ export default function ProductsGrid() {
 
               {/* Image Container */}
               <div className="relative w-full h-[260px] overflow-hidden bg-white">
-
                 <Image
                   src={product.image}
                   alt={product.title}
                   fill
-                  className="object-cover transition-all duration-700 ease-out group-hover:scale-110 group-hover:blur-[1.5px]"
+                  className="object-cover transition-all duration-700 ease-out group-hover:scale-110 group-hover:blur-[1.5px] group-focus-within:scale-110 group-focus-within:blur-[1.5px]"
                 />
 
-                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-all duration-500" />
+                <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 group-focus-within:bg-black/50 transition-all duration-500" />
 
-                <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-all duration-500">
+                {/* Overlay */}
+                <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-all duration-500">
                   <button className="bg-white text-[#333333] px-5 py-2 rounded-md text-sm font-medium hover:scale-105 transition">
                     Contact Us
                   </button>
-                  <div className="flex gap-6 text-white text-sm">
-                    <span className="cursor-pointer hover:underline">Share</span>
-                    <span className="cursor-pointer hover:underline">Like</span>
+
+                  {/* ICONS */}
+                  <div className="flex gap-8 text-white">
+                    {/* SHARE */}
+                    <button className="flex items-center gap-1 active:scale-125 md:hover:scale-125 transition-transform duration-300">
+                      <Share2 size={18} />
+                      <span className="text-sm">Share</span>
+                    </button>
+
+                    {/* LIKE */}
+                    <button
+                      onClick={() =>
+                        setLiked((prev) => ({
+                          ...prev,
+                          [product.id]: !prev[product.id],
+                        }))
+                      }
+                      className="flex items-center gap-1 active:scale-125 md:hover:scale-125 transition-transform duration-300"
+                    >
+                      <Heart
+                        size={18}
+                        className={`transition ${
+                          liked[product.id]
+                            ? "text-red-500 fill-red-500"
+                            : "text-white"
+                        }`}
+                      />
+                      <span className="text-sm">Like</span>
+                    </button>
                   </div>
                 </div>
               </div>
 
               {/* Info */}
-              <div className="bg-[#e6e6e6] p-4 transition-transform duration-500 group-hover:-translate-y-2">
+              <div className="bg-[#e6e6e6] p-4 transition-transform duration-500 group-hover:-translate-y-2 group-focus-within:-translate-y-2">
                 <h3 className="text-[18px] font-semibold text-[#333333] mb-1">
                   {product.title}
                 </h3>
@@ -87,7 +117,6 @@ export default function ProductsGrid() {
                   </span>
                 </div>
               </div>
-
             </div>
           ))}
         </div>
