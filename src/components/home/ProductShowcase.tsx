@@ -2,11 +2,9 @@
 
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import { Poppins } from "next/font/google";
 
-// Setup Poppins Font
 const poppins = Poppins({
   subsets: ["latin"],
   weight: ["400", "500", "600", "700"],
@@ -28,42 +26,84 @@ const items: Item[] = [
   { id: "05", category: "Vintage", title: "Bell", image: "/decore.png" },
 ];
 
-export default function StackedProductSlider() {
+export default function StackedSliderLoop() {
   const [active, setActive] = useState(0);
-  const [isMobile, setIsMobile] = useState(false);
+  const [isHovering, setIsHovering] = useState(false);
 
-  // Detect Mobile
+  // --- AUTO PLAY LOGIC ---
   useEffect(() => {
-    const handleResize = () => setIsMobile(window.innerWidth < 1024);
-    handleResize();
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
+    if (isHovering) return;
+    const interval = setInterval(() => {
+      setActive((prev) => (prev + 1) % items.length);
+    }, 4000); // 4 seconds auto-play
+    return () => clearInterval(interval);
+  }, [active, isHovering]);
 
-  const next = () => {
-    if (active < items.length - 1) setActive((prev) => prev + 1);
-    else setActive(0);
+  // --- NAVIGATION ---
+  const getIndex = (offset: number) => {
+    return (active + offset + items.length) % items.length;
   };
 
-  const prev = () => {
-    if (active > 0) setActive((prev) => prev - 1);
-    else setActive(items.length - 1);
+  const handleCardClick = (index: number) => {
+    setActive(index);
+  };
+
+  // --- ANIMATION VARIANTS ---
+  const cardVariants = {
+    // Slot 0: Main Image (Extreme Left)
+    active: {
+      x: 0,
+      opacity: 1,
+      scale: 1,
+      left: "0%",
+      zIndex: 30,
+      originY: 0,
+    },
+    // Slot 1: Next Image (Closer to main, Top Aligned)
+    next: {
+      x: 0,
+      opacity: 1,
+      scale: 0.85,
+      left: "45%", 
+      zIndex: 20,
+      originY: 0,
+    },
+    // Slot 2: Third Image (Top Aligned)
+    upcoming: {
+      x: 0,
+      opacity: 0.8,
+      scale: 0.70,
+      left: "75%",
+      zIndex: 10,
+      originY: 0,
+    },
+    // Animation for item entering from the right
+    enter: {
+      x: 50,
+      opacity: 0,
+      scale: 0.6,
+      left: "90%",
+      originY: 0,
+    },
+    // Animation for item fading out
+    exit: {
+      // FIX: Removed 'scale', 'left', and 'x'. 
+      // This allows the card to simply fade out in its CURRENT position
+      // without jumping to the center or growing.
+      opacity: 0,
+      zIndex: 0,
+      originY: 0,
+    },
   };
 
   return (
     <section
       className={`${poppins.className} w-full min-h-screen bg-[#FFFBF7] flex flex-col items-center justify-center p-6 md:p-12 overflow-hidden`}
     >
-      {/* Grid Change: lg:grid-cols-[45%_55%] 
-        - Makes the 1st column (Text) smaller (~45%)
-        - Makes the 2nd column (Slider) wider (~55%)
-      */}
-      <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-[45%_55%] gap-8 lg:gap-12 items-center">
-
-        {/* TEXT */}
-        <div className="space-y-6 z-10 text-center lg:text-left order-1 pr-0 lg:pr-5">
-
-          {/* MAIN HEADING */}
+      <div className="max-w-7xl w-full grid grid-cols-1 lg:grid-cols-[40%_60%] gap-8 lg:gap-12 items-center">
+        
+        {/* --- LEFT COLUMN: TEXT --- */}
+        <div className="space-y-6 z-10 text-center lg:text-left order-1">
           <motion.h1
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
@@ -72,150 +112,138 @@ export default function StackedProductSlider() {
             50M+ Product Sold
           </motion.h1>
 
-          {/* SUB HEADING */}
           <p className="text-[#666666] text-[18px] leading-relaxed max-w-md mx-auto lg:mx-0">
-            Discover our curated collection of handcrafted artifacts.
-            From ancient pottery to modern statues.
+            Discover our curated collection of handcrafted artifacts. From ancient pottery to modern statues.
           </p>
 
-          <button className="bg-[#485396] hover:bg-[#39427a] text-white px-8 py-3 md:py-4 rounded-sm font-semibold transition-colors shadow-lg text-sm md:text-base">
-            Explore More
+          {/* NEW BUTTON (from provided snippet) */}
+          <button
+            className="
+              group relative overflow-hidden
+              inline-flex items-center justify-center
+              w-[220px] h-[56px]
+              bg-[#353F8C]
+              text-white text-[13px]
+              font-bold uppercase tracking-[2px]
+              transition-all duration-500
+              hover:tracking-[4px]
+              hover:shadow-[0_20px_40px_rgba(0,0,0,0.3)]
+              active:scale-[0.97]
+              rounded-sm
+            "
+          >
+            <span className="relative z-10">Explore More</span>
+
+            {/* Shine sweep (works on hover + tap) */}
+            <span
+              className="
+                absolute inset-0
+                bg-gradient-to-r from-transparent via-white/30 to-transparent
+                -translate-x-[120%]
+                group-hover:translate-x-[120%]
+                group-active:translate-x-[120%]
+                transition-transform duration-700
+              "
+            />
           </button>
         </div>
 
-        {/* STACK SLIDER */}
-        {/* Added pl-5 to move the slider column slightly right by approx 20px */}
-        <div className="relative h-[450px] md:h-[650px] w-full flex flex-col items-center justify-center order-2 perspective-1000 lg:pl-5">
-          <div className="relative w-full h-full flex items-center justify-center lg:justify-start lg:pl-10">
-            <AnimatePresence>
-              {items.map((item, index) => {
-                const offset = index - active;
+        {/* --- RIGHT COLUMN: SLIDER --- */}
+        <div 
+          className="relative h-[500px] w-full flex items-center order-2"
+          onMouseEnter={() => setIsHovering(true)}
+          onMouseLeave={() => setIsHovering(false)}
+        >
+          {/* Slider Container */}
+          <div className="relative w-full h-full">
+            
+            {/* IMAGES AREA */}
+            <div className="relative w-full h-full"> 
+              <AnimatePresence initial={false} mode="popLayout">
+                {[0, 1, 2].map((offset) => {
+                  const itemIndex = getIndex(offset);
+                  const item = items[itemIndex];
+                  
+                  let variantState = "enter";
+                  if (offset === 0) variantState = "active";
+                  else if (offset === 1) variantState = "next";
+                  else if (offset === 2) variantState = "upcoming";
 
-                // EXIT ANIMATION (Going backwards/disappearing)
-                if (offset < 0) {
                   return (
                     <motion.div
                       key={item.id}
-                      // Increased width to 400px and height to 560px for main image size
-                      className="absolute w-[80vw] max-w-[320px] md:w-[400px] h-[380px] md:h-[560px] overflow-hidden shadow-2xl"
-                      initial={false}
-                      animate={{
-                        x: -500,
-                        opacity: 0,
-                        scale: 0.8,
-                        zIndex: 0,
+                      layoutId={`card-${item.id}`}
+                      variants={cardVariants}
+                      initial="enter"
+                      animate={variantState}
+                      exit="exit"
+                      transition={{ 
+                        type: "spring", 
+                        stiffness: 150, 
+                        damping: 20,
+                        opacity: { duration: 0.5 }
                       }}
-                      transition={{ duration: 0.4 }}
+                      onClick={() => handleCardClick(itemIndex)}
+                      className={`absolute top-0 w-[280px] md:w-[360px] h-[380px] md:h-[500px] rounded-none overflow-hidden shadow-2xl border-[4px] border-white origin-top cursor-pointer bg-gray-100`}
                     >
-                      <Image src={item.image} alt={item.title} fill className="object-cover" />
+                        {/* Image */}
+                        <div className="relative w-full h-full">
+                          <Image
+                            src={item.image}
+                            alt={item.title}
+                            fill
+                            className="object-cover"
+                            priority={offset === 0}
+                          />
+                          <div className="absolute inset-0 bg-black/10" />
+                          
+                          {/* GLASSMORPHIC TEXT BOX (Only on Active) */}
+                          {offset === 0 && (
+                            <motion.div 
+                              initial={{ opacity: 0, scale: 0.9 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              transition={{ delay: 0.1, duration: 0.3 }}
+                              className="absolute bottom-[10px] left-0 right-0 flex justify-center z-40"
+                            >
+                                {/* Box Styling: Fill 72%, Blur 3 */}
+                                <div className="w-[90%] md:w-[85%] py-6 bg-white/70 backdrop-blur-[3px] border border-white/50 text-[#333] shadow-lg flex flex-col items-center justify-center text-center">
+                                  {/* ID & Category */}
+                                  <div className="flex items-center gap-3 text-lg font-medium tracking-widest uppercase mb-1 text-[#444]">
+                                    <span>{item.id}</span>
+                                    <span className="w-8 h-[1px] bg-[#444]"></span>
+                                    <span>{item.category}</span>
+                                  </div>
+                                  
+                                  {/* Title */}
+                                  <h3 className="text-4xl font-bold leading-tight drop-shadow-sm text-[#222]">
+                                    {item.title}
+                                  </h3>
+                                </div>
+                            </motion.div>
+                          )}
+                        </div>
                     </motion.div>
                   );
-                }
-
-                // ACTIVE & NEXT SLIDES
-                return (
-                  <motion.div
-                    key={item.id}
-                    // Increased width to 400px and height to 560px for main image size
-                    className="absolute top-1/2 left-1/2 lg:left-20 w-[80vw] max-w-[320px] md:w-[400px] h-[380px] md:h-[560px] overflow-hidden shadow-2xl bg-white"
-                    style={{ transformOrigin: "center center" }}
-                    initial={false}
-                    animate={{
-                      // X Calculation: Increased multiplier from 50 to 75 to make next images "more visible" (30px gap logic)
-                      x: isMobile
-                        ? `calc(-50% + ${offset * 15}px)`
-                        : offset * 75, 
-                      y: "-50%",
-                      // Scale Calculation: 0.06 step down roughly equals 20px size reduction per step
-                      scale: 1 - offset * (isMobile ? 0.05 : 0.06),
-                      zIndex: items.length - offset,
-                      opacity: offset > (isMobile ? 2 : 3) ? 0 : 1,
-                    }}
-                    transition={{ type: "spring", stiffness: 180, damping: 20 }}
-                  >
-                    <div className="relative w-full h-full">
-                      <Image
-                        src={item.image}
-                        alt={item.title}
-                        fill
-                        className="object-cover"
-                        priority={index === active}
-                      />
-                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
-                    </div>
-
-                    {/* GLASS CARD */}
-                    <motion.div
-                      className="absolute bottom-6 left-6 right-6 bg-white/20 backdrop-blur-md border border-white/30 p-5 text-white"
-                      animate={{ opacity: offset === 0 ? 1 : 0 }}
-                    >
-                      {/* ID + CATEGORY */}
-                      <div className="flex items-center gap-2 text-[16px] font-medium tracking-wide mb-2 text-white/80">
-                        <span>{item.id}</span>
-                        <span className="w-6 h-[1px] bg-white/60"></span>
-                        <span>{item.category}</span>
-                      </div>
-
-                      {/* PRODUCT NAME */}
-                      <h3 className="text-[28px] font-semibold">
-                        {item.title}
-                      </h3>
-                    </motion.div>
-                  </motion.div>
-                );
-              })}
-            </AnimatePresence>
-
-            {/* DESKTOP BUTTONS */}
-            {!isMobile && (
-              <>
-                <div className="absolute -left-4 z-50 h-full flex items-center">
-                  <button
-                    onClick={prev}
-                    className="w-16 h-16 flex items-center justify-center rounded-full bg-[#EABFFF] text-[#4A1D5F] hover:scale-110 transition-transform shadow-lg"
-                  >
-                    <ChevronLeft size={28} />
-                  </button>
-                </div>
-
-                <motion.div
-                  className="absolute z-50 pointer-events-none"
-                  animate={{
-                    // Updated 360 to 400 to match new card width
-                    // Updated multiplier 50 to 75 to match new gap logic
-                    left: 400 + Math.min(items.length - 1 - active, 3) * 75 + 60,
-                  }}
-                  transition={{ type: "spring", stiffness: 100 }}
-                  style={{ top: "50%", translateY: "-50%" }}
-                >
-                  <button
-                    onClick={next}
-                    className="pointer-events-auto w-16 h-16 flex items-center justify-center rounded-full bg-[#EABFFF] text-[#4A1D5F] hover:scale-110 transition-transform shadow-lg"
-                  >
-                    <ChevronRight size={28} />
-                  </button>
-                </motion.div>
-              </>
-            )}
-          </div>
-
-          {/* MOBILE BUTTONS */}
-          {isMobile && (
-            <div className="absolute -bottom-6 w-full flex items-center justify-center gap-8 z-50">
-              <button
-                onClick={prev}
-                className="w-12 h-12 flex items-center justify-center rounded-full bg-[#EABFFF] text-[#4A1D5F] active:scale-90 transition-transform shadow-lg"
-              >
-                <ChevronLeft size={24} />
-              </button>
-              <button
-                onClick={next}
-                className="w-12 h-12 flex items-center justify-center rounded-full bg-[#EABFFF] text-[#4A1D5F] active:scale-90 transition-transform shadow-lg"
-              >
-                <ChevronRight size={24} />
-              </button>
+                })}
+              </AnimatePresence>
             </div>
-          )}
+
+            {/* DOT & BAR PAGINATION */}
+            <div className="absolute bottom-[20px] left-[58%] flex items-center gap-3 z-40 h-[20px]">
+                {items.map((_, idx) => (
+                    <button
+                        key={idx}
+                        onClick={() => handleCardClick(idx)}
+                        className={`transition-all duration-500 rounded-full h-2 ${
+                            active === idx 
+                            ? "w-8 bg-[#485396]" // Active: Bar
+                            : "w-2 bg-gray-300 hover:bg-gray-400" // Inactive: Dot
+                        }`}
+                    />
+                ))}
+            </div>
+
+          </div>
         </div>
       </div>
     </section>
