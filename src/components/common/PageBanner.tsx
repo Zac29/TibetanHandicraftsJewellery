@@ -8,12 +8,14 @@ interface PageBannerProps {
   title: string;
   breadcrumb?: string;
   imageSrc: string;
+   overlayOpacity?: number;
 }
 
 export default function PageBanner({
   title,
   breadcrumb,
   imageSrc,
+  overlayOpacity,
 }: PageBannerProps) {
   return (
     <section
@@ -35,6 +37,13 @@ export default function PageBanner({
           priority
           className="object-cover"
         />
+            {overlayOpacity && (
+    <div
+      className="absolute inset-0 bg-white"
+      style={{ opacity: overlayOpacity }}
+    />
+  )}
+
       </div>
 
       {/* CONTENT WRAPPER (1440px CANVAS MATCH) */}

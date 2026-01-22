@@ -29,7 +29,7 @@ export default function ContactPage() {
 
        <ContactSection />
         <FeaturesStrip />
-       <Footer/>
+       
     </>
   );
 }
