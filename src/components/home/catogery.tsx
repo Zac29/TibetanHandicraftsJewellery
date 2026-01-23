@@ -75,8 +75,7 @@ export default function Catogery() {
   return (
     <section
       ref={sectionRef}
-      className="pt-6 pb-8 sm:pt-8 sm:pb-10 md:pt-10 md:pb-12 lg:pt-12 lg:pb-14 xl:pt-14 xl:pb-16 2xl:pt-16 2xl:pb-18"
-    >
+      className="pt-6 pb-8 sm:pt-8 sm:pb-10 md:pt-10 md:pb-12 lg:pt-12 lg:pb-14 xl:pt-14 xl:pb-16 2xl:pt-16 2xl:pb-18">
       {/* Title */}
       <div className="text-center mb-10 sm:mb-12 md:mb-14 px-4">
         <h2 className="mb-4 text-[32px] font-bold text-[#333333]">Category</h2>
@@ -88,27 +87,15 @@ export default function Catogery() {
 
       {/* Slider Container */}
       <div className="relative w-full max-w-6xl mx-auto flex items-center justify-center">
-        
-        {/* Left Button (Circular + Shiny) */}
-        <button
-          onClick={prev}
-          className="
-            group relative z-20 overflow-hidden
-            flex items-center justify-center
-            w-14 h-14 rounded-full
-            bg-[#2E2E2E] text-white
-            transition-all duration-500
-            hover:shadow-[0_20px_40px_rgba(0,0,0,0.3)]
-            active:scale-[0.97]
-            absolute left-0 sm:left-4
-          "
-        >
-          <span className="relative z-10">
-            <ChevronLeft size={28} />
-          </span>
-          {/* Shine Gradient */}
-          <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent translate-x-[-120%] group-hover:translate-x-[120%] transition-transform duration-700" />
-        </button>
+        {/* Left Button (Desktop Only) */}
+        {!isMobile && (
+          <button
+            onClick={prev}
+            className="absolute left-0 z-20 p-3 rounded-full bg-black/5 hover:bg-black/10 transition"
+          >
+            <ChevronLeft size={32} />
+          </button>
+        )}
 
         {/* Slides */}
         <div className="relative w-full h-[400px] sm:h-[420px] md:h-[440px] flex items-center justify-center">
@@ -137,18 +124,16 @@ export default function Catogery() {
                 variants={
                   isMobile
                     ? {
-                        // MOBILE VARIANTS: Tighter stack with minimal Y offset
                         center: { y: 0, scale: 1, opacity: 1, zIndex: 10 },
-                        left: { y: -10, scale: 0.95, opacity: 0.8, zIndex: 5 },
-                        right: { y: -20, scale: 0.9, opacity: 0.6, zIndex: 4 },
-                        hidden: { y: -20, scale: 0.85, opacity: 0, zIndex: 0 },
+                        left: { y: -40, scale: 0.95, opacity: 0.75, zIndex: 2 },
+                        right: { y: -80, scale: 0.9, opacity: 0.55, zIndex: 1 },
+                        hidden: { opacity: 0, scale: 0.7 },
                       }
                     : {
-                        // DESKTOP VARIANTS: Spread out horizontally
                         center: { x: 0, scale: 1.15, opacity: 1, zIndex: 10 },
                         left: { x: -340, scale: 0.85, opacity: 0.9, zIndex: 1 },
                         right: { x: 340, scale: 0.85, opacity: 0.9, zIndex: 1 },
-                        hidden: { opacity: 0, scale: 0.7, zIndex: 0 },
+                        hidden: { opacity: 0, scale: 0.7 },
                       }
                 }
                 transition={
@@ -185,26 +170,15 @@ export default function Catogery() {
           })}
         </div>
 
-        {/* Right Button (Circular + Shiny) */}
-        <button
-          onClick={next}
-          className="
-            group relative z-20 overflow-hidden
-            flex items-center justify-center
-            w-14 h-14 rounded-full
-            bg-[#2E2E2E] text-white
-            transition-all duration-500
-            hover:shadow-[0_20px_40px_rgba(0,0,0,0.3)]
-            active:scale-[0.97]
-            absolute right-0 sm:right-4
-          "
-        >
-          <span className="relative z-10">
-            <ChevronRight size={28} />
-          </span>
-          {/* Shine Gradient */}
-          <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/30 to-transparent translate-x-[-120%] group-hover:translate-x-[120%] transition-transform duration-700" />
-        </button>
+        {/* Right Button (Desktop Only) */}
+        {!isMobile && (
+          <button
+            onClick={next}
+            className="absolute right-0 z-20 p-3 rounded-full bg-black/5 hover:bg-black/10 transition"
+          >
+            <ChevronRight size={32} />
+          </button>
+        )}
       </div>
     </section>
   );

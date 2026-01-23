@@ -54,7 +54,7 @@ export default function Navbar() {
 
   const navLinks = [
     { name: "Home", href: "/" },
-    { name: "Product", href: "/products" },
+    { name: "Shop", href: "/shop" },
     { name: "About", href: "/about" },
     { name: "Contact", href: "/contact" },
   ];
@@ -81,7 +81,7 @@ export default function Navbar() {
               {/* Logo */}
               <Link href="/" className="relative w-[60px] h-[60px] md:w-[80px] md:h-[80px]">
                 <Image
-                  src="/Logo.png"
+                  src="/logo.png"
                   alt="Logo"
                   fill
                   priority
@@ -134,7 +134,7 @@ export default function Navbar() {
               >
                 <div className="relative w-[32px] h-[32px] md:w-[44px] md:h-[44px]">
                   <Image
-                    src="/Logo.png"
+                    src="/logo.png"
                     alt="Logo"
                     fill
                     className="object-contain"

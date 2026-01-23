@@ -26,40 +26,6 @@ const items: Item[] = [
   { id: "05", category: "Vintage", title: "Bell", image: "/decore.png" },
 ];
 
-// --- REUSABLE BUTTON COMPONENT ---
-const ExploreButton = ({ className = "" }: { className?: string }) => (
-  <button
-    className={`
-      group relative overflow-hidden
-      inline-flex items-center justify-center
-      w-[220px] h-[56px]
-      bg-[#353F8C]
-      text-white text-[13px]
-      font-bold uppercase tracking-[2px]
-      transition-all duration-500
-      hover:tracking-[4px]
-      hover:shadow-[0_20px_40px_rgba(0,0,0,0.3)]
-      active:scale-[0.97]
-      rounded-sm
-      ${className}
-    `}
-  >
-    <span className="relative z-10">Explore More</span>
-
-    {/* Shine sweep */}
-    <span
-      className="
-        absolute inset-0
-        bg-gradient-to-r from-transparent via-white/30 to-transparent
-        -translate-x-[120%]
-        group-hover:translate-x-[120%]
-        group-active:translate-x-[120%]
-        transition-transform duration-700
-      "
-    />
-  </button>
-);
-
 export default function StackedSliderLoop() {
   const [active, setActive] = useState(0);
   const [isHovering, setIsHovering] = useState(false);
@@ -69,7 +35,7 @@ export default function StackedSliderLoop() {
     if (isHovering) return;
     const interval = setInterval(() => {
       setActive((prev) => (prev + 1) % items.length);
-    }, 4000); 
+    }, 4000); // 4 seconds auto-play
     return () => clearInterval(interval);
   }, [active, isHovering]);
 
@@ -84,6 +50,7 @@ export default function StackedSliderLoop() {
 
   // --- ANIMATION VARIANTS ---
   const cardVariants = {
+    // Slot 0: Main Image (Extreme Left)
     active: {
       x: 0,
       opacity: 1,
@@ -92,6 +59,7 @@ export default function StackedSliderLoop() {
       zIndex: 30,
       originY: 0,
     },
+    // Slot 1: Next Image (Closer to main, Top Aligned)
     next: {
       x: 0,
       opacity: 1,
@@ -100,6 +68,7 @@ export default function StackedSliderLoop() {
       zIndex: 20,
       originY: 0,
     },
+    // Slot 2: Third Image (Top Aligned)
     upcoming: {
       x: 0,
       opacity: 0.8,
@@ -108,6 +77,7 @@ export default function StackedSliderLoop() {
       zIndex: 10,
       originY: 0,
     },
+    // Animation for item entering from the right
     enter: {
       x: 50,
       opacity: 0,
@@ -115,7 +85,11 @@ export default function StackedSliderLoop() {
       left: "90%",
       originY: 0,
     },
+    // Animation for item fading out
     exit: {
+      // FIX: Removed 'scale', 'left', and 'x'. 
+      // This allows the card to simply fade out in its CURRENT position
+      // without jumping to the center or growing.
       opacity: 0,
       zIndex: 0,
       originY: 0,
@@ -142,103 +116,134 @@ export default function StackedSliderLoop() {
             Discover our curated collection of handcrafted artifacts. From ancient pottery to modern statues.
           </p>
 
-          {/* DESKTOP BUTTON: Hidden on Mobile (lg:inline-flex) */}
-          <ExploreButton className="hidden lg:inline-flex" />
+          {/* NEW BUTTON (from provided snippet) */}
+          <button
+            className="
+              group relative overflow-hidden
+              inline-flex items-center justify-center
+              w-[220px] h-[56px]
+              bg-[#353F8C]
+              text-white text-[13px]
+              font-bold uppercase tracking-[2px]
+              transition-all duration-500
+              hover:tracking-[4px]
+              hover:shadow-[0_20px_40px_rgba(0,0,0,0.3)]
+              active:scale-[0.97]
+              rounded-sm
+            "
+          >
+            <span className="relative z-10">Explore More</span>
+
+            {/* Shine sweep (works on hover + tap) */}
+            <span
+              className="
+                absolute inset-0
+                bg-gradient-to-r from-transparent via-white/30 to-transparent
+                -translate-x-[120%]
+                group-hover:translate-x-[120%]
+                group-active:translate-x-[120%]
+                transition-transform duration-700
+              "
+            />
+          </button>
         </div>
 
         {/* --- RIGHT COLUMN: SLIDER --- */}
         <div 
-          className="relative w-full flex flex-col items-center order-2 gap-8" // Added gap-8 for spacing
+          className="relative h-[500px] w-full flex items-center order-2"
           onMouseEnter={() => setIsHovering(true)}
           onMouseLeave={() => setIsHovering(false)}
         >
           {/* Slider Container */}
-          <div className="relative w-full h-[500px]">
-            <AnimatePresence initial={false} mode="popLayout">
-              {[0, 1, 2].map((offset) => {
-                const itemIndex = getIndex(offset);
-                const item = items[itemIndex];
-                
-                let variantState = "enter";
-                if (offset === 0) variantState = "active";
-                else if (offset === 1) variantState = "next";
-                else if (offset === 2) variantState = "upcoming";
+          <div className="relative w-full h-full">
+            
+            {/* IMAGES AREA */}
+            <div className="relative w-full h-full"> 
+              <AnimatePresence initial={false} mode="popLayout">
+                {[0, 1, 2].map((offset) => {
+                  const itemIndex = getIndex(offset);
+                  const item = items[itemIndex];
+                  
+                  let variantState = "enter";
+                  if (offset === 0) variantState = "active";
+                  else if (offset === 1) variantState = "next";
+                  else if (offset === 2) variantState = "upcoming";
 
-                return (
-                  <motion.div
-                    key={item.id}
-                    layoutId={`card-${item.id}`}
-                    variants={cardVariants}
-                    initial="enter"
-                    animate={variantState}
-                    exit="exit"
-                    transition={{ 
-                      type: "spring", 
-                      stiffness: 150, 
-                      damping: 20,
-                      opacity: { duration: 0.5 }
-                    }}
-                    onClick={() => handleCardClick(itemIndex)}
-                    className={`absolute top-0 w-[280px] md:w-[360px] h-[380px] md:h-[500px] rounded-none overflow-hidden shadow-2xl border-[4px] border-white origin-top cursor-pointer bg-gray-100`}
-                  >
-                    {/* Image */}
-                    <div className="relative w-full h-full">
-                      <Image
-                        src={item.image}
-                        alt={item.title}
-                        fill
-                        className="object-cover"
-                        priority={offset === 0}
-                      />
-                      <div className="absolute inset-0 bg-black/10" />
-                      
-                      {/* GLASSMORPHIC TEXT BOX (Only on Active) */}
-                      {offset === 0 && (
-                        <motion.div 
-                          initial={{ opacity: 0, scale: 0.9 }}
-                          animate={{ opacity: 1, scale: 1 }}
-                          transition={{ delay: 0.1, duration: 0.3 }}
-                          className="absolute bottom-[10px] left-0 right-0 flex justify-center z-40"
-                        >
-                          <div className="w-[90%] md:w-[85%] py-6 bg-white/70 backdrop-blur-[3px] border border-white/50 text-[#333] shadow-lg flex flex-col items-center justify-center text-center">
-                            <div className="flex items-center gap-3 text-lg font-medium tracking-widest uppercase mb-1 text-[#444]">
-                              <span>{item.id}</span>
-                              <span className="w-8 h-[1px] bg-[#444]"></span>
-                              <span>{item.category}</span>
-                            </div>
-                            <h3 className="text-4xl font-bold leading-tight drop-shadow-sm text-[#222]">
-                              {item.title}
-                            </h3>
-                          </div>
-                        </motion.div>
-                      )}
-                    </div>
-                  </motion.div>
-                );
-              })}
-            </AnimatePresence>
-
-            {/* PAGINATION DOTS */}
-            <div className="absolute bottom-[20px] left-[58%] flex items-center gap-3 z-40 h-[20px]">
-              {items.map((_, idx) => (
-                <button
-                  key={idx}
-                  onClick={() => handleCardClick(idx)}
-                  className={`transition-all duration-500 rounded-full h-2 ${
-                    active === idx 
-                    ? "w-8 bg-[#485396]" 
-                    : "w-2 bg-gray-300 hover:bg-gray-400"
-                  }`}
-                />
-              ))}
+                  return (
+                    <motion.div
+                      key={item.id}
+                      layoutId={`card-${item.id}`}
+                      variants={cardVariants}
+                      initial="enter"
+                      animate={variantState}
+                      exit="exit"
+                      transition={{ 
+                        type: "spring", 
+                        stiffness: 150, 
+                        damping: 20,
+                        opacity: { duration: 0.5 }
+                      }}
+                      onClick={() => handleCardClick(itemIndex)}
+                      className={`absolute top-0 w-[280px] md:w-[360px] h-[380px] md:h-[500px] rounded-none overflow-hidden shadow-2xl border-[4px] border-white origin-top cursor-pointer bg-gray-100`}
+                    >
+                        {/* Image */}
+                        <div className="relative w-full h-full">
+                          <Image
+                            src={item.image}
+                            alt={item.title}
+                            fill
+                            className="object-cover"
+                            priority={offset === 0}
+                          />
+                          <div className="absolute inset-0 bg-black/10" />
+                          
+                          {/* GLASSMORPHIC TEXT BOX (Only on Active) */}
+                          {offset === 0 && (
+                            <motion.div 
+                              initial={{ opacity: 0, scale: 0.9 }}
+                              animate={{ opacity: 1, scale: 1 }}
+                              transition={{ delay: 0.1, duration: 0.3 }}
+                              className="absolute bottom-[10px] left-0 right-0 flex justify-center z-40"
+                            >
+                                {/* Box Styling: Fill 72%, Blur 3 */}
+                                <div className="w-[90%] md:w-[85%] py-6 bg-white/70 backdrop-blur-[3px] border border-white/50 text-[#333] shadow-lg flex flex-col items-center justify-center text-center">
+                                  {/* ID & Category */}
+                                  <div className="flex items-center gap-3 text-lg font-medium tracking-widest uppercase mb-1 text-[#444]">
+                                    <span>{item.id}</span>
+                                    <span className="w-8 h-[1px] bg-[#444]"></span>
+                                    <span>{item.category}</span>
+                                  </div>
+                                  
+                                  {/* Title */}
+                                  <h3 className="text-4xl font-bold leading-tight drop-shadow-sm text-[#222]">
+                                    {item.title}
+                                  </h3>
+                                </div>
+                            </motion.div>
+                          )}
+                        </div>
+                    </motion.div>
+                  );
+                })}
+              </AnimatePresence>
             </div>
-          </div>
 
-          {/* MOBILE BUTTON: Hidden on Desktop (lg:hidden), positioned below slider */}
-          <div className="w-full flex justify-center lg:hidden z-10">
-             <ExploreButton />
-          </div>
+            {/* DOT & BAR PAGINATION */}
+            <div className="absolute bottom-[20px] left-[58%] flex items-center gap-3 z-40 h-[20px]">
+                {items.map((_, idx) => (
+                    <button
+                        key={idx}
+                        onClick={() => handleCardClick(idx)}
+                        className={`transition-all duration-500 rounded-full h-2 ${
+                            active === idx 
+                            ? "w-8 bg-[#485396]" // Active: Bar
+                            : "w-2 bg-gray-300 hover:bg-gray-400" // Inactive: Dot
+                        }`}
+                    />
+                ))}
+            </div>
 
+          </div>
         </div>
       </div>
     </section>

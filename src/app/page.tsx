@@ -13,7 +13,7 @@ export default function Home() {
       <ProductsGrid />
       <ProductShowcase />
       <Testimonials />
-      {/* <Footer /> */}
+      <Footer />
     </ScaleWrapper>
   );
 }
