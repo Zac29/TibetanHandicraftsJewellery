@@ -3,26 +3,8 @@
 import { useState } from "react";
 import Image from "next/image";
 import { Heart, Share2 } from "lucide-react";
-
-type Product = {
-  id: number;
-  title: string;
-  image: string;
-  price: number;
-  oldPrice: number;
-  tag?: "sale" | "new";
-};
-
-const products: Product[] = [
-  { id: 1, title: "Ganesha Statue", image: "/Bowl.png", price: 2500, oldPrice: 3500, tag: "sale" },
-  { id: 2, title: "POT", image: "/decore.png", price: 2500, oldPrice: 3500, tag: "sale" },
-  { id: 3, title: "Mandala", image: "/item.png", price: 2500, oldPrice: 3500, tag: "sale" },
-  { id: 4, title: "Buddha", image: "/Pot.png", price: 2500, oldPrice: 3500, tag: "sale" },
-  { id: 5, title: "Mandala Pendent", image: "/Statues.png", price: 2500, oldPrice: 3500, tag: "sale" },
-  { id: 6, title: "Bronze Mandla", image: "/Pot.png", price: 2500, oldPrice: 3500, tag: "sale" },
-  { id: 7, title: "Bowl", image: "/Bowl.png", price: 2500, oldPrice: 3500, tag: "new" },
-  { id: 8, title: "POT", image: "/Pot.png", price: 2500, oldPrice: 3500, tag: "sale" },
-];
+import Link from "next/link";
+import { products } from "../../lib/products";
 
 export default function ProductsGrid() {
   const [liked, setLiked] = useState<Record<number, boolean>>({});
@@ -34,11 +16,12 @@ export default function ProductsGrid() {
           Our Products
         </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+        {/* ✅ ONLY CHANGE IS HERE: grid-cols-1 -> grid-cols-2 */}
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {products.map((product) => (
-            <div
+            <Link
               key={product.id}
-              tabIndex={0}
+              href={`/products/${product.id}`}
               className="group bg-[#e6e6e6] rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 relative focus:outline-none"
             >
               {/* Badge */}
@@ -65,24 +48,38 @@ export default function ProductsGrid() {
 
                 {/* Overlay */}
                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-all duration-500">
-                  <button className="bg-white text-[#333333] px-5 py-2 rounded-md text-sm font-medium hover:scale-105 transition">
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }}
+                    className="bg-white text-[#333333] px-5 py-2 rounded-md text-sm font-medium hover:scale-105 transition"
+                  >
                     Contact Us
                   </button>
 
                   {/* Icons */}
                   <div className="flex gap-8 text-white">
-                    <button className="flex items-center gap-1 active:scale-125 md:hover:scale-125 transition-transform duration-300">
+                    <button
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }}
+                      className="flex items-center gap-1 active:scale-125 md:hover:scale-125 transition-transform duration-300"
+                    >
                       <Share2 size={18} />
                       <span className="text-sm">Share</span>
                     </button>
 
                     <button
-                      onClick={() =>
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
                         setLiked((prev) => ({
                           ...prev,
                           [product.id]: !prev[product.id],
-                        }))
-                      }
+                        }));
+                      }}
                       className="flex items-center gap-1 active:scale-125 md:hover:scale-125 transition-transform duration-300"
                     >
                       <Heart
@@ -115,13 +112,15 @@ export default function ProductsGrid() {
                   </span>
                 </div>
               </div>
-            </div>
+            </Link>
           ))}
         </div>
 
         {/* SHOW MORE BUTTON */}
         <div className="flex justify-center mt-12">
-          <button
+          <Link
+            href="/products"
+            target="_blank"
             className="
               group relative overflow-hidden
               inline-flex items-center justify-center
@@ -137,18 +136,16 @@ export default function ProductsGrid() {
           >
             <span className="relative z-10">Show More</span>
 
-            {/* Shine sweep (works on hover + tap) */}
             <span
               className="
                 absolute inset-0
                 bg-gradient-to-r from-transparent via-white/30 to-transparent
                 -translate-x-[120%]
                 group-hover:translate-x-[120%]
-                group-active:translate-x-[120%]
                 transition-transform duration-700
               "
             />
-          </button>
+          </Link>
         </div>
       </div>
     </section>

@@ -138,7 +138,7 @@ export default function Hero() {
       <div className="relative max-w-[1440px] mx-auto px-4 py-10 lg:h-[760px] overflow-hidden">
 
         {/* IMAGE */}
-        <div className="relative w-full h-[300px] md:h-[440px] lg:absolute lg:left-[90px] lg:top-[20px] lg:w-[1100px] lg:h-[680px] overflow-hidden rounded-[20px]">
+        <div className="relative w-full h-[300px] md:h-[440px] lg:absolute lg:left-[90px] lg:top-[20px] lg:w-[1100px] lg:h-[680px] overflow-hidden ">
           <div ref={imageRef} className="absolute inset-0">
             <Image
               src={currentSlide.image}
@@ -158,7 +158,7 @@ export default function Hero() {
             backdrop-blur-xl
             bg-white/70
             border border-white/40
-            rounded-[18px]
+            rounded-[15px]
             shadow-[0_40px_80px_rgba(0,0,0,0.15)]
             px-8 py-10
             md:max-w-[640px]
