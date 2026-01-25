@@ -37,12 +37,11 @@ export default function ProductsPage() {
     <>
       {/* HERO HEADER */}
       <PageBanner
-  title="Products"
-  breadcrumb="Products"
-  imageSrc="/item.png"
-    overlayOpacity={0.5}
-/>
-
+        title="Products"
+        breadcrumb="Products"
+        imageSrc="/item.png"
+        overlayOpacity={0.5}
+      />
 
       {/* TOOLBAR */}
       <div className="bg-[#F9F1E7]">
@@ -74,7 +73,9 @@ export default function ProductsPage() {
       {/* PRODUCTS GRID */}
       <section className="w-full py-8">
         <div className="max-w-7xl mx-auto px-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+
+          {/* ✅ ONLY CHANGE: grid-cols-1 -> grid-cols-2 */}
+          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
             {pageProducts.map((product) => (
               <Link
                 key={product.id}
@@ -153,10 +154,9 @@ export default function ProductsPage() {
 
           {/* PAGINATION */}
           <div className="flex justify-center items-center gap-6 mt-12 mb-10">
-
             <ShinyCircleButton
               disabled={page === 1}
-              onClick={() => setPage(p => Math.max(1, p - 1))}
+              onClick={() => setPage((p) => Math.max(1, p - 1))}
             >
               <ChevronLeft size={22} />
             </ShinyCircleButton>
@@ -177,22 +177,21 @@ export default function ProductsPage() {
 
             <ShinyCircleButton
               disabled={page === totalPages}
-              onClick={() => setPage(p => Math.min(totalPages, p + 1))}
+              onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
             >
               <ChevronRight size={22} />
             </ShinyCircleButton>
-
           </div>
         </div>
       </section>
 
-      {/* 🔥 FEATURES SECTION (NEW) */}
+      {/* FEATURES SECTION */}
       <FeathersSection />
     </>
   );
 }
 
-/* 🔥 SHINY PAGINATION BUTTON */
+/* SHINY PAGINATION BUTTON */
 function ShinyCircleButton({ children, onClick, disabled }: any) {
   return (
     <button
@@ -213,7 +212,6 @@ function ShinyCircleButton({ children, onClick, disabled }: any) {
     >
       <span className="relative z-10">{children}</span>
 
-      {/* SHINE SWEEP */}
       <span
         className="
           absolute inset-0

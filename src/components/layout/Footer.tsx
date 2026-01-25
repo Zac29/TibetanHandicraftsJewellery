@@ -45,7 +45,7 @@ export default function Footer() {
             </p>
             <ul className="space-y-4">
               <li><Link href="/" className="text-[16px] font-medium hover:opacity-70">Home</Link></li>
-              <li><Link href="/shop" className="text-[16px] font-medium hover:opacity-70">Shop</Link></li>
+              <li><Link href="/products" className="text-[16px] font-medium hover:opacity-70">Product</Link></li>
               <li><Link href="/about" className="text-[16px] font-medium hover:opacity-70">About</Link></li>
               <li><Link href="/contact" className="text-[16px] font-medium hover:opacity-70">Contact</Link></li>
             </ul>

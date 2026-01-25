@@ -1,6 +1,5 @@
 "use client";
 
-
 import { useState } from "react";
 import Image from "next/image";
 import { Heart, Share2 } from "lucide-react";
@@ -17,12 +16,12 @@ export default function ProductsGrid() {
           Our Products
         </h2>
 
-        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
+        {/* ✅ ONLY CHANGE IS HERE: grid-cols-1 -> grid-cols-2 */}
+        <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
           {products.map((product) => (
             <Link
               key={product.id}
-               href={`/products/${product.id}`}
-              
+              href={`/products/${product.id}`}
               className="group bg-[#e6e6e6] rounded-xl overflow-hidden shadow-sm hover:shadow-xl transition-all duration-500 relative focus:outline-none"
             >
               {/* Badge */}
@@ -49,38 +48,38 @@ export default function ProductsGrid() {
 
                 {/* Overlay */}
                 <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 opacity-0 group-hover:opacity-100 group-focus-within:opacity-100 transition-all duration-500">
-                 <button
-  onClick={(e) => {
-    e.preventDefault();
-    e.stopPropagation();
-  }}
-  className="bg-white text-[#333333] px-5 py-2 rounded-md text-sm font-medium hover:scale-105 transition"
->
-  Contact Us
-</button>
-
+                  <button
+                    onClick={(e) => {
+                      e.preventDefault();
+                      e.stopPropagation();
+                    }}
+                    className="bg-white text-[#333333] px-5 py-2 rounded-md text-sm font-medium hover:scale-105 transition"
+                  >
+                    Contact Us
+                  </button>
 
                   {/* Icons */}
                   <div className="flex gap-8 text-white">
                     <button
-  onClick={(e) => {
-    e.preventDefault();
-    e.stopPropagation();
-  }}
-  className="flex items-center gap-1 active:scale-125 md:hover:scale-125 transition-transform duration-300"
->
-  <Share2 size={18} />
-  <span className="text-sm">Share</span>
-</button>
-
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                      }}
+                      className="flex items-center gap-1 active:scale-125 md:hover:scale-125 transition-transform duration-300"
+                    >
+                      <Share2 size={18} />
+                      <span className="text-sm">Share</span>
+                    </button>
 
                     <button
-                      onClick={() =>
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
                         setLiked((prev) => ({
                           ...prev,
                           [product.id]: !prev[product.id],
-                        }))
-                      }
+                        }));
+                      }}
                       className="flex items-center gap-1 active:scale-125 md:hover:scale-125 transition-transform duration-300"
                     >
                       <Heart
@@ -119,35 +118,34 @@ export default function ProductsGrid() {
 
         {/* SHOW MORE BUTTON */}
         <div className="flex justify-center mt-12">
-        <Link
-  href="/products"
-   target="_blank"
-  className="
-    group relative overflow-hidden
-    inline-flex items-center justify-center
-    w-[220px] h-[56px]
-    bg-[#353F8C]
-    text-white text-[13px]
-    font-bold uppercase tracking-[2px]
-    transition-all duration-500
-    hover:tracking-[4px]
-    hover:shadow-[0_20px_40px_rgba(0,0,0,0.3)]
-    active:scale-[0.97]
-  "
->
-  <span className="relative z-10">Show More</span>
+          <Link
+            href="/products"
+            target="_blank"
+            className="
+              group relative overflow-hidden
+              inline-flex items-center justify-center
+              w-[220px] h-[56px]
+              bg-[#353F8C]
+              text-white text-[13px]
+              font-bold uppercase tracking-[2px]
+              transition-all duration-500
+              hover:tracking-[4px]
+              hover:shadow-[0_20px_40px_rgba(0,0,0,0.3)]
+              active:scale-[0.97]
+            "
+          >
+            <span className="relative z-10">Show More</span>
 
-  <span
-    className="
-      absolute inset-0
-      bg-gradient-to-r from-transparent via-white/30 to-transparent
-      -translate-x-[120%]
-      group-hover:translate-x-[120%]
-      transition-transform duration-700
-    "
-  />
-</Link>
-
+            <span
+              className="
+                absolute inset-0
+                bg-gradient-to-r from-transparent via-white/30 to-transparent
+                -translate-x-[120%]
+                group-hover:translate-x-[120%]
+                transition-transform duration-700
+              "
+            />
+          </Link>
         </div>
       </div>
     </section>
