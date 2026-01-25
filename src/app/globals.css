@@ -18,3 +18,7 @@
     transform: scale(1.777); /* 2560 / 1440 */
   }
 }
+
+.figma-subtract {
+  clip-path: path("M60 0 H577 V352 H0 V60 Q0 0 60 0 Z");
+}
