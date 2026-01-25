@@ -10,7 +10,7 @@ export default function ProductsGrid() {
   const [liked, setLiked] = useState<Record<number, boolean>>({});
 
   return (
-    <section className="w-full bg-white py-16">
+    <section className="w-full bg-white py-8">
       <div className="max-w-7xl mx-auto px-4">
         <h2 className="text-center text-[32px] font-bold text-[#333333] mb-12">
           Our Products
