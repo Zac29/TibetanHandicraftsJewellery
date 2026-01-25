@@ -12,11 +12,11 @@ export default function ProductPageBanner({
   product = "Decore",
 }: Props) {
   return (
-    <div className="relative w-full h-[100px] ">
+    <div className="relative w-full h-[90px] sm:h-[100px]">
 
       {/* Background */}
       <Image
-        src="/contact-banner.png" // Figma image
+        src="/contact-banner.png"
         alt="Product Banner"
         fill
         className="object-cover"
@@ -24,8 +24,14 @@ export default function ProductPageBanner({
       />
 
       {/* Content */}
-      <div className="relative z-10 h-full max-w-[1440px] mx-auto px-[99px] flex items-center">
-        <nav className="flex items-center gap-4 text-[16px] font-normal text-black">
+      <div className="relative z-10 h-full max-w-[1440px] mx-auto
+                      px-4 sm:px-8 md:px-16 lg:px-[99px]
+                      flex items-center">
+
+        <nav className="flex items-center gap-2 sm:gap-4
+                        text-[13px] sm:text-[15px] lg:text-[16px]
+                        font-normal text-black
+                        flex-wrap">
 
           {/* Home */}
           <Link href="/" className="hover:underline">
@@ -42,10 +48,9 @@ export default function ProductPageBanner({
           <span className="text-[#9F9F9F]">{">"}</span>
 
           {/* Current */}
-          <span className="font-medium">
+          <span className="font-medium break-words">
             {product}
           </span>
-
         </nav>
       </div>
     </div>

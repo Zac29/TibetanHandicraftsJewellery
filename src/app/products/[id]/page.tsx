@@ -1,4 +1,3 @@
-"use client";
 
 import Image from "next/image";
 import { notFound } from "next/navigation";
@@ -9,6 +8,12 @@ import { Facebook, Linkedin, Twitter, Star } from "lucide-react";
 import { Poppins } from "next/font/google";
 import RelatedProducts from "../../../components/products/RelatedProducts";
 import { useState, use, useRef } from "react";
+
+export async function generateStaticParams() {
+  return products.map((product) => ({
+    id: String(product.id),
+  }));
+}
 
 const poppins = Poppins({
   subsets: ["latin"],
@@ -126,6 +131,21 @@ export default function ProductPage({ params }: Props) {
               </div>
             </div>
           </div>
+        ))}
+      </div>
+
+      {/* Main Image */}
+      <div className="w-full max-w-[423px] h-[380px] sm:h-[420px] lg:h-[500px] bg-[#F9F1E7] rounded-[10px] flex items-center justify-center order-1 sm:order-2">
+        <Image
+          src={product.image}
+          alt={product.title}
+          width={388}
+          height={478}
+          className="object-contain mix-blend-multiply"
+          priority
+        />
+      </div>
+    </div>
 
           {/* ================= RIGHT : DETAILS ================= */}
           <div className="w-full md:max-w-[606px]">
@@ -204,24 +224,57 @@ export default function ProductPage({ params }: Props) {
               <button className="w-full md:w-[215px] h-[64px] rounded-[15px] bg-[#353F8C] text-white text-[20px]">
                 Contact Us
               </button>
-            </div>
-
-            {/* Meta */}
-            <div className="border-t border-[#D9D9D9] pt-[40px] space-y-[12px] text-[#9F9F9F]">
-              <Meta label="SKU" value={product.sku} />
-              <Meta label="Category" value={product.category} />
-              <Meta label="Tags" value={product.tags?.join(", ") ?? product.category} />
-
-              <div className="flex items-center gap-[25px]">
-                <span className="w-[90px]">Share</span>:
-                <Facebook size={20} className="text-black" />
-                <Linkedin size={20} className="text-black" />
-                <Twitter size={20} className="text-black" />
-              </div>
-            </div>
+            ))}
           </div>
         </div>
-      </section>
+      )}
+
+      {/* Colors */}
+      {product.colors && (
+        <div className="mb-[32px]">
+          <p className="text-[14px] text-[#9F9F9F] mb-[12px]">Color</p>
+          <div className="flex gap-[16px] flex-wrap">
+            {product.colors.map((color) => (
+              <span
+                key={color}
+                className="w-[30px] h-[30px] rounded-full"
+                style={{ backgroundColor: color }}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {/* Actions */}
+      <div className="flex flex-col sm:flex-row gap-[18px] mb-[60px]">
+        <div className="w-full sm:w-[123px] h-[64px] border rounded-[10px] flex items-center justify-between px-[15px]">
+          <span>-</span>
+          <span>1</span>
+          <span>+</span>
+        </div>
+
+        <button className="w-full sm:w-[215px] h-[64px] rounded-[15px] bg-[#353F8C] text-white text-[20px]">
+          Contact Us
+        </button>
+      </div>
+
+      {/* Meta */}
+      <div className="border-t border-[#D9D9D9] pt-[40px] space-y-[12px] text-[#9F9F9F] text-sm sm:text-base">
+        <Meta label="SKU" value={product.sku} />
+        <Meta label="Category" value={product.category} />
+        <Meta label="Tags" value={product.tags?.join(", ") ?? product.category} />
+
+        <div className="flex items-center gap-[25px] flex-wrap">
+          <span className="w-[90px]">Share</span>:
+          <Facebook size={20} className="text-black" />
+          <Linkedin size={20} className="text-black" />
+          <Twitter size={20} className="text-black" />
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
 
       <ProductTabs product={product} />
       <RelatedProducts />
