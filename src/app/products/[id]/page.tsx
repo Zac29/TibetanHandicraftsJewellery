@@ -20,6 +20,11 @@ const poppins = Poppins({
   weight: ["400", "500", "600", "700"],
 });
 
+
+//
+//
+
+
 type Props = {
   params: Promise<{ id: string }>;
 };

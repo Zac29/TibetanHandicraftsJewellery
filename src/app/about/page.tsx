@@ -77,7 +77,7 @@ export default function AboutPage() {
     <p className="text-[17px] leading-[28px] text-[#97918B] mb-10">
       From they fine john he give of rich he. They age and draw mrs like.
       Improving end distrusts may instantly was household applauded
-      incommode. Why kept very ever home mrs.
+      incommode. Why kept very ever home mrs Lorem ipsum dolor sit amet consectetur adipisicing elit. Nemo maxime, repellendus dolor sunt sed ipsa unde architecto dicta magni reprehenderit ut, voluptatibus veniam eveniet harum tempore fuga! Sit, ullam necessitatibus.
     </p>
 
     <Link
