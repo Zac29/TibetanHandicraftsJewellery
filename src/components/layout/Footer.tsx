@@ -92,7 +92,7 @@ export default function SolidKineticFooter() {
         {/* BOTTOM BAR */}
         <div className="pt-10 border-t border-stone-200 flex flex-col md:flex-row justify-between items-center gap-6">
           <p className="text-[10px] uppercase tracking-[0.3em] text-stone-400">
-            &copy; {currentYear} Tibetan Arts Atelier. All rights reserved.
+            &copy; {currentYear} The Cyber Loom. All rights reserved.
           </p>
           <div className="flex gap-8">
             <p className="text-[10px] uppercase tracking-[0.3em] text-stone-400 cursor-pointer hover:text-stone-900 transition-colors">
