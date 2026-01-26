@@ -3,206 +3,182 @@
 import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
-import { motion, AnimatePresence } from "framer-motion";
-import { User, Search, Menu, X, ShoppingBag } from "lucide-react";
-import { Poppins, Cormorant_Garamond } from "next/font/google";
+import { motion, AnimatePresence, useScroll, useTransform, useSpring } from "framer-motion";
+import { ShoppingBag, Search, Plus } from "lucide-react";
+import { Cormorant_Garamond, Jost } from "next/font/google";
 
-const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["300", "400", "500", "600"],
-});
+const cormorant = Cormorant_Garamond({ subsets: ["latin"], weight: ["300", "400", "500"] });
+const jost = Jost({ subsets: ["latin"], weight: ["300", "400", "600"] });
 
-const cormorant = Cormorant_Garamond({
-  subsets: ["latin"],
-  weight: ["400", "600"],
-  style: "italic",
-});
-
-export default function LuxuryNavbar() {
+export default function SolidKineticNavbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
-  const [scrollProgress, setScrollProgress] = useState(0);
+  const { scrollY } = useScroll();
+
+  // High-end spring physics for "Heavy Luxury" feel
+  const smoothY = useSpring(scrollY, { stiffness: 50, damping: 20 });
+
+  // Physical transformations - No Transparency
+  const headerHeight = useTransform(smoothY, [0, 100], ["120px", "80px"]);
+  const logoScale = useTransform(smoothY, [0, 100], [1, 0.7]);
+  const contentGap = useTransform(smoothY, [0, 100], ["40px", "20px"]);
 
   useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 40);
-      const totalScroll = document.documentElement.scrollHeight - window.innerHeight;
-      if (totalScroll > 0) setScrollProgress((window.scrollY / totalScroll) * 100);
-    };
+    const handleScroll = () => setIsScrolled(window.scrollY > 50);
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
 
-  const navLinks = [
-    { name: "Home", href: "/" },
-    { name: "Products", href: "/products" },
-    { name: "Our Story", href: "/about" },
-    { name: "Contact", href: "/contact" },
-  ];
+  // UPDATED NAMES HERE
+  const navLinks = [ "PRODUCTS", "About", "CONTACT"];
 
   return (
     <>
-      {/* 1. TOP ANNOUNCEMENT BAR */}
-      <div className="bg-stone-900 text-stone-100 py-2.5 text-center text-[9px] uppercase tracking-[0.4em] font-medium border-b border-stone-800 relative z-[60]">
-        Artisanal Excellence Since 1994 • Global Concierge Shipping
-      </div>
-
-      <header
-        className={`fixed left-0 z-50 w-full transition-all duration-700 ease-[cubic-bezier(0.23,1,0.32,1)] ${
-          isScrolled 
-            ? "top-4 bg-transparent" 
-            : "top-[37px] bg-stone-50 border-b border-stone-200 py-6"
-        } ${poppins.className}`}
+      <motion.header
+        style={{ height: headerHeight }}
+        className={`fixed top-0 left-0 w-full z-50 flex items-center shadow-[0_10px_40px_rgba(0,0,0,0.04)] transition-all duration-700 ${
+          isScrolled ? "bg-[#fcfaf7]" : "bg-[#f3f1ee]"
+        }`}
       >
-        <div className="max-w-[1440px] mx-auto px-6 md:px-12">
-          <div className="flex items-center justify-between relative">
-            
-            {/* LOGO BUBBLE (Parallel Style) */}
-            <motion.div 
-              layout
-              className={`flex items-center transition-all duration-700 ${
-                isScrolled 
-                  ? "bg-white/90 backdrop-blur-md shadow-xl border border-stone-200 p-2 rounded-2xl" 
-                  : ""
-              }`}
-            >
-              <Link href="/" className="flex items-center group">
-                <div className={`relative transition-all duration-700 ${isScrolled ? "w-10 h-10" : "w-14 h-14"}`}>
-                  <Image src="/Logo.png" alt="Logo" fill className="object-contain transition-transform group-hover:rotate-12" />
-                </div>
-                
-                {/* Divider Line (Only visible when not scrolled or on large screens) */}
-                <div className={`h-8 w-[1px] bg-stone-200 mx-4 rotate-[15deg] transition-opacity ${isScrolled ? "hidden lg:block" : "block"}`} />
+        {/* Decorative Gold Lip at the very bottom */}
+        <div className="absolute bottom-0 left-0 w-full h-[1px] bg-gradient-to-r from-transparent via-amber-400/30 to-transparent" />
 
-                <div className={`flex flex-col transition-all duration-500 ${isScrolled ? "hidden lg:flex" : "flex"}`}>
-                  <span className="text-[10px] uppercase tracking-[0.5em] text-amber-700 font-bold leading-none mb-1">Tibetan</span>
-                  <span className={`${cormorant.className} text-xl tracking-tight text-stone-900 leading-none`}>
-                    Handicrafts <span className="text-stone-300 font-light">&</span> Jewellery
-                  </span>
-                </div>
-              </Link>
-            </motion.div>
+        <div className="container mx-auto px-8 md:px-16 flex items-center justify-between">
+          
+          {/* LEFT: MINIMAL UTILITY */}
+          <div className="flex-1 flex items-center">
+            <button className="group flex items-center gap-4">
+              <div className="w-10 h-10 rounded-full border border-stone-200 flex items-center justify-center group-hover:border-stone-900 transition-all duration-500 bg-white">
+                <Search size={16} strokeWidth={1} className="text-stone-400 group-hover:text-stone-950" />
+              </div>
+              <span className={`${jost.className} text-[9px] uppercase tracking-[0.6em] text-stone-400 hidden lg:block`}>Discover</span>
+            </button>
+          </div>
 
-            {/* NAVIGATION PILL */}
-            <nav className={`absolute left-1/2 -translate-x-1/2 transition-all duration-700 ${
-              isScrolled 
-                ? "bg-white/90 backdrop-blur-md shadow-xl border border-stone-200 px-10 py-4 rounded-full" 
-                : "hidden lg:block"
-            }`}>
-              <ul className="flex items-center gap-10">
-                {navLinks.map((link) => (
-                  <li key={link.name}>
-                    <Link
-                      href={link.href}
-                      className="relative text-[11px] uppercase tracking-[0.25em] font-semibold text-stone-500 hover:text-amber-800 transition-colors group"
-                    >
-                      {link.name}
-                      <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-amber-600 transition-all duration-500 group-hover:w-full" />
-                    </Link>
-                  </li>
-                ))}
-              </ul>
-              {isScrolled && (
-                <div className="absolute bottom-0 left-1/2 -translate-x-1/2 w-[70%] h-[1px] bg-stone-100 overflow-hidden">
-                   <div 
-                    className="h-full bg-amber-500 transition-all duration-300"
-                    style={{ width: `${scrollProgress}%` }}
-                   />
-                </div>
-              )}
-            </nav>
-
-            {/* ACTIONS BUBBLE */}
-            <div className={`flex items-center gap-1 transition-all duration-700 ${
-              isScrolled 
-                ? "bg-white/90 backdrop-blur-md shadow-xl border border-stone-200 p-2 rounded-2xl" 
-                : ""
-            }`}>
-              <div className="hidden sm:flex">
-                <IconButton icon={<Search size={19} strokeWidth={1.5} />} />
-                <IconButton icon={<User size={19} strokeWidth={1.5} />} />
+          {/* CENTER: THE PARALLEL MONOLITH */}
+          <motion.div 
+            style={{ scale: logoScale, gap: contentGap }} 
+            className="flex items-center group cursor-pointer"
+          >
+            <Link href="/" className="flex items-center">
+              <div className="relative w-14 h-14 md:w-16 md:h-16 transition-transform duration-1000 group-hover:rotate-[15deg]">
+                <Image src="/Logo.png" alt="Logo" fill className="object-contain" priority />
               </div>
               
-              <button className="relative p-3 hover:bg-stone-100 rounded-full transition-all group">
-                <ShoppingBag size={19} strokeWidth={1.5} className="text-stone-800" />
-                <span className="absolute top-2 right-2 w-4 h-4 bg-stone-900 text-white text-[8px] flex items-center justify-center rounded-full border border-stone-50 font-bold group-hover:bg-amber-800 transition-colors">
-                  0
-                </span>
+              {/* Vertical Solid Divider */}
+              <motion.div 
+                animate={{ rotate: isScrolled ? 0 : 25 }}
+                className="w-[1px] h-10 bg-stone-300 mx-8 transition-all duration-700" 
+              />
+
+              <div className="flex flex-col">
+                <h1 className={`${cormorant.className} text-3xl md:text-4xl leading-none text-stone-900`}>
+                  Tibetan 
+                </h1>
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="h-[1px] w-4 bg-amber-500" />
+                  <span className={`${jost.className} text-[8px] uppercase tracking-[0.8em] text-amber-700 font-semibold`}>
+                    Handicraft & Jewellery
+                  </span>
+                </div>
+              </div>
+            </Link>
+          </motion.div>
+
+          {/* RIGHT: THE NAVIGATION & CART */}
+          <div className="flex-1 flex items-center justify-end gap-10">
+            <nav className="hidden xl:flex items-center gap-10">
+              {navLinks.map((link) => (
+                <Link 
+    key={link} 
+    // CHANGE THIS LINE:
+    href={link === "HOME" ? "/" : `/${link.toLowerCase().replace(/\s+/g, '-')}`} 
+    className={`${jost.className} text-[10px] uppercase tracking-[0.4em] text-stone-400 hover:text-stone-950 transition-all group relative`}
+  >
+    {link}
+    <span className="absolute -bottom-1 left-0 w-0 h-[1px] bg-amber-500 transition-all duration-500 group-hover:w-full" />
+  </Link>
+              ))}
+            </nav>
+
+            <div className="flex items-center gap-4">
+              <button className="relative w-12 h-12 flex items-center justify-center bg-white border border-stone-100 rounded-full shadow-sm group hover:bg-stone-900 transition-all duration-500">
+                <ShoppingBag size={18} strokeWidth={1} className="text-stone-950 group-hover:text-white transition-colors" />
+                <span className="absolute -top-1 -right-1 w-5 h-5 bg-amber-600 text-white text-[9px] flex items-center justify-center rounded-full font-bold">0</span>
               </button>
               
-              <button onClick={() => setIsMenuOpen(true)} className="lg:hidden p-2 text-stone-800">
-                <Menu size={26} strokeWidth={1.2} />
+              <button 
+                onClick={() => setIsMenuOpen(true)}
+                className="w-12 h-12 flex flex-col items-center justify-center gap-1.5 bg-stone-950 rounded-xl group hover:bg-amber-700 transition-all duration-500"
+              >
+                <div className="w-5 h-[1px] bg-white group-hover:w-3 transition-all" />
+                <div className="w-5 h-[1px] bg-white group-hover:translate-x-1 transition-all" />
               </button>
             </div>
-
           </div>
         </div>
-      </header>
+      </motion.header>
 
-      {/* MOBILE DRAWER */}
+      {/* THE CINEMATIC SOLID OVERLAY */}
       <AnimatePresence>
         {isMenuOpen && (
           <motion.div 
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
-            className="fixed inset-0 z-[100] bg-stone-900/40 backdrop-blur-sm"
+            initial={{ y: "-100%" }}
+            animate={{ y: 0 }}
+            exit={{ y: "-100%" }}
+            transition={{ duration: 0.9, ease: [0.85, 0, 0.15, 1] }}
+            className="fixed inset-0 z-[100] bg-[#121212] flex flex-col"
           >
-            <motion.div 
-              initial={{ x: "100%" }}
-              animate={{ x: 0 }}
-              exit={{ x: "100%" }}
-              transition={{ type: "spring", damping: 25, stiffness: 200 }}
-              className="absolute top-0 right-0 h-full w-[85%] max-w-sm bg-stone-50 shadow-2xl p-10 flex flex-col"
-            >
-              <div className="flex justify-between items-center mb-16">
-                <span className="text-[10px] uppercase tracking-[0.5em] font-bold text-amber-800">Navigation</span>
-                <button onClick={() => setIsMenuOpen(false)} className="p-2 border border-stone-200 rounded-full hover:rotate-90 transition-all duration-300">
-                  <X size={24} strokeWidth={1.5} />
-                </button>
-              </div>
-
-              <nav className="flex flex-col gap-8">
-                {navLinks.map((link, i) => (
-                  <motion.div
-                    key={link.name}
-                    initial={{ opacity: 0, x: 20 }}
-                    animate={{ opacity: 1, x: 0 }}
-                    transition={{ delay: 0.1 * i }}
-                  >
-                    <Link 
-                      href={link.href}
-                      className={`${cormorant.className} text-5xl font-light text-stone-900 hover:italic hover:text-amber-800 transition-all`}
-                      onClick={() => setIsMenuOpen(false)}
-                    >
-                      {link.name}
-                    </Link>
-                  </motion.div>
-                ))}
-              </nav>
-
-              <div className="mt-auto pt-10 border-t border-stone-200">
-                <p className="text-[10px] uppercase tracking-[0.3em] text-stone-400 mb-6 font-semibold">The Journal</p>
-                <div className="flex gap-8 text-[11px] font-bold uppercase tracking-widest text-stone-900">
-                  <span className="hover:text-amber-600 transition-colors cursor-pointer">Instagram</span>
-                  <span className="hover:text-amber-600 transition-colors cursor-pointer">Pinterest</span>
+            {/* Top Bar inside Menu */}
+            <div className="p-12 flex justify-between items-center">
+              <Image src="/Logo.png" alt="Logo" width={40} height={40} className="brightness-200" />
+              <button 
+                onClick={() => setIsMenuOpen(false)}
+                className="group flex items-center gap-4 text-stone-500 hover:text-white transition-all"
+              >
+                <span className="text-[10px] uppercase tracking-[0.5em]">Close Vault</span>
+                <div className="p-4 border border-stone-800 rounded-full group-hover:rotate-90 transition-all duration-700">
+                  <Plus size={24} className="rotate-45" />
                 </div>
-              </div>
-            </motion.div>
+              </button>
+            </div>
+
+            {/* Menu Links - UPDATED NAMES HERE */}
+            <div className="flex-1 flex flex-col justify-center items-center gap-8">
+              {["HOME", "PRODUCTS", "OUR STORY", "CONTACT"].map((item, i) => (
+                <motion.div
+                  key={item}
+                  initial={{ opacity: 0, y: 50 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ delay: 0.3 + i * 0.1 }}
+                >
+                  <Link 
+        // CHANGE THIS LINE:
+        href={item === "HOME" ? "/" : `/${item.toLowerCase().replace(/\s+/g, '-')}`}
+        onClick={() => setIsMenuOpen(false)}
+        className={`${cormorant.className} text-5xl md:text-8xl text-stone-700 hover:text-white hover:tracking-widest transition-all duration-1000`}
+      >
+        {item}
+      </Link>
+                </motion.div>
+              ))}
+            </div>
+
+            {/* Footer inside Menu */}
+            <div className="p-20 flex justify-between items-end border-t border-stone-900">
+               <div className="space-y-4">
+                 <p className={`${jost.className} text-[10px] uppercase tracking-[0.5em] text-stone-500`}>Global Concierge</p>
+                 <p className="text-white text-xl">studio@tibetanarts.com</p>
+               </div>
+               <div className="flex gap-10">
+                 {["IG", "PN", "TW"].map(s => (
+                   <span key={s} className="w-12 h-12 border border-stone-800 rounded-full flex items-center justify-center text-[10px] text-stone-400 hover:text-white hover:border-white transition-all cursor-pointer">{s}</span>
+                 ))}
+               </div>
+            </div>
           </motion.div>
         )}
       </AnimatePresence>
     </>
-  );
-}
-
-function IconButton({ icon, onClick, className = "" }: { icon: React.ReactNode, onClick?: () => void, className?: string }) {
-  return (
-    <button 
-      onClick={onClick}
-      className={`p-3 rounded-full text-stone-500 hover:text-stone-900 hover:bg-white transition-all duration-300 flex items-center justify-center ${className}`}
-    >
-      {icon}
-    </button>
   );
 }
