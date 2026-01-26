@@ -6,7 +6,7 @@ import ProductTabs from "../../../components/products/ProductTabs";
 import RelatedProducts from "../../../components/products/RelatedProducts";
 import { Facebook, Linkedin, Twitter, Star } from "lucide-react";
 import Gallery from "./Gallery";
-
+import ProductActions from "../../../components/products/ProductActions";
 export async function generateStaticParams() {
   return products.map((product) => ({
     id: String(product.id),
@@ -45,9 +45,18 @@ export default async function ProductPage({ params }: Props) {
               {product.title}
             </h1>
 
-            <p className="text-[20px] md:text-[24px] text-[#9F9F9F] mb-[15px]">
-              Rs. {product.price}.00
-            </p>
+            <div className="flex items-center gap-3 mb-[15px]">
+  <span className="text-[24px] md:text-[30px] font-semibold text-[#2E2E2E]">
+    ₹ {product.price.toLocaleString()}
+  </span>
+
+  {product.oldPrice && (
+    <span className="text-[18px] text-[#9F9F9F] line-through">
+      ₹ {product.oldPrice.toLocaleString()}
+    </span>
+  )}
+</div>
+
 
             {/* Rating */}
             <div className="flex items-center gap-[18px] mb-[20px]">
@@ -69,6 +78,8 @@ export default async function ProductPage({ params }: Props) {
             <p className="text-[13px] leading-[20px] md:max-w-[424px] mb-[36px]">
               {product.description}
             </p>
+
+            <ProductActions product={product} />
 
             {/* Meta */}
             <div className="border-t border-[#D9D9D9] pt-[40px] space-y-[12px] text-[#9F9F9F] text-sm sm:text-base">

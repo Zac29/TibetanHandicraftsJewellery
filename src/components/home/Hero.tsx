@@ -22,7 +22,7 @@ const slides = [
     description:
       "Handcrafted Tibetan pieces designed to elevate your lifestyle with tradition and elegance.",
     button: "Buy Now",
-    link: "/shop",
+    link: "/products",
   },
   {
     image: "/heroImage2.jpg",
@@ -31,7 +31,7 @@ const slides = [
     description:
       "Each item tells a story of culture, craftsmanship, and timeless beauty.",
     button: "Explore",
-    link: "/shop",
+    link: "/products",
   },
   {
     image: "/heroImage3.jpg",
@@ -40,7 +40,7 @@ const slides = [
     description:
       "Bring peace, positivity, and heritage into your space with our curated collection.",
     button: "View Collection",
-    link: "/shop",
+    link: "/products",
   },
 ];
 
