@@ -131,7 +131,7 @@ export default function SolidKineticNavbar() {
           >
             {/* Top Bar inside Menu */}
             <div className="p-12 flex justify-between items-center">
-              <Image src="/Logo.png" alt="Logo" width={40} height={40} className="brightness-200" />
+              <Image src="/Logo.png" alt="Logo" width={100} height={100} className="brightness-200" />
               <button 
                 onClick={() => setIsMenuOpen(false)}
                 className="group flex items-center gap-4 text-stone-500 hover:text-white transition-all"
@@ -145,7 +145,7 @@ export default function SolidKineticNavbar() {
 
             {/* Menu Links - UPDATED NAMES HERE */}
             <div className="flex-1 flex flex-col justify-center items-center gap-8">
-              {["HOME", "PRODUCTS", "OUR STORY", "CONTACT"].map((item, i) => (
+              {["HOME", "PRODUCTS", "ABOUT", "CONTACT"].map((item, i) => (
                 <motion.div
                   key={item}
                   initial={{ opacity: 0, y: 50 }}

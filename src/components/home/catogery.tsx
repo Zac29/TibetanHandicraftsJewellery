@@ -5,6 +5,7 @@ import { motion, PanInfo } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
 import { Cormorant_Garamond, Jost } from "next/font/google";
+
 const cormorant = Cormorant_Garamond({ subsets: ["latin"], weight: ["500", "600"] });
 const jost = Jost({ subsets: ["latin"], weight: ["300", "400"] });
 
@@ -60,10 +61,19 @@ export default function Category() {
     >
       {/* Title */}
       <div className="text-center mb-10 sm:mb-12 md:mb-14 px-4">
-        <h2 className={`${cormorant.className} mb-4 text-[50px] font-bold text-[#333333]`}>Category</h2>
-        <p className="max-w-xl mx-auto text-[18px] font-medium text-[#646363]">
-          Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus,
-          luctus nec ullamcorper mattis.
+        <motion.span 
+          initial={{ opacity: 0, y: 10 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          className="text-amber-700 text-[11px] uppercase tracking-[0.4em] font-bold block mb-4"
+        >
+          Collections
+        </motion.span>
+        <h2 className={`${cormorant.className} text-stone-900 text-4xl md:text-5xl lg:text-6xl mb-6`}>
+          Shop by <span className="italic font-light text-stone-500">Category</span>
+        </h2>
+        <p className="max-w-2xl mx-auto text-stone-500 text-base md:text-lg leading-relaxed font-light">
+          Explore our handcrafted artifacts, each carrying a unique story of 
+          traditional Tibetan craftsmanship and spiritual heritage.
         </p>
       </div>
 
@@ -167,6 +177,7 @@ export default function Category() {
                     className="object-cover pointer-events-none" // prevent image drag conflicting with framer drag
                     priority={i === active}
                   />
+                  
                 </div>
 
                 {/* NAME: ALWAYS VISIBLE ON DESKTOP, ONLY CENTER ON MOBILE */}

@@ -9,7 +9,6 @@ import {
   Share2,
   ChevronLeft,
   ChevronRight,
-  Search,
 } from "lucide-react";
 import { Cormorant_Garamond, Jost } from "next/font/google";
 
@@ -17,12 +16,13 @@ import { products } from "../../lib/products";
 import FeaturesSection from "../../components/common/FeaturesStrip";
 import PageBanner from "../../components/common/PageBanner";
 
-const cormorant = Cormorant_Garamond({ subsets: ["latin"], weight: ["400", "500"] });
-const jost = Jost({ subsets: ["latin"], weight: ["300", "400", "600"] });
+const cormorant = Cormorant_Garamond({ subsets: ["latin"], weight: ["400", "500", "600"] });
+const jost = Jost({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700"] });
 
 const PER_PAGE = 16;
 
 export default function ProductsPage() {
+  // Store liked state using a dictionary of product IDs
   const [liked, setLiked] = useState<Record<number, boolean>>({});
   const [page, setPage] = useState(1);
 
@@ -37,7 +37,7 @@ export default function ProductsPage() {
   const to = Math.min(page * PER_PAGE, products.length);
 
   return (
-    <div className={`bg-[#fcfaf7] min-h-screen ${jost.className}`}>
+    <div className={`bg-[#ffffff] min-h-screen ${jost.className}`}>
       {/* HERO HEADER */}
       <PageBanner
         title="The Collection"
@@ -46,11 +46,11 @@ export default function ProductsPage() {
         overlayOpacity={0.4}
       />
 
-      {/* TOOLBAR - Refined Aesthetic */}
+      {/* TOOLBAR */}
       <div className="bg-[#f3f1ee] border-b border-stone-200 sticky top-[80px] z-30">
         <div className="max-w-7xl mx-auto px-8 py-4 flex items-center justify-between">
           <div className="hidden md:block">
-            <span className="text-[10px] uppercase tracking-[0.3em] text-stone-500">
+            <span className="text-[10px] uppercase tracking-[0.3em] text-stone- stone-500">
               Curating {from} – {to} of {products.length} Masterpieces
             </span>
           </div>
@@ -70,23 +70,25 @@ export default function ProductsPage() {
 
       {/* PRODUCTS GRID */}
       <section className="max-w-7xl mx-auto px-4 py-16">
-        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-12">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-12 lg:gap-10">
           {pageProducts.map((product) => (
             <motion.div
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               key={product.id}
-              className="group cursor-pointer"
+              className="group"
             >
-              <Link href={`/products/${product.id}`} className="block">
-                {/* Image Container */}
-                <div className="relative aspect-[3/4] overflow-hidden bg-[#f3f1ee] mb-6 shadow-sm">
+              {/* shadow-[0_4px_20px_rgba(0,0,0,0.03)] container from second block */}
+              <div className="relative flex flex-col bg-white rounded-sm overflow-hidden transition-all duration-500 shadow-[0_4px_20px_rgba(0,0,0,0.03)] group-hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] group-hover:-translate-y-1">
+                
+                <Link href={`/products/${product.id}`} className="block relative aspect-[3/4] w-full overflow-hidden bg-stone-100">
+                  {/* Status Badge */}
                   {product.tag && (
-                    <div className="absolute top-4 left-4 z-20">
-                      <span className="bg-amber-700/90 backdrop-blur-md text-white text-[8px] uppercase tracking-[0.2em] px-3 py-1 font-semibold">
-                        {product.tag === "sale" ? "Special Edition" : "New Arrival"}
-                      </span>
+                    <div className={`absolute top-4 left-4 z-20 text-[9px] uppercase tracking-widest text-white px-3 py-1 font-bold shadow-sm ${
+                      product.tag === "sale" ? "bg-amber-800" : "bg-stone-800"
+                    }`}>
+                      {product.tag === "sale" ? "Special Price" : "New Archive"}
                     </div>
                   )}
 
@@ -94,40 +96,61 @@ export default function ProductsPage() {
                     src={product.image}
                     alt={product.title}
                     fill
-                    className="object-cover transition-transform duration-1000 group-hover:scale-105"
+                    className="object-cover transition-transform duration-1000 ease-out group-hover:scale-105"
                   />
-                  
-                  {/* Subtle Opaque Hover State */}
-                  <div className="absolute inset-0 bg-stone-900/0 group-hover:bg-stone-900/20 transition-all duration-700" />
-                  
-                  {/* View Button Overlay */}
-                  <div className="absolute bottom-8 left-1/2 -translate-x-1/2 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
-                    <button className="bg-white text-stone-900 text-[10px] uppercase tracking-[0.3em] px-6 py-3 shadow-xl whitespace-nowrap font-semibold">
-                      View Piece
-                    </button>
-                  </div>
-                </div>
 
-                {/* Info Section */}
-                <div className="text-center space-y-1 px-2">
-                  <p className="text-[9px] uppercase tracking-[0.4em] text-amber-700 font-semibold mb-2">
-                    {product.category}
-                  </p>
-                  <h3 className={`${cormorant.className} text-xl text-stone-900 group-hover:text-amber-800 transition-colors`}>
-                    {product.title}
-                  </h3>
-                  <div className="flex items-center justify-center gap-3 pt-1">
-                    <span className="text-sm font-medium text-stone-800 tracking-tight">
-                      ₹ {product.price.toLocaleString()}
+                  {/* KINETIC OVERLAY (The Like/Share UI) */}
+                  <div className="absolute inset-0 bg-stone-900/0 group-hover:bg-stone-900/40 transition-all duration-500 flex flex-col items-center justify-center gap-6 opacity-0 group-hover:opacity-100">
+                    <button className="bg-white text-stone-900 text-[10px] uppercase tracking-widest px-6 py-3 font-bold hover:bg-stone-100 transition-all shadow-lg active:scale-95">
+                      View Detail
+                    </button>
+                    
+                    <div className="flex gap-6 text-white">
+                      <button 
+                        onClick={(e) => { e.preventDefault(); e.stopPropagation(); }}
+                        className="hover:text-amber-500 transition-colors drop-shadow-md"
+                      >
+                        <Share2 size={18} strokeWidth={1.5} />
+                      </button>
+                      <button 
+                        onClick={(e) => {
+                          e.preventDefault();
+                          e.stopPropagation();
+                          setLiked((prev) => ({ ...prev, [product.id]: !prev[product.id] }));
+                        }}
+                        className="transition-transform active:scale-125 drop-shadow-md"
+                      >
+                        <Heart 
+                          size={18} 
+                          strokeWidth={1.5}
+                          className={liked[product.id] ? "fill-amber-600 text-amber-600" : "text-white"} 
+                        />
+                      </button>
+                    </div>
+                  </div>
+                </Link>
+
+                {/* Product Info - Inside the Shadow Container */}
+                <div className="p-5 space-y-1 bg-white">
+                  <Link href={`/products/${product.id}`}>
+                    <h3 className={`${cormorant.className} text-lg lg:text-xl text-stone-900 group-hover:text-amber-800 transition-colors truncate`}>
+                      {product.title}
+                    </h3>
+                  </Link>
+                  <p className="text-[10px] uppercase tracking-[0.2em] text-stone-400 font-medium">{product.category || "Rare Artifact"}</p>
+                  
+                  <div className="flex items-center gap-3 pt-2">
+                    <span className="text-sm font-bold text-stone-900">
+                      ₹{product.price.toLocaleString()}
                     </span>
                     {product.oldPrice && (
-                      <span className="text-[11px] text-stone-400 line-through">
-                        ₹ {product.oldPrice.toLocaleString()}
+                      <span className="text-xs line-through text-stone-400">
+                        ₹{product.oldPrice.toLocaleString()}
                       </span>
                     )}
                   </div>
                 </div>
-              </Link>
+              </div>
             </motion.div>
           ))}
         </div>
