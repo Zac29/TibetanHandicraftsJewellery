@@ -4,6 +4,10 @@ import { useState, useEffect, useRef } from "react";
 import { motion, PanInfo } from "framer-motion";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import Image from "next/image";
+import { Cormorant_Garamond, Jost } from "next/font/google";
+const cormorant = Cormorant_Garamond({ subsets: ["latin"], weight: ["500", "600"] });
+const jost = Jost({ subsets: ["latin"], weight: ["300", "400"] });
+
 
 type Item = {
   title: string;
@@ -52,12 +56,12 @@ export default function Category() {
   return (
     <section
       ref={sectionRef}
-      className="pt-6 pb-8 sm:pt-8 sm:pb-10 md:pt-10 md:pb-12 lg:pt-12 lg:pb-14 xl:pt-14 xl:pb-16 2xl:pt-16 2xl:pb-18 overflow-hidden"
+      className={`pt-12 pb-16 overflow-hidden bg-[#ffffff] ${jost.className}`}
     >
       {/* Title */}
       <div className="text-center mb-10 sm:mb-12 md:mb-14 px-4">
-        <h2 className="mb-4 text-[32px] font-bold text-[#333333]">Category</h2>
-        <p className="max-w-xl mx-auto text-[18px] font-medium text-[#333333]">
+        <h2 className={`${cormorant.className} mb-4 text-[50px] font-bold text-[#333333]`}>Category</h2>
+        <p className="max-w-xl mx-auto text-[18px] font-medium text-[#646363]">
           Lorem ipsum dolor sit amet, consectetur adipiscing elit. Ut elit tellus,
           luctus nec ullamcorper mattis.
         </p>
