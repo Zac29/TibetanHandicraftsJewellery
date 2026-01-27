@@ -1,115 +1,146 @@
+"use client";
+
 import PageBanner from "../../components/common/PageBanner";
 import Image from "next/image";
 import Link from "next/link";
+import { motion } from "framer-motion";
+import { Cormorant_Garamond, Jost } from "next/font/google";
+
+const cormorant = Cormorant_Garamond({ subsets: ["latin"], weight: ["300", "400", "600"] });
+const jost = Jost({ subsets: ["latin"], weight: ["300", "400", "600"] });
 
 export default function AboutPage() {
   return (
-    <>
+    <div className={`bg-[#fcfaf7] ${jost.className}`}>
       <PageBanner
-        title="About"
+        title="Our Heritage"
         breadcrumb="About"
         imageSrc="/contact-banner.png"
       />
 
-      {/* ===== ABOUT SECTION (FIGMA EXACT) ===== */}
-      {/* ===== ABOUT SECTION ===== */}
-<section className="w-full bg-white overflow-hidden">
+      <section className="py-20 lg:py-32 overflow-hidden">
+        <div className="max-w-[1440px] mx-auto px-6 lg:px-16">
+          <div className="grid grid-cols-1 lg:grid-cols-12 gap-16 items-center">
+            
+            {/* LEFT: STORYTELLING CONTENT */}
+            <div className="lg:col-span-5 space-y-8">
+              <header className="space-y-4">
+                <span className="text-[10px] uppercase tracking-[0.5em] text-amber-700 font-bold">
+                  Since 1984
+                </span>
+                <h2 className={`${cormorant.className} text-5xl lg:text-7xl text-stone-900 leading-[1.1]`}>
+                  Preserving the <br /> 
+                  <span className="italic">Sacred Craft</span>
+                </h2>
+              </header>
 
-  {/* ================= DESKTOP (FIGMA EXACT) ================= */}
-  <div className="hidden xl:block relative h-[1050px]">
-    <div className="max-w-[1440px] mx-auto relative h-full">
+              <div className="space-y-6 text-stone-500 text-lg leading-relaxed font-light">
+                <p>
+                  Rooted in the high plateaus of Tibet, our collective was born from a desire to 
+                  keep the ancient traditions of metalwork and sacred symbolism alive in a modern world.
+                </p>
+                <p>
+                  Every piece in our collection is more than just an object; it is a vessel of 
+                  spirituality, handcrafted by artisans who have spent decades perfecting the 
+                  delicate balance between raw earth and divine form.
+                </p>
+              </div>
 
-      {/* ===== LEFT CONTENT ===== */}
-      <div className="absolute left-[208px] top-[140px] w-[484px]">
-        <h2 className="text-[52px] leading-[65px] tracking-[5px] font-extrabold text-[#10111A] mb-[28px]">
-          ABOUT US
-        </h2>
+              <div className="pt-8">
+                <Link
+                  href="/products"
+                  className="inline-flex items-center justify-center px-10 py-5 bg-stone-900 text-white text-[11px] uppercase tracking-[0.3em] font-bold hover:bg-amber-800 transition-all duration-500 group shadow-xl"
+                >
+                  Explore the Collection
+                  <motion.span 
+                    animate={{ x: [0, 5, 0] }} 
+                    transition={{ repeat: Infinity, duration: 2 }}
+                    className="ml-4"
+                  >
+                    →
+                  </motion.span>
+                </Link>
+              </div>
+            </div>
 
-        <p className="text-[18px] leading-[29px] text-[#97918B] mb-[60px]">
-          From they fine john he give of rich he. They age and draw mrs like.
-          Improving end distrusts may instantly was household applauded
-          incommode. Why kept very ever home mrs. Considered sympathize ten
-          uncommonly occasional assistance sufficient not.
-        </p>
+            {/* RIGHT: KINETIC IMAGE GRID */}
+            <div className="lg:col-span-7 relative">
+              <div className="grid grid-cols-12 gap-4">
+                
+                {/* Large Featured Image */}
+                <motion.div 
+                  initial={{ opacity: 0, y: 40 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  className="col-span-8 relative aspect-[4/5] rounded-sm overflow-hidden shadow-2xl"
+                >
+                  <Image src="/decore.png" alt="Artisan Work" fill className="object-cover" />
+                </motion.div>
 
-        <Link
-          href="/products"
-          className="absolute left-0 top-[270px] w-[223px] h-[65px] bg-[#309EC4] rounded-[10px] flex items-center justify-center text-white text-[18px] font-bold tracking-[0.1em] uppercase shadow-[0_20px_40px_rgba(68,68,68,0.15)]"
-        >
-          Explore More
-        </Link>
-      </div>
+                {/* Floating Secondary Image */}
+                <motion.div 
+                  initial={{ opacity: 0, x: 40 }}
+                  whileInView={{ opacity: 1, x: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.2 }}
+                  className="col-span-4 self-end space-y-4"
+                >
+                  <div className="relative aspect-square rounded-sm overflow-hidden shadow-xl border-4 border-white">
+                    <Image src="/Bowl.png" alt="Tibetan Bowl" fill className="object-cover" />
+                  </div>
+                  
+                  {/* The "Experience" Card */}
+                  <div className="bg-amber-700 p-8 text-white shadow-2xl">
+                    <h4 className="text-4xl font-light mb-1 italic">40+</h4>
+                    <p className="text-[9px] uppercase tracking-[0.3em] opacity-80">Years of Craft</p>
+                  </div>
+                </motion.div>
 
-      {/* Top Image */}
-      <div className="absolute left-[704px] top-[140px] w-[577px] h-[181px] rounded-[22px] overflow-hidden">
-        <Image src="/Bowl.png" alt="" fill className="object-cover" />
-      </div>
+                {/* Wide Bottom Image */}
+                <motion.div 
+                  initial={{ opacity: 0, y: -20 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ delay: 0.4 }}
+                  className="col-start-3 col-span-10 relative h-48 mt-4 rounded-sm overflow-hidden"
+                >
+                  <Image src="/Bowl.png" alt="Detail View" fill className="object-cover grayscale hover:grayscale-0 transition-all duration-1000" />
+                  <div className="absolute inset-0 bg-stone-900/20" />
+                </motion.div>
 
-      {/* Subtract Image */}
-      <div className="absolute left-[704px] top-[360px] w-[577px] h-[352px] overflow-hidden figma-subtract">
-        <Image src="/decore.png" alt="" fill className="object-cover" />
-      </div>
+              </div>
 
-      {/* Bottom Image */}
-      <div className="absolute left-[600px] top-[550px] w-[400px] h-[300px] rounded-[22px] overflow-hidden">
-        <Image src="/Bowl.png" alt="" fill className="object-cover" />
-      </div>
+              {/* Decorative Background Element */}
+              <div className="absolute -z-10 -bottom-10 -right-10 w-64 h-64 bg-stone-200/50 rounded-full blur-3xl" />
+            </div>
 
-      {/* 50M Card */}
-      <div className="absolute left-[876px] top-[720px] w-[151px] h-[121px] bg-[#309EC4] rounded-[16px] shadow-[6px_4px_10px_rgba(0,0,0,0.25)] flex flex-col items-center justify-center">
-        <span className="text-white text-[50px] leading-[60px] font-medium">
-          50M+
-        </span>
-        <span className="text-white text-[36px] leading-[40px] font-medium">
-          Sold
-        </span>
-      </div>
+          </div>
+        </div>
+      </section>
+
+      {/* PHILOSOPHY SECTION */}
+      <section className="bg-stone-900 py-24 text-white">
+        <div className="max-w-4xl mx-auto px-6 text-center space-y-12">
+          <h3 className={`${cormorant.className} text-4xl md:text-5xl italic`}>
+            "We do not just sell jewellery; we archive the soul of Tibet."
+          </h3>
+          <div className="w-20 h-[1px] bg-amber-500 mx-auto" />
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
+            <div>
+              <p className="text-2xl mb-2 font-light">Authenticity</p>
+              <p className="text-stone-400 text-sm tracking-wide">Every stone and metal is ethically sourced from the Himalayan region.</p>
+            </div>
+            <div>
+              <p className="text-2xl mb-2 font-light">Tradition</p>
+              <p className="text-stone-400 text-sm tracking-wide">Using techniques passed down through four generations of artisans.</p>
+            </div>
+            <div>
+              <p className="text-2xl mb-2 font-light">Impact</p>
+              <p className="text-stone-400 text-sm tracking-wide">10% of all proceeds support Tibetan education and cultural preservation.</p>
+            </div>
+          </div>
+        </div>
+      </section>
     </div>
-  </div>
-
-  {/* ================= MOBILE & TABLET ================= */}
-  <div className="xl:hidden px-6 md:px-16 py-20 max-w-6xl mx-auto">
-
-    <h2 className="text-4xl md:text-5xl font-extrabold tracking-[4px] text-[#10111A] mb-6">
-      ABOUT US
-    </h2>
-
-    <p className="text-[17px] leading-[28px] text-[#97918B] mb-10">
-      From they fine john he give of rich he. They age and draw mrs like.
-      Improving end distrusts may instantly was household applauded
-      incommode. Why kept very ever home mrs.
-    </p>
-
-    <Link
-      href="/products"
-      className="inline-flex w-[220px] h-[60px] bg-[#309EC4] rounded-[10px] items-center justify-center text-white font-bold tracking-wider uppercase mb-14"
-    >
-      Explore More
-    </Link>
-
-    {/* Image Stack */}
-    <div className="grid gap-6">
-      <div className="relative h-[220px] rounded-[20px] overflow-hidden">
-        <Image src="/Bowl.png" alt="" fill className="object-cover" />
-      </div>
-
-      <div className="relative h-[260px] rounded-[20px] overflow-hidden">
-        <Image src="/decore.png" alt="" fill className="object-cover" />
-      </div>
-
-      <div className="relative h-[220px] rounded-[20px] overflow-hidden">
-        <Image src="/Bowl.png" alt="" fill className="object-cover" />
-      </div>
-
-      <div className="bg-[#309EC4] rounded-[16px] p-8 text-white text-center shadow-lg">
-        <div className="text-4xl font-semibold">50M+</div>
-        <div className="text-2xl">Sold</div>
-      </div>
-    </div>
-  </div>
-
-</section>
-
-    </>
   );
 }

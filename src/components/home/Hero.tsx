@@ -22,7 +22,7 @@ const slides = [
     description:
       "Handcrafted Tibetan pieces designed to elevate your lifestyle with tradition and elegance.",
     button: "Buy Now",
-    link: "/shop",
+    link: "/products",
   },
   {
     image: "/heroImage2.jpg",
@@ -31,7 +31,7 @@ const slides = [
     description:
       "Each item tells a story of culture, craftsmanship, and timeless beauty.",
     button: "Explore",
-    link: "/shop",
+    link: "/products",
   },
   {
     image: "/heroImage3.jpg",
@@ -40,7 +40,7 @@ const slides = [
     description:
       "Bring peace, positivity, and heritage into your space with our curated collection.",
     button: "View Collection",
-    link: "/shop",
+    link: "/products",
   },
 ];
 
@@ -134,7 +134,7 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className={`w-full bg-white ${poppins.variable} font-sans`}>
+    <section className={`w-full bg-white mt-22 ${poppins.variable} font-sans`} >
       <div className="relative max-w-[1440px] mx-auto px-4 py-10 lg:h-[760px] overflow-hidden">
 
         {/* IMAGE */}

@@ -1,163 +1,142 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useRef } from "react";
 import Image from "next/image";
-import { Poppins } from "next/font/google";
-import { motion, AnimatePresence } from "framer-motion";
-import { Star, X } from "lucide-react";
+import { motion, AnimatePresence, Transition } from "framer-motion";
+import { Star, X, Quote } from "lucide-react";
+import { Cormorant_Garamond, Jost } from "next/font/google";
 
-const poppins = Poppins({
-  subsets: ["latin"],
-  weight: ["400", "600", "700"],
-});
+const cormorant = Cormorant_Garamond({ subsets: ["latin"], weight: ["400", "600"] });
+const jost = Jost({ subsets: ["latin"], weight: ["400", "500", "700"] });
+
+const smoothSpring: Transition = {
+  type: "spring",
+  stiffness: 260,
+  damping: 28,
+  mass: 0.8,
+};
 
 const galleryImages = [
-  { src: "/1.png", w: 274, h: 312, x: 0, y: 0, name: "Sarah J.", rating: 5, review: "Absolutely love the intricate details. The craftsmanship is top-notch!" },
-  { src: "/10.png", w: 225, h: 300, x: 109, y: 27, name: "Michael T.", rating: 4, review: "Great quality, fits perfectly in my living room." },
-  { src: "/8.png", w: 232, h: 295, x: 165, y: 448, name: "Emma W.", rating: 5, review: "Fast shipping and the packaging was beautiful." },
-  { src: "/4.png", w: 426, h: 300, x: 313, y: 52, name: "David B.", rating: 5, review: "A true masterpiece. Highly recommended!" },
-  { src: "/39.png", w: 344, h: 242, x: 397, y: 398, name: "Jessica L.", rating: 4, review: "Unique designs that you can't find anywhere else." },
-  { src: "/9.png", w: 310, h: 511, x: 746, y: 143, name: "Daniel K.", rating: 5, review: "Exceeded my expectations. Will buy again." },
-  { src: "/4.png", w: 302, h: 300, x: 995, y: 442, name: "Sophia M.", rating: 5, review: "Customer service was very helpful and kind." },
-  { src: "/5.png", w: 452, h: 300, x: 1068, y: 69, name: "James R.", rating: 5, review: "Simply stunning art work." },
-  { src: "/3.png", w: 418, h: 300, x: 1294, y: 471, name: "Olivia P.", rating: 4, review: "Good value for money. Looks great." },
-  { src: "/6.png", w: 452, h: 300, x: 1391, y: 156, name: "William H.", rating: 5, review: "The colors are so vibrant in person!" },
+  { id: "t1", src: "/1.png", w: 280, h: 320, x: 0, y: 40, name: "Sarah J.", rating: 5, review: "The intricate details on the mandala are breathtaking." },
+  { id: "t2", src: "/10.png", w: 240, h: 340, x: 300, y: 0, name: "Michael T.", rating: 4, review: "Exceptional weight and quality." },
+  { id: "t3", src: "/8.png", w: 240, h: 300, x: 280, y: 360, name: "Emma W.", rating: 5, review: "Fast shipping and museum-grade packaging." },
+  { id: "t4", src: "/4.png", w: 420, h: 280, x: 560, y: 20, name: "David B.", rating: 5, review: "A masterpiece of Tibetan craft." },
+  { id: "t5", src: "/39.png", w: 340, h: 240, x: 540, y: 320, name: "Jessica L.", rating: 4, review: "Bridges the gap between tradition and modern decor." },
+  { id: "t6", src: "/9.png", w: 320, h: 520, x: 900, y: 100, name: "Daniel K.", rating: 5, review: "The resonance lingers for minutes." },
+  { id: "t7", src: "/4.png", w: 300, h: 300, x: 1240, y: 380, name: "Sophia M.", rating: 5, review: "The concierge team was helpful." },
+  { id: "t8", src: "/5.png", w: 450, h: 320, x: 1240, y: 40, name: "James R.", rating: 5, review: "Exquisite silverwork." },
 ];
 
-const StarRating = ({ rating }: { rating: number }) => {
-  return (
-    <div className="flex gap-1">
-      {[...Array(5)].map((_, i) => (
-        <Star
-          key={i}
-          size={16}
-          className={`${
-            i < rating ? "fill-yellow-400 text-yellow-400" : "fill-gray-200 text-gray-200"
-          }`}
-        />
-      ))}
-    </div>
-  );
-};
+const StarRating = ({ rating }: { rating: number }) => (
+  <div className="flex gap-1">
+    {[...Array(5)].map((_, i) => (
+      <Star key={i} size={14} className={i < rating ? "fill-amber-600 text-amber-600" : "fill-stone-200 text-stone-200"} />
+    ))}
+  </div>
+);
 
 export default function Testimonials() {
   const [selectedId, setSelectedId] = useState<string | null>(null);
-  const selectedImage = galleryImages.find((img) => img.src === selectedId);
+  const containerRef = useRef<HTMLDivElement>(null); // Ref to keep modal inside this section
+  const selectedImage = galleryImages.find((img) => img.id === selectedId);
 
   return (
-    <section className={`relative w-full py-16 ${poppins.className} bg-white overflow-hidden min-h-[900px]`}>
-      
-      {/* HEADER */}
-      <div className="container mx-auto px-4 text-center mb-10 relative z-10">
-        <p className="text-[#616161] text-lg sm:text-xl font-semibold mb-2">
-          Share your love to the Art & Craft
-        </p>
-        <h2 className="text-[#3A3A3A] text-3xl sm:text-[40px] font-bold">
-          #Happy Customers
+    <section 
+      ref={containerRef}
+      className={`relative w-full py-12 md:py-24 ${jost.className} bg-white overflow-hidden min-h-screen`}
+    >
+      <div className="container mx-auto px-6 text-center mb-12 relative z-10">
+        <motion.span initial={{ opacity: 0 }} whileInView={{ opacity: 1 }} className="text-amber-700 text-[10px] uppercase tracking-[0.5em] font-bold block mb-4">
+          Community Voices
+        </motion.span>
+        <h2 className={`${cormorant.className} text-stone-900 text-3xl md:text-5xl lg:text-6xl`}>
+          Shared <span className="italic font-light text-stone-500 text-2xl md:text-5xl">Journeys</span>
         </h2>
       </div>
 
-      {/* MOBILE VIEW */}
-      <div className="block lg:hidden px-4">
-        <div className="columns-2 md:columns-3 gap-4 space-y-4">
-          {galleryImages.map((img, index) => (
+      {/* MOBILE GALLERY */}
+      <div className="lg:hidden px-4 columns-2 gap-4 space-y-4 relative z-20">
+        {galleryImages.map((img) => (
+          <motion.div
+            key={`mob-${img.id}`}
+            layoutId={`card-${img.id}`}
+            onClick={() => setSelectedId(img.id)}
+            className="relative break-inside-avoid overflow-hidden bg-stone-50 border border-stone-200 cursor-pointer rounded-sm"
+          >
+            <motion.div layoutId={`img-inner-${img.id}`} className="relative aspect-[4/5]">
+              <Image src={img.src} alt={img.name} fill className="object-cover" sizes="50vw" />
+            </motion.div>
+          </motion.div>
+        ))}
+      </div>
+
+      {/* DESKTOP GALLERY */}
+      <div className="hidden lg:block relative w-full h-[750px] overflow-x-auto overflow-y-hidden [&::-webkit-scrollbar]:hidden">
+        <div className="relative w-[1800px] h-full px-[5vw]">
+          {galleryImages.map((img) => (
             <motion.div
-              key={`mobile-${index}`}
-              layoutId={`image-${img.src}-mobile`}
-              onClick={() => setSelectedId(img.src)}
-              className="relative w-full overflow-hidden rounded-lg break-inside-avoid shadow-sm cursor-pointer"
-              whileTap={{ scale: 0.95 }}
+              key={`desk-${img.id}`}
+              layoutId={`card-${img.id}`}
+              onClick={() => setSelectedId(img.id)}
+              transition={smoothSpring}
+              className="absolute overflow-hidden bg-stone-50 border border-stone-200 cursor-pointer group rounded-sm shadow-sm"
+              style={{ width: img.w, height: img.h, left: img.x, top: img.y }}
+              whileHover={{ y: -10, zIndex: 30, boxShadow: "0 20px 25px -5px rgb(0 0 0 / 0.1)" }}
             >
-              <Image src={img.src} alt={img.name} width={img.w} height={img.h} className="w-full h-auto object-cover" />
+              <motion.div layoutId={`img-inner-${img.id}`} className="relative w-full h-full">
+                <Image 
+                    src={img.src} 
+                    alt={img.name} 
+                    fill 
+                    className="object-cover grayscale group-hover:grayscale-0 transition-all duration-700 ease-in-out" 
+                    sizes="400px"
+                />
+              </motion.div>
             </motion.div>
           ))}
         </div>
       </div>
 
-      {/* DESKTOP VIEW */}
-      {/* UPDATED CLASSNAMES BELOW:
-         [&::-webkit-scrollbar]:hidden -> Hides scrollbar on Chrome/Safari/Webkit
-         [-ms-overflow-style:none] -> Hides scrollbar on IE/Edge
-         [scrollbar-width:none] -> Hides scrollbar on Firefox
-      */}
-      <div className="hidden lg:flex w-full overflow-x-auto justify-center [&::-webkit-scrollbar]:hidden [-ms-overflow-style:none] [scrollbar-width:none]">
-        <div className="relative shrink-0 origin-top" style={{ width: "1843px", height: "771px" }}>
-          {galleryImages.map((img, index) => (
-            <motion.div
-              key={`desktop-${index}`}
-              layoutId={`image-${img.src}`}
-              onClick={() => setSelectedId(img.src)}
-              className="absolute overflow-hidden rounded-sm shadow-sm cursor-pointer bg-gray-100"
-              style={{
-                width: `${img.w}px`,
-                height: `${img.h}px`,
-                left: `${img.x}px`,
-                top: `${img.y}px`,
-                zIndex: 1,
-              }}
-              whileHover={{ 
-                scale: 1.1, 
-                zIndex: 20, 
-                boxShadow: "0px 20px 50px rgba(0,0,0,0.3)",
-                rotateX: 5,
-                rotateY: 5,
-              }}
-              transition={{ type: "spring", stiffness: 300, damping: 20 }}
-            >
-              <Image src={img.src} alt={img.name} fill className="object-cover" sizes={`${img.w}px`} />
-            </motion.div>
-          ))}
-        </div>
-      </div>
-
-      {/* CONSTRAINED OVERLAY */}
+      {/* MODAL - Now absolute to section to stay in area */}
       <AnimatePresence>
         {selectedId && selectedImage && (
-          <div className="absolute inset-0 z-40 flex items-center justify-center p-4">
-            
+          <div className="absolute inset-0 z-[100] flex items-center justify-center p-4 md:p-12">
             {/* Backdrop */}
-            <motion.div
+            <motion.div 
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
               exit={{ opacity: 0 }}
               onClick={() => setSelectedId(null)}
-              className="absolute inset-0 bg-white/80 backdrop-blur-md"
+              className="absolute inset-0 bg-white/95 backdrop-blur-md cursor-zoom-out"
             />
 
-            {/* The Card */}
             <motion.div
-              className="relative bg-white rounded-2xl shadow-2xl overflow-hidden w-full max-w-4xl flex flex-col md:flex-row max-h-[700px] border border-gray-100"
-              layoutId={`card-container-${selectedId}`}
+              layoutId={`card-${selectedId}`}
+              transition={smoothSpring}
+              className="relative bg-white w-full max-w-5xl h-auto flex flex-col lg:flex-row shadow-[0_35px_60px_-15px_rgba(0,0,0,0.3)] overflow-hidden rounded-xl z-10 border border-stone-100"
             >
               <button 
-                onClick={(e) => { e.stopPropagation(); setSelectedId(null); }}
-                className="absolute top-4 right-4 z-50 p-2 bg-gray-100 rounded-full hover:bg-gray-200 transition-colors"
+                onClick={() => setSelectedId(null)}
+                className="absolute top-4 right-4 z-50 p-2 text-stone-900 bg-white/50 backdrop-blur-sm rounded-full hover:bg-white transition-colors"
               >
-                <X size={20} className="text-gray-800" />
+                <X size={20} />
               </button>
 
-              <div className="relative w-full md:w-1/2 h-64 md:h-auto bg-gray-50">
-                <motion.div layoutId={`image-${selectedId}`} className="w-full h-full relative">
-                  <Image src={selectedImage.src} alt={selectedImage.name} fill className="object-cover" />
-                </motion.div>
-              </div>
-
-              <motion.div 
-                className="w-full md:w-1/2 p-8 flex flex-col justify-center text-left"
-                initial={{ opacity: 0, x: 20 }}
-                animate={{ opacity: 1, x: 0 }}
-                exit={{ opacity: 0, x: 20 }}
-                transition={{ delay: 0.15 }}
-              >
-                <div className="mb-4">
-                  <span className="text-blue-600 text-xs font-bold uppercase tracking-wider bg-blue-50 px-2 py-1 rounded">
-                    Verified Purchase
-                  </span>
-                </div>
-                <h3 className="text-2xl font-bold text-gray-900 mb-2">{selectedImage.name}</h3>
-                <StarRating rating={selectedImage.rating} />
-                <p className="text-gray-600 text-lg mt-4 italic leading-relaxed">"{selectedImage.review}"</p>
+              <motion.div layoutId={`img-inner-${selectedId}`} className="relative w-full lg:w-1/2 h-[350px] lg:h-[650px]">
+                <Image src={selectedImage.src} alt={selectedImage.name} fill className="object-cover" priority sizes="50vw" />
               </motion.div>
+
+              <div className="p-10 lg:p-16 flex flex-col justify-center lg:w-1/2 bg-white">
+                <Quote className="text-amber-700/10 mb-6" size={56} strokeWidth={1} />
+                <StarRating rating={selectedImage.rating} />
+                <p className={`${cormorant.className} text-2xl md:text-3xl text-stone-800 my-8 italic leading-relaxed`}>
+                  "{selectedImage.review}"
+                </p>
+                <div>
+                    <p className="font-bold text-stone-900 uppercase tracking-[0.2em] text-[10px]">{selectedImage.name}</p>
+                    <p className="text-stone-400 uppercase tracking-[0.1em] text-[9px] mt-1">Verified Experience</p>
+                </div>
+              </div>
             </motion.div>
           </div>
         )}

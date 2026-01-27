@@ -2,6 +2,7 @@ export type Product = {
   id: number;
   title: string;
   image: string;
+    gallery?: string[];  
   price: number;
   oldPrice: number;
   tag?: "sale" | "new";

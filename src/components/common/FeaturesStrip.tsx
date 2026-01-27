@@ -6,57 +6,70 @@ import {
   Truck,
   Headphones,
 } from "lucide-react";
+import { motion } from "framer-motion";
 
 const features = [
   {
     icon: Trophy,
-    title: "High Quality",
-    subtitle: "crafted from top materials",
+    title: "Master Craft",
+    subtitle: "Authentic Himalayan Materials",
   },
   {
     icon: ShieldCheck,
-    title: "Protection",
-    subtitle: "Delivery",
+    title: "Secure Archive",
+    subtitle: "Insured Global Handling",
   },
   {
     icon: Truck,
-    title: "Free Shipping",
-    subtitle: "Order over ₹10000",
+    title: "Global Reach",
+    subtitle: "Complimentary over ₹10,000",
   },
   {
     icon: Headphones,
-    title: "24 / 7 Support",
-    subtitle: "Dedicated support",
+    title: "Artisan Support",
+    subtitle: "Direct Expert Consultation",
   },
 ];
 
 export default function FeaturesStrip() {
   return (
-    <section className="w-full bg-[#FAF3EA] py-20">
-      <div className="max-w-[1440px] mx-auto px-6">
-        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12">
+    <section className="w-full bg-[#f3f1ee] py-16 lg:py-24 border-t border-stone-200">
+      <div className="max-w-[1440px] mx-auto px-6 lg:px-16">
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-12 lg:gap-8">
           {features.map((item, index) => {
             const Icon = item.icon;
             return (
-              <div
+              <motion.div
                 key={index}
-                className="flex items-center gap-4"
+                initial={{ opacity: 0, y: 20 }}
+                whileInView={{ opacity: 1, y: 0 }}
+                transition={{ delay: index * 0.1 }}
+                viewport={{ once: true }}
+                className="flex flex-col lg:flex-row items-center lg:items-start text-center lg:text-left gap-6 group"
               >
-                {/* Icon */}
-                <div className="w-[60px] h-[60px] flex items-center justify-center">
-                  <Icon size={44} strokeWidth={1.5} className="text-[#242424]" />
+                {/* ICON WITH KINETIC HOVER */}
+                <div className="relative">
+                  <div className="w-12 h-12 flex items-center justify-center relative z-10">
+                    <Icon 
+                      size={32} 
+                      strokeWidth={1} 
+                      className="text-stone-800 group-hover:text-amber-700 transition-colors duration-500" 
+                    />
+                  </div>
+                  {/* Subtle Background Accent */}
+                  <div className="absolute inset-0 bg-stone-400/5 rounded-full scale-150 group-hover:scale-110 transition-transform duration-700" />
                 </div>
 
-                {/* Text */}
-                <div className="flex flex-col">
-                  <span className="text-[22px] font-semibold text-[#242424] leading-tight">
+                {/* TEXT CONTENT */}
+                <div className="flex flex-col space-y-1">
+                  <span className="text-[14px] font-bold text-stone-900 uppercase tracking-[0.2em]">
                     {item.title}
                   </span>
-                  <span className="text-[18px] text-[#898989] leading-tight">
+                  <span className="text-[11px] text-stone-400 uppercase tracking-widest leading-relaxed">
                     {item.subtitle}
                   </span>
                 </div>
-              </div>
+              </motion.div>
             );
           })}
         </div>
