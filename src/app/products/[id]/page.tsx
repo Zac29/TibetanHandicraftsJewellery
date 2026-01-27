@@ -1,4 +1,3 @@
-
 import { notFound } from "next/navigation";
 import { products } from "../../../lib/products";
 import ProductPageBanner from "../../../components/common/ProductPageBanner";
@@ -7,19 +6,19 @@ import RelatedProducts from "../../../components/products/RelatedProducts";
 import { Facebook, Linkedin, Twitter, Star } from "lucide-react";
 import Gallery from "./Gallery";
 import ProductActions from "../../../components/products/ProductActions";
+import { Cormorant_Garamond, Jost } from "next/font/google";
+
+const cormorant = Cormorant_Garamond({ subsets: ["latin"], weight: ["400", "500"] });
+const jost = Jost({ subsets: ["latin"], weight: ["300", "400", "600"] });
+
 export async function generateStaticParams() {
-  return products.map((product) => ({
-    id: String(product.id),
-  }));
+  return products.map((product) => ({ id: String(product.id) }));
 }
 
-type Props = {
-  params: Promise<{ id: string }>;
-};
+type Props = { params: Promise<{ id: string }> };
 
 export default async function ProductPage({ params }: Props) {
   const { id } = await params;
-
   const product = products.find((p) => p.id === Number(id));
   if (!product) return notFound();
 
@@ -27,90 +26,99 @@ export default async function ProductPage({ params }: Props) {
   const reviews = product.reviewsCount ?? 0;
 
   return (
-    <>
-      <ProductPageBanner category="Product" product={product.title} />
+    <div className={`bg-[#fcfaf7] ${jost.className}`}>
+      <ProductPageBanner category="Archive" product={product.title} />
 
-      <section className="max-w-[1440px] mx-auto px-[20px] md:px-[100px] py-[35px] border-b border-[#D9D9D9]">
-        <div className="flex flex-col md:flex-row gap-[30px] md:gap-[105px]">
+      <section className="max-w-[1440px] mx-auto px-6 md:px-16 py-12 md:py-20">
+        <div className="flex flex-col lg:flex-row gap-12 lg:gap-24">
+          
+          {/* GALLERY SIDE */}
+          <div className="flex-1">
+            <Gallery
+              images={product.gallery ?? [product.image]}
+              title={product.title}
+            />
+          </div>
 
-          {/* ✅ Gallery */}
-          <Gallery
-            images={product.gallery ?? [product.image]}
-            title={product.title}
-          />
-
-          {/* ✅ Details */}
-          <div className="w-full md:max-w-[606px]">
-            <h1 className="text-[28px] md:text-[42px] leading-tight md:leading-[63px]">
-              {product.title}
-            </h1>
-
-            <div className="flex items-center gap-3 mb-[15px]">
-  <span className="text-[24px] md:text-[30px] font-semibold text-[#2E2E2E]">
-    ₹ {product.price.toLocaleString()}
-  </span>
-
-  {product.oldPrice && (
-    <span className="text-[18px] text-[#9F9F9F] line-through">
-      ₹ {product.oldPrice.toLocaleString()}
-    </span>
-  )}
-</div>
-
-
-            {/* Rating */}
-            <div className="flex items-center gap-[18px] mb-[20px]">
-              <div className="flex gap-[6px] text-[#FFC700]">
-                {[...Array(5)].map((_, i) => (
-                  <Star
-                    key={i}
-                    size={20}
-                    fill={i + 1 <= Math.floor(rating) ? "#FFC700" : "none"}
-                    stroke="#FFC700"
-                  />
-                ))}
+          {/* DETAILS SIDE */}
+          <div className="flex-1 space-y-8">
+            <header className="space-y-4">
+              <p className="text-[10px] uppercase tracking-[0.5em] text-amber-700 font-bold">
+                Handcrafted Excellence
+              </p>
+              <h1 className={`${cormorant.className} text-4xl md:text-6xl text-stone-900 leading-tight`}>
+                {product.title}
+              </h1>
+              
+              <div className="flex items-center gap-4">
+                <span className="text-2xl text-stone-800">
+                  ₹ {product.price.toLocaleString()}
+                </span>
+                {product.oldPrice && (
+                  <span className="text-lg text-stone-400 line-through font-light">
+                    ₹ {product.oldPrice.toLocaleString()}
+                  </span>
+                )}
               </div>
-              <span className="text-[13px] text-[#9F9F9F]">
-                {reviews} Customer Review
-              </span>
-            </div>
 
-            <p className="text-[13px] leading-[20px] md:max-w-[424px] mb-[36px]">
-              {product.description}
+              {/* Rating */}
+              <div className="flex items-center gap-4 pt-2">
+                <div className="flex gap-1 text-amber-500">
+                  {[...Array(5)].map((_, i) => (
+                    <Star
+                      key={i}
+                      size={14}
+                      fill={i + 1 <= Math.floor(rating) ? "currentColor" : "none"}
+                      className="stroke-amber-500"
+                    />
+                  ))}
+                </div>
+                <span className="text-[10px] uppercase tracking-widest text-stone-400">
+                  {reviews} verified reviews
+                </span>
+              </div>
+            </header>
+
+            <p className="text-stone-500 leading-relaxed text-base max-w-lg italic font-light">
+              "{product.description}"
             </p>
 
-            <ProductActions product={product} />
+            <div className="py-8 border-y border-stone-200">
+              <ProductActions product={product} />
+            </div>
 
-            {/* Meta */}
-            <div className="border-t border-[#D9D9D9] pt-[40px] space-y-[12px] text-[#9F9F9F] text-sm sm:text-base">
-              <Meta label="SKU" value={product.sku} />
-              <Meta label="Category" value={product.category} />
-              <Meta
-                label="Tags"
-                value={product.tags?.join(", ") ?? product.category}
-              />
+            {/* Meta & Social */}
+            <div className="space-y-4 pt-4">
+              <Meta label="Identifier" value={product.sku} />
+              <Meta label="Collection" value={product.category} />
+              <Meta label="Artisan Tags" value={product.tags?.join(", ") ?? product.category} />
 
-              <div className="flex items-center gap-[25px] flex-wrap">
-                <span className="w-[90px]">Share</span>:
-                <Facebook size={20} />
-                <Linkedin size={20} />
-                <Twitter size={20} />
+              <div className="flex items-center gap-6 pt-6">
+                <span className="text-[10px] uppercase tracking-widest text-stone-400 w-20">Share Piece</span>
+                <div className="flex gap-4 text-stone-400">
+                  <Facebook size={18} className="hover:text-stone-900 cursor-pointer transition-colors" />
+                  <Twitter size={18} className="hover:text-stone-900 cursor-pointer transition-colors" />
+                  <Linkedin size={18} className="hover:text-stone-900 cursor-pointer transition-colors" />
+                </div>
               </div>
             </div>
           </div>
         </div>
       </section>
 
-      <ProductTabs product={product} />
+      <div className="bg-[#f3f1ee]">
+         <ProductTabs product={product} />
+      </div>
       <RelatedProducts />
-    </>
+    </div>
   );
 }
 
 function Meta({ label, value }: { label: string; value: string }) {
   return (
-    <div className="flex">
-      <span className="w-[90px]">{label}</span>: {value}
+    <div className="flex items-center text-[11px] uppercase tracking-widest">
+      <span className="text-stone-400 w-20">{label}</span>
+      <span className="text-stone-900 font-semibold">: {value}</span>
     </div>
   );
 }

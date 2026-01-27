@@ -3,20 +3,23 @@
 import { useState, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import { motion } from "framer-motion";
 import {
   Heart,
   Share2,
   ChevronLeft,
   ChevronRight,
-  Trophy,
-  ShieldCheck,
-  Truck,
-  Headphones,
+  Search,
 } from "lucide-react";
+import { Cormorant_Garamond, Jost } from "next/font/google";
 
 import { products } from "../../lib/products";
-import FeathersSection from "../../components/common/FeaturesStrip";
+import FeaturesSection from "../../components/common/FeaturesStrip";
 import PageBanner from "../../components/common/PageBanner";
+
+const cormorant = Cormorant_Garamond({ subsets: ["latin"], weight: ["400", "500"] });
+const jost = Jost({ subsets: ["latin"], weight: ["300", "400", "600"] });
+
 const PER_PAGE = 16;
 
 export default function ProductsPage() {
@@ -34,194 +37,143 @@ export default function ProductsPage() {
   const to = Math.min(page * PER_PAGE, products.length);
 
   return (
-    <>
+    <div className={`bg-[#fcfaf7] min-h-screen ${jost.className}`}>
       {/* HERO HEADER */}
       <PageBanner
-        title="Products"
-        breadcrumb="Products"
+        title="The Collection"
+        breadcrumb="Archive"
         imageSrc="/item.png"
-        overlayOpacity={0.5}
+        overlayOpacity={0.4}
       />
 
-      {/* TOOLBAR */}
-      <div className="bg-[#F9F1E7]">
-        <div className="max-w-7xl mx-auto px-4 py-5 flex items-center justify-between">
+      {/* TOOLBAR - Refined Aesthetic */}
+      <div className="bg-[#f3f1ee] border-b border-stone-200 sticky top-[80px] z-30">
+        <div className="max-w-7xl mx-auto px-8 py-4 flex items-center justify-between">
           <div className="hidden md:block">
-            <span className="text-sm text-[#555]">
-              Showing {from}–{to} of {products.length} results
+            <span className="text-[10px] uppercase tracking-[0.3em] text-stone-500">
+              Curating {from} – {to} of {products.length} Masterpieces
             </span>
           </div>
 
-          <div className="flex items-center gap-3 ml-auto">
-            <span className="text-sm">Sort by</span>
-
-            <div className="relative group">
-              <select className="bg-white px-4 py-2 pr-10 text-sm rounded-md appearance-none shadow-[0_4px_12px_rgba(0,0,0,0.1)] border-none outline-none">
-                <option>Default</option>
-                <option>Price Low to High</option>
-                <option>Price High to Low</option>
+          <div className="flex items-center gap-6 ml-auto">
+            <div className="flex items-center gap-2">
+              <span className="text-[10px] uppercase tracking-[0.2em] text-stone-400">Sort:</span>
+              <select className="bg-transparent text-[10px] uppercase tracking-[0.2em] font-semibold outline-none cursor-pointer">
+                <option>Newest First</option>
+                <option>Price: Ascending</option>
+                <option>Price: Descending</option>
               </select>
-
-              <div className="pointer-events-none absolute right-3 top-1/2 -translate-y-1/2">
-                <ChevronRight size={18} className="rotate-90" />
-              </div>
             </div>
           </div>
         </div>
       </div>
 
       {/* PRODUCTS GRID */}
-      <section className="w-full py-8">
-        <div className="max-w-7xl mx-auto px-4">
+      <section className="max-w-7xl mx-auto px-4 py-16">
+        <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-6 gap-y-12">
+          {pageProducts.map((product) => (
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              key={product.id}
+              className="group cursor-pointer"
+            >
+              <Link href={`/products/${product.id}`} className="block">
+                {/* Image Container */}
+                <div className="relative aspect-[3/4] overflow-hidden bg-[#f3f1ee] mb-6 shadow-sm">
+                  {product.tag && (
+                    <div className="absolute top-4 left-4 z-20">
+                      <span className="bg-amber-700/90 backdrop-blur-md text-white text-[8px] uppercase tracking-[0.2em] px-3 py-1 font-semibold">
+                        {product.tag === "sale" ? "Special Edition" : "New Arrival"}
+                      </span>
+                    </div>
+                  )}
 
-          {/* ✅ ONLY CHANGE: grid-cols-1 -> grid-cols-2 */}
-          <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-            {pageProducts.map((product) => (
-              <Link
-                key={product.id}
-                href={`/products/${product.id}`}
-                className="group bg-[#e6e6e6] rounded-xl overflow-hidden shadow-md hover:shadow-2xl transition-all duration-500 relative"
-              >
-                {/* Badge */}
-                {product.tag && (
-                  <div
-                    className={`absolute top-3 right-3 z-20 text-white text-xs px-3 py-1 rounded-full ${
-                      product.tag === "sale" ? "bg-red-500" : "bg-emerald-500"
-                    }`}
-                  >
-                    {product.tag === "sale" ? "-30%" : "New"}
-                  </div>
-                )}
-
-                {/* Image */}
-                <div className="relative w-full h-[260px] overflow-hidden bg-white">
                   <Image
                     src={product.image}
                     alt={product.title}
                     fill
-                    className="object-cover transition-all duration-700 group-hover:scale-110 group-hover:blur-[1.5px]"
+                    className="object-cover transition-transform duration-1000 group-hover:scale-105"
                   />
-                  <div className="absolute inset-0 bg-black/0 group-hover:bg-black/50 transition-all duration-500" />
-
-                  {/* Overlay */}
-                  <div className="absolute inset-0 flex flex-col items-center justify-center gap-4 opacity-0 group-hover:opacity-100 transition-all duration-500">
-                    <button className="bg-white px-5 py-2 rounded-md text-sm">
-                      Contact Us
+                  
+                  {/* Subtle Opaque Hover State */}
+                  <div className="absolute inset-0 bg-stone-900/0 group-hover:bg-stone-900/20 transition-all duration-700" />
+                  
+                  {/* View Button Overlay */}
+                  <div className="absolute bottom-8 left-1/2 -translate-x-1/2 translate-y-4 opacity-0 group-hover:translate-y-0 group-hover:opacity-100 transition-all duration-500">
+                    <button className="bg-white text-stone-900 text-[10px] uppercase tracking-[0.3em] px-6 py-3 shadow-xl whitespace-nowrap font-semibold">
+                      View Piece
                     </button>
-
-                    <div className="flex gap-8 text-white">
-                      <Share2 size={18} />
-                      <Heart
-                        size={18}
-                        onClick={(e) => {
-                          e.preventDefault();
-                          setLiked((prev) => ({
-                            ...prev,
-                            [product.id]: !prev[product.id],
-                          }));
-                        }}
-                        className={
-                          liked[product.id]
-                            ? "text-red-500 fill-red-500"
-                            : "text-white"
-                        }
-                      />
-                    </div>
                   </div>
                 </div>
 
-                {/* Info */}
-                <div className="bg-[#e6e6e6] p-4 transition-transform duration-500 group-hover:-translate-y-2">
-                  <h3 className="text-[18px] font-semibold text-[#333333] mb-1">
-                    {product.title}
-                  </h3>
-                  <p className="text-xs opacity-70 mb-2">
+                {/* Info Section */}
+                <div className="text-center space-y-1 px-2">
+                  <p className="text-[9px] uppercase tracking-[0.4em] text-amber-700 font-semibold mb-2">
                     {product.category}
                   </p>
-
-                  <div className="flex gap-2">
-                    <span className="font-semibold">
+                  <h3 className={`${cormorant.className} text-xl text-stone-900 group-hover:text-amber-800 transition-colors`}>
+                    {product.title}
+                  </h3>
+                  <div className="flex items-center justify-center gap-3 pt-1">
+                    <span className="text-sm font-medium text-stone-800 tracking-tight">
                       ₹ {product.price.toLocaleString()}
                     </span>
-                    <span className="line-through opacity-60">
-                      ₹ {product.oldPrice.toLocaleString()}
-                    </span>
+                    {product.oldPrice && (
+                      <span className="text-[11px] text-stone-400 line-through">
+                        ₹ {product.oldPrice.toLocaleString()}
+                      </span>
+                    )}
                   </div>
                 </div>
               </Link>
-            ))}
-          </div>
+            </motion.div>
+          ))}
+        </div>
 
-          {/* PAGINATION */}
-          <div className="flex justify-center items-center gap-6 mt-12 mb-10">
-            <ShinyCircleButton
+        {/* REFINED PAGINATION */}
+        <div className="mt-20 flex flex-col items-center gap-8">
+          <div className="flex items-center gap-12">
+            <button
               disabled={page === 1}
               onClick={() => setPage((p) => Math.max(1, p - 1))}
+              className="text-stone-400 hover:text-stone-900 disabled:opacity-20 transition-all flex items-center gap-2 group"
             >
-              <ChevronLeft size={22} />
-            </ShinyCircleButton>
+              <ChevronLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
+              <span className="text-[10px] uppercase tracking-[0.3em]">Previous</span>
+            </button>
 
-            <div className="flex items-center gap-3">
+            <div className="flex gap-4">
               {[...Array(totalPages)].map((_, i) => (
                 <button
                   key={i}
                   onClick={() => setPage(i + 1)}
-                  className={`transition-all duration-500 ${
-                    page === i + 1
-                      ? "w-10 h-2 bg-[#C8A23A] rounded-full"
-                      : "w-2 h-2 bg-[#C8A23A]/40 rounded-full hover:bg-[#C8A23A]"
+                  className={`text-[12px] transition-all relative py-1 px-2 ${
+                    page === i + 1 ? "text-amber-700 font-bold" : "text-stone-300 hover:text-stone-600"
                   }`}
-                />
+                >
+                  {i + 1}
+                  {page === i + 1 && (
+                    <motion.div layoutId="underline" className="absolute bottom-0 left-0 w-full h-[1px] bg-amber-700" />
+                  )}
+                </button>
               ))}
             </div>
 
-            <ShinyCircleButton
+            <button
               disabled={page === totalPages}
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
+              className="text-stone-400 hover:text-stone-900 disabled:opacity-20 transition-all flex items-center gap-2 group"
             >
-              <ChevronRight size={22} />
-            </ShinyCircleButton>
+              <span className="text-[10px] uppercase tracking-[0.3em]">Next</span>
+              <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
+            </button>
           </div>
         </div>
       </section>
 
-      {/* FEATURES SECTION */}
-      <FeathersSection />
-    </>
-  );
-}
-
-/* SHINY PAGINATION BUTTON */
-function ShinyCircleButton({ children, onClick, disabled }: any) {
-  return (
-    <button
-      disabled={disabled}
-      onClick={onClick}
-      className="
-        group relative overflow-hidden
-        w-[48px] h-[48px]
-        rounded-full
-        bg-[#353F8C]
-        text-white
-        flex items-center justify-center
-        transition-all duration-500
-        hover:shadow-[0_10px_25px_rgba(0,0,0,0.3)]
-        active:scale-[0.95]
-        disabled:opacity-40 disabled:cursor-not-allowed
-      "
-    >
-      <span className="relative z-10">{children}</span>
-
-      <span
-        className="
-          absolute inset-0
-          bg-gradient-to-r from-transparent via-white/30 to-transparent
-          -translate-x-[120%]
-          group-hover:translate-x-[120%]
-          group-active:translate-x-[120%]
-          transition-transform duration-700
-        "
-      />
-    </button>
+      <FeaturesSection />
+    </div>
   );
 }

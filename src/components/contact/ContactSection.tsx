@@ -1,216 +1,107 @@
 "use client";
 
-import Image from "next/image";
-import { Phone, Mail, Printer, ChevronDown } from "lucide-react";
-import { Montserrat } from "next/font/google";
+import { Phone, Mail, Printer, ChevronDown, MapPin } from "lucide-react";
+import { Cormorant_Garamond, Jost } from "next/font/google";
 
-// 1. Load the specific font weights from the design
-const montserrat = Montserrat({
-  subsets: ["latin"],
-  weight: ["400", "600", "700"],
-  variable: "--font-montserrat",
-});
+const cormorant = Cormorant_Garamond({ subsets: ["latin"], weight: ["600"] });
+const jost = Jost({ subsets: ["latin"], weight: ["400", "500", "700"] });
 
 export default function ContactSection() {
   return (
-    <section 
-      className={`w-full flex justify-center py-20 bg-[#E7EBF0] ${montserrat.variable} font-sans overflow-x-hidden`}
-    >
-      {/* MAIN CARD 
-        Dimensions: 1369px x 900px 
-        Radius: 10px 50px 50px 10px
-      */}
-      <div 
-        className="relative bg-white shadow-[0px_141px_200px_-80px_rgba(25,58,75,0.3)] overflow-hidden shrink-0 hidden xl:block"
-        style={{
-          width: "1369px",
-          height: "900px",
-          borderRadius: "10px 50px 50px 10px",
-        }}
-      >
-        {/* =======================
-            1. RIGHT PINK PANEL 
-            Rectangle 31
-            w: 419px, h: 900px, left: 974px
-           ======================= */}
-        <div 
-          className="absolute bg-[#DD5471]"
-          style={{
-            width: "419px",
-            height: "900px",
-            left: "974px",
-            top: "0px",
-          }}
-        />
-
-        {/* =======================
-            2. MAP IMAGE
-            Component 6
-            w: 545px, h: 700px, left: 721px, top: 100px
-           ======================= */}
-        <div 
-          className="absolute overflow-hidden shadow-lg"
-          style={{
-            width: "545px",
-            height: "700px",
-            left: "721px",
-            top: "100px",
-          }}
-        >
-          {/* Using a placeholder map image - replace src with your actual map image */}
-          <iframe
-  src="https://www.google.com/maps?q=Bangladesh%20Buddhist%20Monastery&output=embed"
-  className="w-full h-full border-0"
-  loading="lazy"
-  referrerPolicy="no-referrer-when-downgrade"
-/>
+    <section className={`w-full bg-[#fcfaf7] py-12 lg:py-24 ${jost.className}`}>
+      <div className="max-w-[1440px] mx-auto px-6 lg:px-16">
+        
+        {/* THE MAIN CARD - Responsive Grid instead of Absolute Pixels */}
+        <div className="relative bg-white shadow-[0_40px_100px_rgba(0,0,0,0.04)] border border-stone-100 flex flex-col lg:flex-row overflow-hidden">
           
-          {/* Map Marker (Red Pin) */}
-          <div 
-            className="absolute flex items-center justify-center drop-shadow-md"
-            style={{
-              left: "180px", 
-              top: "376px",
-              width: "50px",
-              height: "50px",
-            }}
-          >
-            <div className="w-[50px] h-[50px] bg-[#FF0004] rounded-full flex items-center justify-center relative">
-               <div className="w-3 h-3 bg-white rounded-full shadow-sm" />
-               {/* Little triangle for pin effect if needed, otherwise circle as per design */}
-            </div>
-          </div>
-        </div>
+          {/* LEFT CONTENT: THE FORM (60% width on Desktop) */}
+          <div className="w-full lg:w-[60%] p-8 md:p-16 lg:p-24 space-y-12">
+            <header className="space-y-4">
+              <span className="text-[10px] uppercase tracking-[0.5em] text-amber-700 font-bold">
+                Inquiry
+              </span>
+              <h2 className={`${cormorant.className} text-4xl md:text-5xl lg:text-6xl text-stone-900 leading-tight`}>
+                Get in <span className="italic font-light text-stone-500">Touch</span>
+              </h2>
+              <p className="text-stone-400 text-sm max-w-md leading-relaxed">
+                Connect with our studio for bespoke commissions, product inquiries, or traditional craft consultations.
+              </p>
+            </header>
 
-        {/* =======================
-            3. LEFT CONTENT (FORM)
-            Frame 3851 -> Left: 150px, Top: 148px
-           ======================= */}
-        <div 
-          className="absolute flex flex-col items-start gap-[60px]"
-          style={{
-            left: "150px",
-            top: "148px",
-            width: "545px",
-            height: "604px",
-          }}
-        >
-          {/* HEADER SECTION */}
-          <div className="flex flex-col gap-[20px] w-full">
-            <h2 
-              className="text-[54px] font-bold text-black leading-[66px]"
-            >
-              Get in <span className="text-[#39418E]">Touch</span>
-            </h2>
-            <p className="text-[14px] font-semibold text-black leading-[24px] tracking-[0.01em]">
-              Enim tempor eget pharetra facilisis sed maecenas adipiscing. Eu leo molestie vel, ornare non id blandit netus.
-            </p>
-          </div>
-
-          {/* FORM SECTION */}
-          <form className="flex flex-col gap-[20px] w-full">
-            {/* Name Input */}
-            <input 
-              type="text" 
-              placeholder="Name *" 
-              className="w-full h-[50px] border border-[#E0E0E0] px-[20px] text-[14px] text-black placeholder-[#828282] outline-none focus:border-[#39418E] transition-colors"
-            />
-
-            {/* Email Input */}
-            <input 
-              type="email" 
-              placeholder="Email" 
-              className="w-full h-[50px] border border-[#E0E0E0] px-[20px] text-[14px] text-black placeholder-[#828282] outline-none focus:border-[#39418E] transition-colors"
-            />
-
-            {/* Phone Input */}
-            <input 
-              type="tel" 
-              placeholder="Phone number *" 
-              className="w-full h-[50px] border border-[#E0E0E0] px-[20px] text-[14px] text-black placeholder-[#828282] outline-none focus:border-[#39418E] transition-colors"
-            />
-
-            {/* Dropdown */}
-            <div className="relative w-full h-[50px]">
-              <select 
-                className="w-full h-full border border-[#E0E0E0] px-[20px] text-[14px] text-black outline-none appearance-none bg-white focus:border-[#39418E] transition-colors cursor-pointer"
-              >
-                <option value="" disabled selected>What product you want ?</option>
-                <option value="jewellery">Jewellery</option>
-                <option value="handicrafts">Handicrafts</option>
-              </select>
-              <div className="absolute right-[20px] top-1/2 -translate-y-1/2 pointer-events-none">
-                <ChevronDown size={16} color="black" />
+            <form className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="space-y-1">
+                <input 
+                  type="text" 
+                  placeholder="Your Name *" 
+                  className="w-full border-b border-stone-200 py-4 text-sm outline-none focus:border-amber-700 transition-colors bg-transparent"
+                />
               </div>
+              <div className="space-y-1">
+                <input 
+                  type="email" 
+                  placeholder="Email Address *" 
+                  className="w-full border-b border-stone-200 py-4 text-sm outline-none focus:border-amber-700 transition-colors bg-transparent"
+                />
+              </div>
+              <div className="md:col-span-2 relative">
+                <select 
+                  className="w-full border-b border-stone-200 py-4 text-sm outline-none focus:border-amber-700 transition-colors bg-transparent appearance-none cursor-pointer"
+                >
+                  <option value="" disabled selected>Nature of Inquiry</option>
+                  <option value="jewellery">Tibetan Jewellery</option>
+                  <option value="handicrafts">Traditional Handicrafts</option>
+                  <option value="wholesale">Wholesale & Archive</option>
+                </select>
+                <ChevronDown size={14} className="absolute right-0 top-5 text-stone-400 pointer-events-none" />
+              </div>
+              <div className="md:col-span-2">
+                <textarea 
+                  placeholder="How can we assist you?" 
+                  rows={4}
+                  className="w-full border-b border-stone-200 py-4 text-sm outline-none focus:border-amber-700 transition-colors bg-transparent resize-none"
+                />
+              </div>
+
+              <button 
+                type="submit"
+                className="md:col-span-2 mt-6 h-[60px] bg-stone-900 text-white text-[11px] font-bold uppercase tracking-[0.3em] hover:bg-amber-800 transition-all duration-500"
+              >
+                Send Inquiry
+              </button>
+            </form>
+
+            {/* CONTACT QUICK LINKS */}
+            <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 pt-8">
+              <ContactItem icon={<Phone size={18}/>} label="Phone" value="+91 98765 43210" />
+              <ContactItem icon={<Mail size={18}/>} label="Email" value="studio@tibetanarts.com" />
+              <ContactItem icon={<MapPin size={18}/>} label="Studio" value="Bodh Gaya, India" />
             </div>
+          </div>
 
-            {/* Submit Button */}
-            <button 
-              type="submit"
-              className="w-full h-[50px] bg-[#39418E] text-white text-[16px] font-bold uppercase tracking-wide hover:opacity-90 transition-opacity mt-2"
-            >
-              SEND
-            </button>
-          </form>
-
-          {/* CONTACT INFO FOOTER */}
-          <div className="flex flex-col sm:flex-row items-center sm:items-start gap-10 sm:gap-[80px]">
-
-    {/* PHONE */}
-    <div className="flex flex-col items-center text-center gap-2">
-      <Phone size={32} className="text-black" />
-      <span className="text-[16px] font-semibold tracking-wide text-black">
-        PHONE
-      </span>
-      <span className="text-[16px] font-medium text-[#DD5471]">
-        03 5432 1234
-      </span>
-    </div>
-
-    {/* FAX */}
-    <div className="flex flex-col items-center text-center gap-2">
-      <Printer size={32} className="text-black" />
-      <span className="text-[16px] font-semibold tracking-wide text-black">
-        FAX
-      </span>
-      <span className="text-[16px] font-medium text-[#DD5471]">
-        03 5432 1234
-      </span>
-    </div>
-
-    {/* EMAIL */}
-    <div className="flex flex-col items-center text-center gap-2">
-      <Mail size={32} className="text-black" />
-      <span className="text-[16px] font-semibold tracking-wide text-black">
-        EMAIL
-      </span>
-      <span className="text-[16px] font-medium text-[#DD5471]">
-        info@marcc.com.au
-      </span>
-    </div>
-
-  </div>
+          {/* RIGHT CONTENT: THE VISUAL (40% width on Desktop) */}
+          <div className="w-full lg:w-[40%] min-h-[400px] relative bg-stone-100">
+            {/* The Pink Panel from your original code is now an Amber-Gold accent bar */}
+            <div className="absolute top-0 right-0 w-2 h-full bg-amber-700 z-10" />
+            
+            <iframe
+              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14454.832442475026!2d84.98184645!3d24.69512395!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39f32c66439f045b%3A0x7d6067b099415c9e!2sBodh%20Gaya%2C%20Bihar!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
+              className="w-full h-full border-0 grayscale hover:grayscale-0 transition-all duration-1000"
+              allowFullScreen
+              loading="lazy"
+            />
+          </div>
         </div>
       </div>
-
-      {/* =================================================================
-          MOBILE RESPONSIVE FALLBACK 
-          (Since specific pixels break on mobile, we use a standard layout 
-           for screens smaller than 1369px)
-         ================================================================= */}
-      <div className="xl:hidden w-full max-w-lg bg-white rounded-2xl shadow-xl overflow-hidden mx-4">
-         <div className="h-4 bg-[#DD5471] w-full" />
-         <div className="p-8 space-y-8">
-            <h2 className="text-3xl font-bold">Get in <span className="text-[#39418E]">Touch</span></h2>
-            <p className="text-sm">Enim tempor eget pharetra facilisis sed maecenas adipiscing.</p>
-            <form className="space-y-4">
-                <input type="text" placeholder="Name *" className="w-full h-[50px] border border-[#E0E0E0] px-4" />
-                <input type="email" placeholder="Email" className="w-full h-[50px] border border-[#E0E0E0] px-4" />
-                <button className="w-full h-[50px] bg-[#39418E] text-white font-bold">SEND</button>
-            </form>
-         </div>
-      </div>
-
     </section>
+  );
+}
+
+function ContactItem({ icon, label, value }: { icon: any, label: string, value: string }) {
+  return (
+    <div className="space-y-2 group">
+      <div className="text-amber-700 group-hover:scale-110 transition-transform duration-300">{icon}</div>
+      <p className="text-[10px] uppercase tracking-widest text-stone-400 font-bold">{label}</p>
+      <p className="text-stone-800 text-[13px] font-medium break-words">{value}</p>
+    </div>
   );
 }

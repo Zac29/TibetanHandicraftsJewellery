@@ -134,7 +134,7 @@ export default function Hero() {
   }, []);
 
   return (
-    <section className={`w-full bg-white ${poppins.variable} font-sans`}>
+    <section className={`w-full bg-white mt-22 ${poppins.variable} font-sans`} >
       <div className="relative max-w-[1440px] mx-auto px-4 py-10 lg:h-[760px] overflow-hidden">
 
         {/* IMAGE */}
