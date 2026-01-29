@@ -79,17 +79,18 @@ export default function ContactSection() {
           </div>
 
           {/* RIGHT CONTENT: THE VISUAL (40% width on Desktop) */}
-          <div className="w-full lg:w-[40%] min-h-[400px] relative bg-stone-100">
-            {/* The Pink Panel from your original code is now an Amber-Gold accent bar */}
-            <div className="absolute top-0 right-0 w-2 h-full bg-amber-700 z-10" />
-            
-            <iframe
-              src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14454.832442475026!2d84.98184645!3d24.69512395!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39f32c66439f045b%3A0x7d6067b099415c9e!2sBodh%20Gaya%2C%20Bihar!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
-              className="w-full h-full border-0 grayscale hover:grayscale-0 transition-all duration-1000"
-              allowFullScreen
-              loading="lazy"
-            />
-          </div>
+<div className="w-full lg:w-[40%] h-[300px] md:h-[450px] lg:h-auto relative bg-stone-100">
+  {/* The Amber-Gold accent bar */}
+  <div className="absolute top-0 right-0 w-2 h-full bg-amber-700 z-10 hidden lg:block" />
+  
+  <iframe
+    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14457.777478696808!2d84.98184515!3d24.69510165!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39f32c3f30960557%3A0x6e949829f03a6285!2sBodh%20Gaya%2C%20Bihar!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
+    className="w-full h-full border-0 grayscale hover:grayscale-0 transition-all duration-1000"
+    allowFullScreen
+    loading="lazy"
+    referrerPolicy="no-referrer-when-downgrade"
+  />
+</div>
         </div>
       </div>
     </section>

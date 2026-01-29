@@ -14,9 +14,9 @@ export default function ContactPage() {
       {/* The redesigned section handles its own spacing and responsiveness */}
       <ContactSection />
 
-      <div className="pb-20">
+      {/* <div className="pb-20"> */}
         <FeaturesStrip />
-      </div>
+      {/* </div> */}
     </main>
   );
 }
