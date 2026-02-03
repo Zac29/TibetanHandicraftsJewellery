@@ -94,7 +94,7 @@ export default function ProductActions({ product }: { product: Product }) {
             relative overflow-hidden
             flex-1 h-[60px] px-12
             bg-stone-900 text-white
-            text-[11px] font-bold uppercase tracking-[0.3em]
+            text-[12px] font-bold uppercase tracking-[0.3em]
             transition-all duration-500
             hover:bg-amber-800
             hover:shadow-2xl
