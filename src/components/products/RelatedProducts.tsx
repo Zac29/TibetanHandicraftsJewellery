@@ -25,7 +25,7 @@ export default function RelatedProducts() {
           <h2 className={`${cormorant.className} text-4xl md:text-5xl text-stone-900`}>
             Pieces You May <span className="italic">Cherish</span>
           </h2>
-          <div className="w-12 h-[1px] bg-stone-300 pt-4" />
+          <div className="w-64 h-[1px] bg-gradient-to-r from-transparent via-amber-700 to-transparent mt-6" />
         </div>
 
         {/* PRODUCTS GRID */}

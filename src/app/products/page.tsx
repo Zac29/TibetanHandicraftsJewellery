@@ -60,8 +60,8 @@ export default function ProductsPage() {
               <span className="text-[10px] uppercase tracking-[0.2em] text-stone-400">Sort:</span>
               <select className="bg-transparent text-[10px] uppercase tracking-[0.2em] font-semibold outline-none cursor-pointer">
                 <option>Newest First</option>
-                <option>Price: Ascending</option>
-                <option>Price: Descending</option>
+                <option>Price: Low To High</option>
+                <option>Price: High To Low</option>
               </select>
             </div>
           </div>
@@ -161,7 +161,7 @@ export default function ProductsPage() {
             <button
               disabled={page === 1}
               onClick={() => setPage((p) => Math.max(1, p - 1))}
-              className="text-stone-400 hover:text-stone-900 disabled:opacity-20 transition-all flex items-center gap-2 group"
+              className="text-stone-700 hover:text-stone-950 disabled:opacity-80 transition-all flex items-center gap-2 group"
             >
               <ChevronLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
               <span className="text-[10px] uppercase tracking-[0.3em]">Previous</span>
@@ -187,7 +187,7 @@ export default function ProductsPage() {
             <button
               disabled={page === totalPages}
               onClick={() => setPage((p) => Math.min(totalPages, p + 1))}
-              className="text-stone-400 hover:text-stone-900 disabled:opacity-20 transition-all flex items-center gap-2 group"
+              className="text-stone-700 hover:text-stone-950 disabled:opacity-80 transition-all flex items-center gap-2 group"
             >
               <span className="text-[10px] uppercase tracking-[0.3em]">Next</span>
               <ChevronRight size={16} className="group-hover:translate-x-1 transition-transform" />
