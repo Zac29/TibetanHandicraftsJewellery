@@ -28,7 +28,7 @@ export default function SplashScreen() {
     const timer = setTimeout(() => {
       setLoading(false);
       sessionStorage.setItem("seenSplash", "true");
-    }, 8000);
+    }, 3000);
 
     document.body.style.overflow = "hidden";
 

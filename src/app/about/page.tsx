@@ -1,5 +1,6 @@
 "use client";
-
+import { useEffect, useState } from "react";
+import axios from "axios";
 import PageBanner from "../../components/common/PageBanner";
 import Image from "next/image";
 import Link from "next/link";
@@ -10,12 +11,29 @@ const cormorant = Cormorant_Garamond({ subsets: ["latin"], weight: ["300", "400"
 const jost = Jost({ subsets: ["latin"], weight: ["300", "400", "600"] });
 
 export default function AboutPage() {
+  const [data, setData] = useState<any>(null);
+   /* ================= FETCH FROM BACKEND ================= */
+  useEffect(() => {
+    axios
+      .get("http://localhost:5000/api/about")
+      .then((res) => setData(res.data))
+      .catch((err) => console.error("About fetch failed", err));
+  }, []);
+
+  /* ================= SAFETY GUARD ================= */
+  if (!data) {
+    return (
+      <div className="h-[600px] flex items-center justify-center text-stone-400 italic">
+        Loading About Page…
+      </div>
+    );
+  }
   return (
     <div className={`bg-[#fcfaf7] ${jost.className}`}>
-      <PageBanner
-        title="Our Heritage"
-        breadcrumb="About"
-        imageSrc="/contact-banner.png"
+     <PageBanner
+        title={data.banner.title}
+        breadcrumb={data.banner.breadcrumb}
+        imageSrc={data.banner.image}
       />
 
       <section className="py-20 lg:py-32 overflow-hidden">
@@ -26,32 +44,29 @@ export default function AboutPage() {
             <div className="lg:col-span-5 space-y-8">
               <header className="space-y-4">
                 <span className="text-[10px] uppercase tracking-[0.5em] text-amber-700 font-bold">
-                  Since 1984
+                  {data.intro.tag}
                 </span>
                 <h2 className={`${cormorant.className} text-5xl lg:text-7xl text-stone-900 leading-[1.1]`}>
-                  Preserving the <br /> 
-                  <span className="italic">Sacred Craft</span>
+                 {data.intro.heading1} <br /> 
+                  <span className="italic">{data.intro.heading2}</span>
                 </h2>
               </header>
 
               <div className="space-y-6 text-stone-500 text-lg leading-relaxed font-light">
                 <p>
-                  Rooted in the high plateaus of Tibet, our collective was born from a desire to 
-                  keep the ancient traditions of metalwork and sacred symbolism alive in a modern world.
+                  {data.intro.para1}
                 </p>
                 <p>
-                  Every piece in our collection is more than just an object; it is a vessel of 
-                  spirituality, handcrafted by artisans who have spent decades perfecting the 
-                  delicate balance between raw earth and divine form.
+                  {data.intro.para2}
                 </p>
               </div>
 
               <div className="pt-8">
                 <Link
-                  href="/products"
+                  href={data.intro.buttonLink}
                   className="inline-flex items-center justify-center px-10 py-5 bg-stone-900 text-white text-[11px] uppercase tracking-[0.3em] font-bold hover:bg-amber-800 transition-all duration-500 group shadow-xl"
                 >
-                  Explore the Collection
+                    {data.intro.buttonText}
                   <motion.span 
                     animate={{ x: [0, 5, 0] }} 
                     transition={{ repeat: Infinity, duration: 2 }}
@@ -74,7 +89,7 @@ export default function AboutPage() {
                   viewport={{ once: true }}
                   className="col-span-8 relative aspect-[4/5] rounded-sm overflow-hidden shadow-2xl"
                 >
-                  <Image src="/decore.png" alt="Artisan Work" fill className="object-cover" />
+                  <Image src={data.images.main}  alt="Artisan Work" fill className="object-cover" />
                 </motion.div>
 
                 {/* Floating Secondary Image */}
@@ -86,13 +101,13 @@ export default function AboutPage() {
                   className="col-span-4 self-end space-y-4"
                 >
                   <div className="relative aspect-square rounded-sm overflow-hidden shadow-xl border-4 border-white">
-                    <Image src="/Bowl.png" alt="Tibetan Bowl" fill className="object-cover" />
+                    <Image src={data.images.square} alt="Tibetan Bowl" fill className="object-cover" />
                   </div>
                   
                   {/* The "Experience" Card */}
                   <div className="bg-amber-700 p-8 text-white shadow-2xl">
-                    <h4 className="text-4xl font-light mb-1 italic">40+</h4>
-                    <p className="text-[9px] uppercase tracking-[0.3em] opacity-80">Years of Craft</p>
+                    <h4 className="text-4xl font-light mb-1 italic">{data.experience.years}</h4>
+                    <p className="text-[9px] uppercase tracking-[0.3em] opacity-80">{data.experience.label}</p>
                   </div>
                 </motion.div>
 
@@ -104,7 +119,7 @@ export default function AboutPage() {
                   transition={{ delay: 0.4 }}
                   className="col-start-3 col-span-10 relative h-48 mt-4 rounded-sm overflow-hidden"
                 >
-                  <Image src="/Bowl.png" alt="Detail View" fill className="object-cover grayscale hover:grayscale-0 transition-all duration-1000" />
+                  <Image src={data.images.wide} alt="Detail View" fill className="object-cover grayscale hover:grayscale-0 transition-all duration-1000" />
                   <div className="absolute inset-0 bg-stone-900/20" />
                 </motion.div>
 
@@ -122,22 +137,19 @@ export default function AboutPage() {
       <section className="bg-stone-900 py-24 text-white">
         <div className="max-w-4xl mx-auto px-6 text-center space-y-12">
           <h3 className={`${cormorant.className} text-4xl md:text-5xl italic`}>
-            "We do not just sell jewellery; we archive the soul of Tibet."
+            "{data.philosophy.quote}"
           </h3>
           <div className="w-20 h-[1px] bg-amber-500 mx-auto" />
+
+
           <div className="grid grid-cols-1 md:grid-cols-3 gap-12 text-center">
-            <div>
-              <p className="text-2xl mb-2 font-light">Authenticity</p>
-              <p className="text-stone-400 text-sm tracking-wide">Every stone and metal is ethically sourced from the Himalayan region.</p>
-            </div>
-            <div>
-              <p className="text-2xl mb-2 font-light">Tradition</p>
-              <p className="text-stone-400 text-sm tracking-wide">Using techniques passed down through four generations of artisans.</p>
-            </div>
-            <div>
-              <p className="text-2xl mb-2 font-light">Impact</p>
-              <p className="text-stone-400 text-sm tracking-wide">10% of all proceeds support Tibetan education and cultural preservation.</p>
-            </div>
+             {data.philosophy.blocks.map((b: any, i: number) => (
+              <div key={i}>
+                <p className="text-2xl mb-2 font-light">{b.title}</p>
+                <p className="text-stone-400 text-sm">{b.text}</p>
+              </div>
+            ))}
+            
           </div>
         </div>
       </section>

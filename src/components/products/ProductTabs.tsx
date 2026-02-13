@@ -2,21 +2,48 @@
 
 import { useState } from "react";
 import Image from "next/image";
-import { Product } from "../../lib/products";
+//import { Product } from "../../lib/products";
 import { motion, AnimatePresence } from "framer-motion";
 import { Cormorant_Garamond, Jost } from "next/font/google";
 
 const cormorant = Cormorant_Garamond({ subsets: ["latin"], weight: ["400", "500"] });
 const jost = Jost({ subsets: ["latin"], weight: ["300", "400", "500"] });
 
+type Product = {
+  _id: string;
+  title: string;
+  image: string;
+  description: string;
+  category: string;
+  sku: string;
+  tags?: string[];
+  sizes?: string[];
+  rating?: number;
+  reviewsCount?: number;
+};
+
 export default function ProductTabs({ product }: { product: Product }) {
   const [activeTab, setActiveTab] = useState<"description" | "info" | "reviews">("description");
+
+
+  const tags = product.tags && product.tags.length > 0
+    ? product.tags.join(", ")
+    : product.category;
+
+  const sizes = product.sizes && product.sizes.length > 0
+    ? product.sizes.join(" / ")
+    : "Standard";
+
+  const rating = product.rating ?? 5;
+  const reviews = product.reviewsCount ?? 0;
 
   const tabs = [
     { key: "description", label: "The Story" },
     { key: "info", label: "Craftsmanship" },
     { key: "reviews", label: `Reviews (${product.reviewsCount})` },
   ];
+
+
 
   return (
     <section className={`w-full bg-[#fcfaf7] border-t border-stone-200 ${jost.className}`}>
@@ -92,8 +119,8 @@ export default function ProductTabs({ product }: { product: Product }) {
                 <div className="grid grid-cols-1 gap-6 divide-y divide-stone-200">
                   <InfoRow label="Identifier" value={product.sku} />
                   <InfoRow label="Collection" value={product.category} />
-                  <InfoRow label="Artisan Tags" value={product.tags.join(", ")} />
-                  <InfoRow label="Dimensions" value={product.sizes.join(" / ")} />
+                  <InfoRow label="Artisan Tags" value={tags} />
+                  <InfoRow label="Dimensions" value={sizes} />
                 </div>
               </motion.div>
             )}
