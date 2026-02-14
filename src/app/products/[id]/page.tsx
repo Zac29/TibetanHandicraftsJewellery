@@ -1,5 +1,5 @@
 import { notFound } from "next/navigation";
-import { products } from "../../../lib/products";
+//import { products } from "../../../lib/products";
 import ProductPageBanner from "../../../components/common/ProductPageBanner";
 import ProductTabs from "../../../components/products/ProductTabs";
 import RelatedProducts from "../../../components/products/RelatedProducts";
@@ -11,31 +11,73 @@ import { Cormorant_Garamond, Jost } from "next/font/google";
 const cormorant = Cormorant_Garamond({ subsets: ["latin"], weight: ["400", "500"] });
 const jost = Jost({ subsets: ["latin"], weight: ["300", "400", "600"] });
 
-export async function generateStaticParams() {
-  return products.map((product) => ({ id: String(product.id) }));
+// export async function generateStaticParams() {
+//   return products.map((product) => ({ id: String(product.id) }));
+// }
+
+
+type Product = {
+  _id: string;
+  title: string;
+  image: string;
+  gallery?: string[];
+  price: number;
+  oldPrice?: number;
+  category: string;
+  sku: string;
+  description: string;
+  tags?: string[];
+  rating?: number;
+  reviewsCount?: number;
+  colors?: string[];
+  sizes?: string[];
+};
+
+async function getProduct(id: string): Promise<Product | null> {
+  const res = await fetch(`${process.env.API_URL}/products/${id}`, {
+    next: { revalidate: 60 }, // ISR: refresh every 60s
+  });
+
+  if (!res.ok) return null;
+  return res.json();
 }
 
 type Props = { params: Promise<{ id: string }> };
 
+// type Props = {
+//   params: { id: string };
+// };
+
+
 export default async function ProductPage({ params }: Props) {
   const { id } = await params;
-  const product = products.find((p) => p.id === Number(id));
-  if (!product) return notFound();
+const product = await getProduct(id);
 
-  const rating = product.rating ?? 4.5;
+// const product = await getProduct(params.id);
+   if (!product) return notFound();
+   
+  // const product = products.find((p) => p.id === Number(id));
+  // if (!product) return notFound();
+
+  const rating = product.rating ?? 5;
   const reviews = product.reviewsCount ?? 0;
 
   return (
     <div className={`bg-[#fcfaf7] ${jost.className}`}>
-      <ProductPageBanner category="Archive" product={product.title} />
+      <ProductPageBanner category={product.category} product={product.title} />
+
 
       <section className="max-w-[1440px] mx-auto px-6 md:px-16 py-12 md:py-20">
         <div className="flex flex-col lg:flex-row gap-12 lg:gap-24">
           
           {/* GALLERY SIDE */}
           <div className="flex-1">
-            <Gallery
-              images={product.gallery ?? [product.image]}
+             <Gallery
+              images={
+                product.gallery && product.gallery.length > 0
+                  ? product.gallery
+                  : [product.image]
+              }
               title={product.title}
             />
           </div>

@@ -1,14 +1,27 @@
 "use client";
 
 import { useState } from "react";
-import { Product } from "../../lib/products"; 
+// import { Product } from "../../lib/products"; 
 import ContactInfoModal from "../contact/ContactInfoModal";
 import { motion } from "framer-motion";
 import { Plus, Minus } from "lucide-react";
 
+type Product = {
+  _id: string;
+  title: string;
+  price: number;
+  sizes?: string[];
+  colors?: string[];
+};
+
+
 export default function ProductActions({ product }: { product: Product }) {
-  const [selectedSize, setSelectedSize] = useState(product.sizes[0]);
-  const [selectedColor, setSelectedColor] = useState(product.colors[0]);
+
+  const sizes = product.sizes && product.sizes.length > 0 ? product.sizes : ["Standard"];
+  const colors = product.colors && product.colors.length > 0 ? product.colors : [];
+
+  const [selectedSize, setSelectedSize] = useState(sizes[0]);
+  const [selectedColor, setSelectedColor] = useState(colors[0]);
   const [quantity, setQuantity] = useState(1);
   const [openModal, setOpenModal] = useState(false);
 
@@ -22,7 +35,7 @@ export default function ProductActions({ product }: { product: Product }) {
             Select Size
           </span>
           <div className="flex gap-2">
-            {product.sizes.map((size) => (
+            {sizes.map((size) => (
               <button
                 key={size}
                 onClick={() => setSelectedSize(size)}
@@ -44,7 +57,7 @@ export default function ProductActions({ product }: { product: Product }) {
             Artisan Finish
           </span>
           <div className="flex gap-4 items-center h-10">
-            {product.colors.map((color) => (
+            {colors.map((color) => (
               <button
                 key={color}
                 onClick={() => setSelectedColor(color)}

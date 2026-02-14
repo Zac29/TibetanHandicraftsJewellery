@@ -1,96 +1,153 @@
 "use client";
 
-import { Phone, Mail, Printer, ChevronDown, MapPin } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Phone, Mail, ChevronDown, MapPin } from "lucide-react";
 import { Cormorant_Garamond, Jost } from "next/font/google";
+import axios from "axios";
 
 const cormorant = Cormorant_Garamond({ subsets: ["latin"], weight: ["600"] });
 const jost = Jost({ subsets: ["latin"], weight: ["400", "500", "700"] });
 
+// Define the shape of our settings to satisfy TypeScript
+interface ContactSettings {
+  phone: string;
+  email: string;
+  locationText: string;
+  mapEmbedUrl: string;
+  inquiryTypes: string[]; // This ensures TS knows it's an array
+}
+
 export default function ContactSection() {
+  const [settings, setSettings] = useState<ContactSettings>({
+    phone: "",
+    email: "",
+    locationText: "",
+    mapEmbedUrl: "",
+    inquiryTypes: [] // Initialized as empty array
+  });
+
+  const [formData, setFormData] = useState({
+    name: "",
+    email: "",
+    type: "",
+    message: ""
+  });
+
+  const [status, setStatus] = useState({ loading: false, success: false });
+
+  useEffect(() => {
+    // Replace with your actual API production URL if different
+    axios.get("http://localhost:5000/api/contact/settings")
+      .then(res => {
+        if (res.data) {
+          setSettings({
+            ...res.data,
+            // Safety check: ensure inquiryTypes is always an array even if API fails
+            inquiryTypes: Array.isArray(res.data.inquiryTypes) ? res.data.inquiryTypes : []
+          });
+        }
+      })
+      .catch(err => console.error("Error loading settings", err));
+  }, []);
+
+  const handleSubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setStatus({ ...status, loading: true });
+    try {
+      await axios.post("http://localhost:5000/api/contact/inquiry", formData);
+      setStatus({ loading: false, success: true });
+      setFormData({ name: "", email: "", type: "", message: "" });
+      alert("Inquiry sent successfully!");
+    } catch (err) {
+      alert("Failed to send inquiry.");
+      setStatus({ ...status, loading: false });
+    }
+  };
+
   return (
     <section className={`w-full bg-[#fcfaf7] py-12 lg:py-24 ${jost.className}`}>
       <div className="max-w-[1440px] mx-auto px-6 lg:px-16">
-        
-        {/* THE MAIN CARD - Responsive Grid instead of Absolute Pixels */}
         <div className="relative bg-white shadow-[0_40px_100px_rgba(0,0,0,0.04)] border border-stone-100 flex flex-col lg:flex-row overflow-hidden">
           
-          {/* LEFT CONTENT: THE FORM (60% width on Desktop) */}
           <div className="w-full lg:w-[60%] p-8 md:p-16 lg:p-24 space-y-12">
             <header className="space-y-4">
-              <span className="text-[10px] uppercase tracking-[0.5em] text-amber-700 font-bold">
-                Inquiry
-              </span>
+              <span className="text-[10px] uppercase tracking-[0.5em] text-amber-700 font-bold">Inquiry</span>
               <h2 className={`${cormorant.className} text-4xl md:text-5xl lg:text-6xl text-stone-900 leading-tight`}>
                 Get in <span className="italic font-light text-stone-500">Touch</span>
               </h2>
-              <p className="text-stone-400 text-sm max-w-md leading-relaxed">
-                Connect with our studio for bespoke commissions, product inquiries, or traditional craft consultations.
-              </p>
             </header>
 
-            <form className="grid grid-cols-1 md:grid-cols-2 gap-6">
-              <div className="space-y-1">
-                <input 
-                  type="text" 
-                  placeholder="Your Name *" 
-                  className="w-full border-b border-stone-200 py-4 text-sm outline-none focus:border-amber-700 transition-colors bg-transparent"
-                />
-              </div>
-              <div className="space-y-1">
-                <input 
-                  type="email" 
-                  placeholder="Email Address *" 
-                  className="w-full border-b border-stone-200 py-4 text-sm outline-none focus:border-amber-700 transition-colors bg-transparent"
-                />
-              </div>
+            <form onSubmit={handleSubmit} className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <input 
+                required
+                placeholder="Your Name *" 
+                className="w-full border-b border-stone-200 py-4 text-sm outline-none focus:border-amber-700 bg-transparent transition-colors"
+                value={formData.name}
+                onChange={(e) => setFormData({...formData, name: e.target.value})}
+              />
+              <input 
+                required
+                type="email"
+                placeholder="Email Address *" 
+                className="w-full border-b border-stone-200 py-4 text-sm outline-none focus:border-amber-700 bg-transparent transition-colors"
+                value={formData.email}
+                onChange={(e) => setFormData({...formData, email: e.target.value})}
+              />
               <div className="md:col-span-2 relative">
                 <select 
-                  className="w-full border-b border-stone-200 py-4 text-sm outline-none focus:border-amber-700 transition-colors bg-transparent appearance-none cursor-pointer"
+                  required
+                  className="w-full border-b border-stone-200 py-4 text-sm outline-none focus:border-amber-700 bg-transparent appearance-none cursor-pointer"
+                  value={formData.type}
+                  onChange={(e) => setFormData({...formData, type: e.target.value})}
                 >
-                  <option value="" disabled selected>Nature of Inquiry</option>
-                  <option value="jewellery">Tibetan Jewellery</option>
-                  <option value="handicrafts">Traditional Handicrafts</option>
-                  <option value="wholesale">Wholesale & Archive</option>
+                  <option value="" disabled>Nature of Inquiry</option>
+                  {/* Using optional chaining and fallback for total safety */}
+                  {(settings.inquiryTypes || []).map((t, index) => (
+                    <option key={index} value={t}>{t}</option>
+                  ))}
                 </select>
                 <ChevronDown size={14} className="absolute right-0 top-5 text-stone-400 pointer-events-none" />
               </div>
-              <div className="md:col-span-2">
-                <textarea 
-                  placeholder="How can we assist you?" 
-                  rows={4}
-                  className="w-full border-b border-stone-200 py-4 text-sm outline-none focus:border-amber-700 transition-colors bg-transparent resize-none"
-                />
-              </div>
+              <textarea 
+                required
+                placeholder="How can we assist you?" 
+                rows={4}
+                className="md:col-span-2 w-full border-b border-stone-200 py-4 text-sm outline-none focus:border-amber-700 bg-transparent resize-none transition-colors"
+                value={formData.message}
+                onChange={(e) => setFormData({...formData, message: e.target.value})}
+              />
 
               <button 
                 type="submit"
-                className="md:col-span-2 mt-6 h-[60px] bg-stone-900 text-white text-[11px] font-bold uppercase tracking-[0.3em] hover:bg-amber-800 transition-all duration-500"
+                disabled={status.loading}
+                className="md:col-span-2 mt-6 h-[60px] bg-stone-900 text-white text-[11px] font-bold uppercase tracking-[0.3em] hover:bg-amber-800 transition-all disabled:opacity-50"
               >
-                Send Inquiry
+                {status.loading ? "Sending..." : "Send Inquiry"}
               </button>
             </form>
 
-            {/* CONTACT QUICK LINKS */}
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-8 pt-8">
-              <ContactItem icon={<Phone size={18}/>} label="Phone" value="+91 98765 43210" />
-              <ContactItem icon={<Mail size={18}/>} label="Email" value="studio@tibetanarts.com" />
-              <ContactItem icon={<MapPin size={18}/>} label="Studio" value="Bodh Gaya, India" />
+              <ContactItem icon={<Phone size={18}/>} label="Phone" value={settings.phone} />
+              <ContactItem icon={<Mail size={18}/>} label="Email" value={settings.email} />
+              <ContactItem icon={<MapPin size={18}/>} label="Studio" value={settings.locationText} />
             </div>
           </div>
 
-          {/* RIGHT CONTENT: THE VISUAL (40% width on Desktop) */}
-<div className="w-full lg:w-[40%] h-[300px] md:h-[450px] lg:h-auto relative bg-stone-100">
-  {/* The Amber-Gold accent bar */}
-  <div className="absolute top-0 right-0 w-2 h-full bg-amber-700 z-10 hidden lg:block" />
-  
-  <iframe
-    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d14457.777478696808!2d84.98184515!3d24.69510165!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x39f32c3f30960557%3A0x6e949829f03a6285!2sBodh%20Gaya%2C%20Bihar!5e0!3m2!1sen!2sin!4v1700000000000!5m2!1sen!2sin"
-    className="w-full h-full border-0 grayscale hover:grayscale-0 transition-all duration-1000"
-    allowFullScreen
-    loading="lazy"
-    referrerPolicy="no-referrer-when-downgrade"
-  />
-</div>
+          <div className="w-full lg:w-[40%] h-[300px] md:h-[450px] lg:h-auto relative bg-stone-100">
+            <div className="absolute top-0 right-0 w-2 h-full bg-amber-700 z-10 hidden lg:block" />
+            {settings.mapEmbedUrl ? (
+              <iframe
+                src={settings.mapEmbedUrl}
+                className="w-full h-full border-0 grayscale hover:grayscale-0 transition-all duration-1000"
+                allowFullScreen
+                loading="lazy"
+              />
+            ) : (
+                <div className="w-full h-full flex items-center justify-center text-stone-400 italic text-sm">
+                    Loading Map...
+                </div>
+            )}
+          </div>
         </div>
       </div>
     </section>
@@ -102,7 +159,7 @@ function ContactItem({ icon, label, value }: { icon: any, label: string, value: 
     <div className="space-y-2 group">
       <div className="text-amber-700 group-hover:scale-110 transition-transform duration-300">{icon}</div>
       <p className="text-[10px] uppercase tracking-widest text-stone-400 font-bold">{label}</p>
-      <p className="text-stone-800 text-[13px] font-medium break-words">{value}</p>
+      <p className="text-stone-800 text-[13px] font-medium break-words">{value || "---"}</p>
     </div>
   );
 }

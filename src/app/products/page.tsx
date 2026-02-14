@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo } from "react";
+import { useState, useMemo,useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion } from "framer-motion";
@@ -12,26 +12,45 @@ import {
 } from "lucide-react";
 import { Cormorant_Garamond, Jost } from "next/font/google";
 
-import { products } from "../../lib/products";
+//import { products } from "../../lib/products";
 import FeaturesSection from "../../components/common/FeaturesStrip";
 import PageBanner from "../../components/common/PageBanner";
-
+import { API } from "../../utils/api";
 const cormorant = Cormorant_Garamond({ subsets: ["latin"], weight: ["400", "500", "600"] });
 const jost = Jost({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700"] });
 
 const PER_PAGE = 16;
 
 export default function ProductsPage() {
+  const [products, setProducts] = useState<any[]>([]);
   // Store liked state using a dictionary of product IDs
   const [liked, setLiked] = useState<Record<number, boolean>>({});
   const [page, setPage] = useState(1);
+   const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    fetchProducts();
+  }, []);
+
+  const fetchProducts = async () => {
+    try {
+      setLoading(true);
+      const res = await API.get("/products");
+      setProducts(res.data);
+    } catch (err) {
+      console.error("Failed to load products");
+    } finally {
+      setLoading(false);
+    }
+  };
+
 
   const totalPages = Math.ceil(products.length / PER_PAGE);
 
   const pageProducts = useMemo(() => {
     const start = (page - 1) * PER_PAGE;
-    return products.slice(start, start + PER_PAGE);
-  }, [page]);
+  return products.slice(start, start + PER_PAGE);
+}, [page, products]);
 
   const from = (page - 1) * PER_PAGE + 1;
   const to = Math.min(page * PER_PAGE, products.length);
@@ -76,13 +95,13 @@ export default function ProductsPage() {
               initial={{ opacity: 0, y: 20 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
-              key={product.id}
+              key={product._id}
               className="group"
             >
               {/* shadow-[0_4px_20px_rgba(0,0,0,0.03)] container from second block */}
               <div className="relative flex flex-col bg-white rounded-sm overflow-hidden transition-all duration-500 shadow-[0_4px_20px_rgba(0,0,0,0.03)] group-hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] group-hover:-translate-y-1">
                 
-                <Link href={`/products/${product.id}`} className="block relative aspect-[3/4] w-full overflow-hidden bg-stone-100">
+                <Link href={`/products/${product._id}`} className="block relative aspect-[3/4] w-full overflow-hidden bg-stone-100">
                   {/* Status Badge */}
                   {product.tag && (
                     <div className={`absolute top-4 left-4 z-20 text-[9px] uppercase tracking-widest text-white px-3 py-1 font-bold shadow-sm ${
@@ -116,14 +135,14 @@ export default function ProductsPage() {
                         onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
-                          setLiked((prev) => ({ ...prev, [product.id]: !prev[product.id] }));
+                          setLiked((prev) => ({ ...prev, [product._id]: !prev[product._id] }));
                         }}
                         className="transition-transform active:scale-125 drop-shadow-md"
                       >
                         <Heart 
                           size={18} 
                           strokeWidth={1.5}
-                          className={liked[product.id] ? "fill-amber-600 text-amber-600" : "text-white"} 
+                          className={liked[product._id] ? "fill-amber-600 text-amber-600" : "text-white"} 
                         />
                       </button>
                     </div>
@@ -132,7 +151,7 @@ export default function ProductsPage() {
 
                 {/* Product Info - Inside the Shadow Container */}
                 <div className="p-5 space-y-1 bg-white">
-                  <Link href={`/products/${product.id}`}>
+                  <Link href={`/products/${product._id}`}>
                     <h3 className={`${cormorant.className} text-lg lg:text-xl text-stone-900 group-hover:text-amber-800 transition-colors truncate`}>
                       {product.title}
                     </h3>
