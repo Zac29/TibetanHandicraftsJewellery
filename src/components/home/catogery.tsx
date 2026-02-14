@@ -9,28 +9,48 @@ import { Cormorant_Garamond, Jost } from "next/font/google";
 const cormorant = Cormorant_Garamond({ subsets: ["latin"], weight: ["500", "600"] });
 const jost = Jost({ subsets: ["latin"], weight: ["300", "400"] });
 
+import { useRouter } from "next/navigation";
 
 type Item = {
   title: string;
   image: string;
+  slug: string;
+  order: number;
 };
 
-const items: Item[] = [
-  { title: "Bowl", image: "/Bowl.png" },
-  { title: "Statues", image: "/Statues.png" },
-  { title: "Pot", image: "/Pot.png" },
-  { title: "Mask", image: "/item.png" },
-  { title: "Bell", image: "/decore.png" },
-];
+type CategorySlider = {
+  heading: string;
+  description: string;
+  items: Item[];
+};
+
+// const items: Item[] = [
+//   { title: "Bowl", image: "/Bowl.png", slug: "bowl" },
+//   { title: "Statues", image: "/Statues.png", slug: "statues" },
+//   { title: "Pot", image: "/Pot.png", slug: "pot" },
+//   { title: "Mask", image: "/item.png", slug: "mask" },
+//   { title: "Bell", image: "/decore.png", slug: "bell" },
+// ];
+
 
 export default function Category() {
+  const [data, setData] = useState<CategorySlider | null>(null);
   const [active, setActive] = useState(0);
   const [isMobile, setIsMobile] = useState(false);
+  const router = useRouter();
+
   
   // We don't necessarily need isInView for swipe, but keeping ref for safety
   const sectionRef = useRef<HTMLElement | null>(null);
 
-  // Detect screen size
+
+  useEffect(() => {
+    fetch("http://localhost:5000/api/category-slider")
+      .then(res => res.json())
+      .then(setData)
+      .catch(console.error);
+  }, []);
+
   useEffect(() => {
     const check = () => setIsMobile(window.innerWidth < 768);
     check();
@@ -38,20 +58,24 @@ export default function Category() {
     return () => window.removeEventListener("resize", check);
   }, []);
 
-  const next = () => setActive((p) => (p + 1) % items.length);
-  const prev = () => setActive((p) => (p - 1 + items.length) % items.length);
+  if (!data) return null;
+  
+  // Detect screen size
+  const items = [...data.items].sort((a, b) => a.order - b.order);
 
-  // Drag End Handler for Mobile Swipe
-  const onDragEnd = (event: MouseEvent | TouchEvent | PointerEvent, info: PanInfo) => {
+  const next = () => setActive(p => (p + 1) % items.length);
+  const prev = () => setActive(p => (p - 1 + items.length) % items.length);
+
+  /* ================= DRAG HANDLER ================= */
+  const onDragEnd = (
+    event: MouseEvent | TouchEvent | PointerEvent,
+    info: PanInfo
+  ) => {
     const offset = info.offset.x;
     const velocity = info.velocity.x;
 
-    // Threshold for swipe (distance or speed)
-    if (offset < -50 || velocity < -500) {
-      next();
-    } else if (offset > 50 || velocity > 500) {
-      prev();
-    }
+    if (offset < -50 || velocity < -500) next();
+    else if (offset > 50 || velocity > 500) prev();
   };
 
   return (
@@ -72,8 +96,7 @@ export default function Category() {
           Shop by <span className="italic font-light text-stone-500">Category</span>
         </h2>
         <p className="max-w-2xl mx-auto text-stone-500 text-base md:text-lg leading-relaxed font-light">
-          Explore our handcrafted artifacts, each carrying a unique story of 
-          traditional Tibetan craftsmanship and spiritual heritage.
+         {data.description}
         </p>
       </div>
 
@@ -117,9 +140,8 @@ export default function Category() {
             return (
               <motion.div
                 key={i}
-                onClick={() => {
-                   // Allow clicking to select on desktop, or if it's the side item
-                   if(state !== "hidden") setActive(i);
+               onClick={() => {
+                  router.push(`/products?category=${item.slug}`);
                 }}
                 animate={state}
                 // Enable Drag only on Mobile and only on the active card (or all, but logic handles it)

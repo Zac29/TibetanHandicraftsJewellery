@@ -11,6 +11,8 @@ import {
   ChevronRight,
 } from "lucide-react";
 import { Cormorant_Garamond, Jost } from "next/font/google";
+import { useSearchParams } from "next/navigation";
+
 
 //import { products } from "../../lib/products";
 import FeaturesSection from "../../components/common/FeaturesStrip";
@@ -28,14 +30,27 @@ export default function ProductsPage() {
   const [page, setPage] = useState(1);
    const [loading, setLoading] = useState(true);
 
+   const searchParams = useSearchParams();
+  const category = searchParams.get("category"); 
+
+
+
   useEffect(() => {
     fetchProducts();
-  }, []);
+    setPage(1); // reset pagination when category changes
+  }, [category]);
+
+
+  // useEffect(() => {
+  //   fetchProducts();
+  // }, []);
 
   const fetchProducts = async () => {
     try {
       setLoading(true);
-      const res = await API.get("/products");
+      const res = await API.get("/products", {
+        params: category ? { category } : {},
+      });
       setProducts(res.data);
     } catch (err) {
       console.error("Failed to load products");
@@ -59,8 +74,8 @@ export default function ProductsPage() {
     <div className={`bg-[#ffffff] min-h-screen ${jost.className}`}>
       {/* HERO HEADER */}
       <PageBanner
-        title="The Collection"
-        breadcrumb="Archive"
+        title={category ? category.toUpperCase() : "The Collection"}
+        breadcrumb={category ? "Category" : "Archive"}
         imageSrc="/item.png"
         overlayOpacity={0.4}
       />
@@ -103,13 +118,17 @@ export default function ProductsPage() {
                 
                 <Link href={`/products/${product._id}`} className="block relative aspect-[3/4] w-full overflow-hidden bg-stone-100">
                   {/* Status Badge */}
-                  {product.tag && (
-                    <div className={`absolute top-4 left-4 z-20 text-[9px] uppercase tracking-widest text-white px-3 py-1 font-bold shadow-sm ${
-                      product.tag === "sale" ? "bg-amber-800" : "bg-stone-800"
-                    }`}>
-                      {product.tag === "sale" ? "Special Price" : "New Archive"}
-                    </div>
-                  )}
+                 {product.tag && (
+  <div
+    className="absolute top-4 left-4 z-20 text-[9px] uppercase tracking-widest text-white px-3 py-1 font-bold shadow-sm"
+    style={{
+      backgroundColor: product.tagColor || "#1c1917", // 🔥 backend-driven color
+    }}
+  >
+    {product.tag}
+  </div>
+)}
+
 
                   <Image
                     src={product.image}

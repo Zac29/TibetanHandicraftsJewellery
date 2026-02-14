@@ -8,27 +8,43 @@ import { Cormorant_Garamond, Jost } from "next/font/google";
 const cormorant = Cormorant_Garamond({ subsets: ["latin"], weight: ["600", "700"] });
 const jost = Jost({ subsets: ["latin"], weight: ["400", "500", "700"] });
 
-type Item = {
-  id: string;
-  category: string;
-  title: string;
-  image: string;
-};
+// type Item = {
+//   id: string;
+//   category: string;
+//   title: string;
+//   image: string;
+// };
 
-const items: Item[] = [
-  { id: "01", category: "Pottery", title: "Hand-Thrown Vessel", image: "/Pot.png" },
-  { id: "02", category: "Sculpture", title: "Ancient Deity", image: "/Statues.png" },
-  { id: "03", category: "Artifact", title: "Ritual Bowl", image: "/Bowl.png" },
-  { id: "04", category: "Mask", title: "Ceremonial Face", image: "/item.png" },
-  { id: "05", category: "Metalware", title: "Temple Bell", image: "/decore.png" },
-];
+// const items: Item[] = [
+//   { id: "01", category: "Pottery", title: "Hand-Thrown Vessel", image: "/Pot.png" },
+//   { id: "02", category: "Sculpture", title: "Ancient Deity", image: "/Statues.png" },
+//   { id: "03", category: "Artifact", title: "Ritual Bowl", image: "/Bowl.png" },
+//   { id: "04", category: "Mask", title: "Ceremonial Face", image: "/item.png" },
+//   { id: "05", category: "Metalware", title: "Temple Bell", image: "/decore.png" },
+// ];
 
 export default function StackedSliderLoop() {
   const [active, setActive] = useState(0);
   const [isHovering, setIsHovering] = useState(false);
+  const [data, setData] = useState<any>(null);
+  const [items, setItems] = useState<any[]>([]);
+
 
   useEffect(() => {
-    if (isHovering) return;
+  fetch("http://localhost:5000/api/product-showcase")
+    .then(res => res.json())
+    .then(res => {
+      setData(res);
+      setItems(res.sliderItems || []);
+      setActive(0); 
+    })
+    .catch(() => {
+      console.warn("Using fallback data");
+    });
+}, []);
+
+  useEffect(() => {
+       if (isHovering || items.length === 0) return; 
     const interval = setInterval(() => {
       setActive((prev) => (prev + 1) % items.length);
     }, 4000);
@@ -36,6 +52,7 @@ export default function StackedSliderLoop() {
   }, [active, isHovering]);
 
   const getIndex = (offset: number) => {
+    if (items.length === 0) return 0; //
     return (active + offset + items.length) % items.length;
   };
 
@@ -59,26 +76,36 @@ export default function StackedSliderLoop() {
         <div className="space-y-8 z-10 text-center lg:text-left order-1">
           <div className="space-y-4">
             <span className="text-amber-800 text-[10px] uppercase tracking-[0.5em] font-bold">
-              Global Archive
+               {data?.label}
             </span>
             <motion.h1
               initial={{ opacity: 0, y: 20 }}
               animate={{ opacity: 1, y: 0 }}
               className={`${cormorant.className} text-[52px] lg:text-[72px] font-bold text-stone-900 leading-[1.1]`}
             >
-              50M+ <br /> Product Sold
+              {data?.heading?.split("\n").map((line: string, i: number) => (
+    <span key={i}>
+      {line}
+      <br />
+    </span>
+  ))}
             </motion.h1>
             <div className="w-12 h-[1px] bg-amber-800/40 hidden lg:block" />
           </div>
 
           <p className="text-stone-500 text-[16px] lg:text-[18px] leading-relaxed max-w-sm mx-auto lg:mx-0 font-light">
-            An exclusive collection of 50M+ artifacts, preserved through time and delivered to your space.
+           {data?.description}
           </p>
-
-          <button className="group relative overflow-hidden inline-flex items-center justify-center w-[220px] h-[58px] bg-stone-900 text-white text-[11px] font-bold uppercase tracking-[0.3em] transition-all duration-500 hover:bg-amber-900">
-            <span className="relative z-10">Discover All</span>
+          <a href={data?.buttonLink || "#"}>
+          <button
+    style={{
+      backgroundColor: data?.buttonBgColor,
+      color: data?.buttonTextColor,
+    }} className="group relative overflow-hidden inline-flex items-center justify-center w-[220px] h-[58px] bg-stone-900 text-white text-[11px] font-bold uppercase tracking-[0.3em] transition-all duration-500 hover:bg-amber-900">
+            <span className="relative z-10">  {data?.buttonText}</span>
             <span className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-[120%] group-hover:translate-x-[120%] transition-transform duration-1000" />
           </button>
+          </a>
         </div>
 
         {/* --- RIGHT COLUMN: THE STACKED SLIDER --- */}
@@ -90,22 +117,27 @@ export default function StackedSliderLoop() {
           <div className="relative w-full h-full">
             <div className="relative w-full h-full"> 
               <AnimatePresence initial={false} mode="popLayout">
-                {[0, 1, 2].map((offset) => {
+                {items.length > 0 &&
+              [0, 1, 2]
+                 .filter((o) => o < items.length) // 🔧 FIX #3
+                .map((offset) => {
                   const itemIndex = getIndex(offset);
                   const item = items[itemIndex];
                   
-                  let variantState = "enter";
-                  if (offset === 0) variantState = "active";
-                  else if (offset === 1) variantState = "next";
-                  else if (offset === 2) variantState = "upcoming";
+                 if (!item) return null;
+
+                  let state = "enter";
+                  if (offset === 0) state = "active";
+                  else if (offset === 1) state = "next";
+                  else state = "upcoming";
 
                   return (
                     <motion.div
-                      key={item.id}
-                      layoutId={`card-${item.id}`}
+                      key={item.id || itemIndex}
+                      layoutId={`card-${item.id || itemIndex}`}
                       variants={cardVariants}
                       initial="enter"
-                      animate={variantState}
+                      animate={state}
                       exit="exit"
                       transition={{ 
                         type: "spring", stiffness: 120, damping: 20,

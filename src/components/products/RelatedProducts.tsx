@@ -1,17 +1,58 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Heart, Share2, ArrowRight } from "lucide-react";
-import { products } from "../../lib/products";
+// import { products } from "../../lib/products";
 import { motion } from "framer-motion";
 import { Cormorant_Garamond } from "next/font/google";
 
 const cormorant = Cormorant_Garamond({ subsets: ["latin"], weight: ["500"] });
 
+type Product = {
+  _id: string;
+  title: string;
+  image: string;
+  price: number;
+  oldPrice?: number;
+  category: string;
+  tag?: string;
+};
+
 export default function RelatedProducts() {
-  const [liked, setLiked] = useState<Record<number, boolean>>({});
+  const [products, setProducts] = useState<Product[]>([]);
+  const [liked, setLiked] = useState<Record<string, boolean>>({}); // ✅ FIX
+  const [loading, setLoading] = useState(true);
+
+   useEffect(() => {
+    fetch("http://localhost:5000/api/products")
+      .then(res => res.json())
+      .then(data => {
+        setProducts(data || []);
+      })
+      .catch(err => {
+        console.error("Failed to fetch related products", err);
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  /* ================= STATES ================= */
+  if (loading) {
+    return (
+      <section className="py-32 text-center italic text-stone-400">
+        Loading curated pieces…
+      </section>
+    );
+  }
+
+  if (products.length === 0) {
+    return (
+      <section className="py-32 text-center italic text-stone-400">
+        No related pieces found.
+      </section>
+    );
+  }
 
   return (
     <section className="w-full bg-[#fcfaf7] py-24 border-t border-stone-200">
@@ -31,15 +72,15 @@ export default function RelatedProducts() {
         {/* PRODUCTS GRID */}
         <div className="grid grid-cols-2 lg:grid-cols-4 gap-6 lg:gap-10">
           {products.slice(0, 4).map((product) => (
-            <div key={product.id} className="group relative">
+            <div key={product._id} className="group relative">
               <Link
-                href={`/products/${product.id}`}
+                href={`/products/${product._id}`}
                 className="block bg-transparent overflow-hidden relative focus:outline-none"
               >
                 {/* TAG / BADGE (Minimalist) */}
                 {product.tag && (
                   <div className="absolute top-4 left-4 z-20 bg-stone-900 text-white text-[9px] uppercase tracking-widest px-3 py-1">
-                    {product.tag === "sale" ? "Offer" : "Archive"}
+                    {product.tag}
                   </div>
                 )}
 
@@ -64,9 +105,9 @@ export default function RelatedProducts() {
                           size={16} 
                           onClick={(e) => {
                             e.preventDefault();
-                            setLiked(prev => ({ ...prev, [product.id]: !prev[product.id] }));
+                            setLiked(prev => ({ ...prev, [product._id]: !prev[product._id] }));
                           }}
-                          className={`cursor-pointer transition-colors ${liked[product.id] ? "fill-amber-500 text-amber-500" : "hover:text-amber-400"}`} 
+                          className={`cursor-pointer transition-colors ${liked[product._id] ? "fill-amber-500 text-amber-500" : "hover:text-amber-400"}`} 
                         />
                     </div>
                   </div>
