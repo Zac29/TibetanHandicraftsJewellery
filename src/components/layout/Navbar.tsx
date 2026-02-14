@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence, useScroll, useTransform, useSpring } from "framer-motion";
-import { ShoppingBag, Search, Plus } from "lucide-react";
+import { ShoppingBag, Search, Plus, X } from "lucide-react";
 import { Cormorant_Garamond, Jost } from "next/font/google";
 
 const cormorant = Cormorant_Garamond({ subsets: ["latin"], weight: ["300", "400", "500"] });
@@ -13,6 +13,13 @@ const jost = Jost({ subsets: ["latin"], weight: ["300", "400", "600"] });
 export default function SolidKineticNavbar() {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMenuOpen, setIsMenuOpen] = useState(false);
+
+  // 🔥 ADDED: SEARCH STATE
+  const [searchOpen, setSearchOpen] = useState(false);
+  const [query, setQuery] = useState("");
+  const [results, setResults] = useState<any>({ products: [], pages: [] });
+  const [loading, setLoading] = useState(false)
+
   const { scrollY } = useScroll();
 
   // High-end spring physics for "Heavy Luxury" feel
@@ -28,6 +35,24 @@ export default function SolidKineticNavbar() {
     window.addEventListener("scroll", handleScroll);
     return () => window.removeEventListener("scroll", handleScroll);
   }, []);
+
+
+   useEffect(() => {
+    if (!query.trim()) {
+      setResults({ products: [], pages: [] });
+      return;
+    }
+
+    const timer = setTimeout(async () => {
+      setLoading(true);
+      const res = await fetch(`http://localhost:5000/api/search?q=${query}`);
+      const data = await res.json();
+      setResults(data);
+      setLoading(false);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [query]);
 
   // UPDATED NAMES HERE
   const navLinks = [ "PRODUCTS", "About", "CONTACT"];
@@ -47,7 +72,9 @@ export default function SolidKineticNavbar() {
           
           {/* LEFT: MINIMAL UTILITY */}
           <div className="flex-1 flex items-center">
-            <button className="group flex items-center gap-4">
+            <button 
+            onClick={() => setSearchOpen(true)}
+            className="group flex items-center gap-4">
               <div className="w-10 h-10 rounded-full border border-stone-200 flex items-center justify-center group-hover:border-stone-900 transition-all duration-500 bg-white">
                 <Search size={16} strokeWidth={1} className="text-stone-400 group-hover:text-stone-950" />
               </div>
@@ -102,10 +129,10 @@ export default function SolidKineticNavbar() {
             </nav>
 
             <div className="flex items-center gap-4">
-              <button className="relative w-12 h-12 flex items-center justify-center bg-white border border-stone-100 rounded-full shadow-sm group hover:bg-stone-900 transition-all duration-500">
+              {/* <button className="relative w-12 h-12 flex items-center justify-center bg-white border border-stone-100 rounded-full shadow-sm group hover:bg-stone-900 transition-all duration-500">
                 <ShoppingBag size={18} strokeWidth={1} className="text-stone-950 group-hover:text-white transition-colors" />
                 <span className="absolute -top-1 -right-1 w-5 h-5 bg-amber-600 text-white text-[9px] flex items-center justify-center rounded-full font-bold">0</span>
-              </button>
+              </button> */}
               
               <button 
                 onClick={() => setIsMenuOpen(true)}
@@ -118,6 +145,119 @@ export default function SolidKineticNavbar() {
           </div>
         </div>
       </motion.header>
+<AnimatePresence>
+  {searchOpen && (
+    <motion.div
+      initial={{ y: "-100%" }}
+      animate={{ y: 0 }}
+      exit={{ y: "-100%" }}
+      transition={{ duration: 0.8, ease: [0.85, 0, 0.15, 1] }}
+      className="fixed inset-0 z-[200] bg-[#0f0f0f] flex flex-col"
+    >
+      {/* BACKGROUND DECOR */}
+      <div className="absolute inset-0 opacity-20 pointer-events-none">
+        <div className="absolute top-0 left-1/4 w-[1px] h-full bg-gradient-to-b from-stone-500 to-transparent" />
+        <div className="absolute top-0 right-1/4 w-[1px] h-full bg-gradient-to-b from-stone-500 to-transparent" />
+      </div>
+
+      <div className="container mx-auto px-8 md:px-24 pt-20 pb-12 relative z-10">
+        {/* HEADER & INPUT */}
+        <div className="flex justify-between items-center mb-16">
+          <div className="w-full max-w-4xl">
+            <p className={`${jost.className} text-amber-600 text-[10px] uppercase tracking-[0.5em] mb-4`}>
+              Inquiry
+            </p>
+            <div className="relative group">
+              <input
+                autoFocus
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search the collection..."
+                className={`${cormorant.className} w-full bg-transparent border-b border-stone-800 text-white text-5xl md:text-7xl pb-4 outline-none placeholder:text-stone-900 transition-colors focus:border-amber-500/50`}
+              />
+              <motion.div 
+                initial={{ scaleX: 0 }}
+                animate={{ scaleX: query ? 1 : 0 }}
+                className="absolute bottom-0 left-0 w-full h-[1px] bg-amber-500 origin-left"
+              />
+            </div>
+          </div>
+          
+          <button
+            onClick={() => setSearchOpen(false)}
+            className="p-4 border border-stone-800 rounded-full text-white hover:bg-white hover:text-black transition-all duration-500"
+          >
+            <X size={24} />
+          </button>
+        </div>
+
+        {/* CONTENT GRID */}
+        <div className="grid lg:grid-cols-12 gap-16">
+          
+          {/* LEFT: RESULTS (8 COLS) */}
+          <div className="lg:col-span-8 overflow-y-auto max-h-[60vh] pr-6 custom-scrollbar">
+            {loading ? (
+              <p className="text-stone-600 animate-pulse uppercase tracking-widest text-xs">Searching Archives...</p>
+            ) : (
+              <div className="space-y-16">
+                {results.products.length > 0 && (
+                  <motion.div 
+                    initial={{ opacity: 0, y: 20 }}
+                    animate={{ opacity: 1, y: 0 }}
+                  >
+                    <h3 className={`${jost.className} text-stone-500 text-[10px] uppercase tracking-[0.4em] mb-8`}>Product Matches</h3>
+                    <div className="grid md:grid-cols-2 gap-x-12 gap-y-8">
+                      {results.products.map((p: any) => (
+                        <Link
+                          key={p._id}
+                          href={`/products/${p._id}`}
+                          onClick={() => setSearchOpen(false)}
+                          className="flex gap-6 group items-center"
+                        >
+                          <div className="relative w-20 h-24 bg-stone-900 overflow-hidden rounded-sm">
+                            <Image src={p.image} alt={p.title} fill className="object-cover transition-transform duration-700 group-hover:scale-110" />
+                          </div>
+                          <div>
+                            <p className={`${cormorant.className} text-white text-xl group-hover:text-amber-500 transition-colors`}>{p.title}</p>
+                            <p className="text-stone-500 text-sm mt-1 tracking-widest">₹{p.price.toLocaleString()}</p>
+                          </div>
+                        </Link>
+                      ))}
+                    </div>
+                  </motion.div>
+                )}
+
+                {/* EMPTY STATE */}
+                {query && results.products.length === 0 && (
+                  <div className="py-20 text-center border border-dashed border-stone-900 rounded-xl">
+                    <p className={`${cormorant.className} text-stone-600 italic text-2xl`}>The vault is silent. Try another keyword.</p>
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+
+          {/* RIGHT: SUGGESTIONS / PAGES (4 COLS) */}
+          <div className="lg:col-span-4 border-l border-stone-900 pl-12 hidden lg:block">
+             {/* <h3 className={`${jost.className} text-stone-500 text-[10px] uppercase tracking-[0.4em] mb-8`}>Quick Access</h3> */}
+             {/* <nav className="flex flex-col gap-6">
+               {["Home", "Products",  "Contact"].map((item) => (
+                 <Link 
+                   key={item} 
+                   href={`/${item.toLowerCase().replace(/\s+/g, '-')}`}
+                   className="text-stone-400 hover:text-white transition-colors text-lg font-light"
+                 >
+                   {item}
+                 </Link>
+               ))}
+             </nav> */}
+          </div>
+
+        </div>
+      </div>
+    </motion.div>
+  )}
+</AnimatePresence>
 
       {/* THE CINEMATIC SOLID OVERLAY */}
       <AnimatePresence>
