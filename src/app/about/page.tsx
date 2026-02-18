@@ -15,7 +15,7 @@ export default function AboutPage() {
    /* ================= FETCH FROM BACKEND ================= */
   useEffect(() => {
     axios
-      .get("http://localhost:5000/api/about")
+      .get("https://thj-backend.onrender.com/api/about")
       .then((res) => setData(res.data))
       .catch((err) => console.error("About fetch failed", err));
   }, []);

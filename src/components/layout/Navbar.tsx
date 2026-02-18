@@ -64,7 +64,7 @@ export default function SolidKineticNavbar() {
 
     const timer = setTimeout(async () => {
       setLoading(true);
-      const res = await fetch(`http://localhost:5000/api/search?q=${query}`);
+      const res = await fetch(`https://thj-backend.onrender.com/api/search?q=${query}`);
       const data = await res.json();
       setResults(data);
       setLoading(false);

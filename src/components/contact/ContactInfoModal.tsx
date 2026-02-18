@@ -19,7 +19,7 @@ export default function ContactInfoModal({ isOpen, onClose }: { isOpen: boolean;
 
   useEffect(() => {
     if (isOpen) {
-      axios.get("http://localhost:5000/api/contact/settings")
+      axios.get("https://thj-backend.onrender.com/api/contact/settings")
         .then(res => setSettings(res.data));
     }
   }, [isOpen]);

@@ -37,7 +37,7 @@ export default function ContactSection() {
 
   useEffect(() => {
     // Replace with your actual API production URL if different
-    axios.get("http://localhost:5000/api/contact/settings")
+    axios.get("https://thj-backend.onrender.com/api/contact/settings")
       .then(res => {
         if (res.data) {
           setSettings({
@@ -54,7 +54,7 @@ export default function ContactSection() {
     e.preventDefault();
     setStatus({ ...status, loading: true });
     try {
-      await axios.post("http://localhost:5000/api/contact/inquiry", formData);
+      await axios.post("https://thj-backend.onrender.com/api/contact/inquiry", formData);
       setStatus({ loading: false, success: true });
       setFormData({ name: "", email: "", type: "", message: "" });
       alert("Inquiry sent successfully!");
