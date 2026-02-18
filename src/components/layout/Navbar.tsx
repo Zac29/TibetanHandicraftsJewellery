@@ -1,11 +1,27 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { motion, AnimatePresence, useScroll, useTransform, useSpring, useMotionValueEvent } from "framer-motion";
 import { Search, Plus, X, Instagram, Twitter, Facebook } from "lucide-react";
 import { Cormorant_Garamond, Jost } from "next/font/google";
+
+// WhatsApp Icon Component
+const WhatsAppIcon = ({ className }: { className?: string }) => (
+  <svg 
+    xmlns="http://www.w3.org/2000/svg" 
+    viewBox="0 0 24 24" 
+    fill="none" 
+    stroke="currentColor" 
+    strokeWidth="2" 
+    strokeLinecap="round" 
+    strokeLinejoin="round" 
+    className={className}
+  >
+    <path d="M3 21l1.65-3.8a9 9 0 1 1 3.4 2.9L3 21" />
+  </svg>
+);
 
 const cormorant = Cormorant_Garamond({ subsets: ["latin"], weight: ["300", "400", "500"] });
 const jost = Jost({ subsets: ["latin"], weight: ["300", "400", "600"] });
@@ -21,6 +37,8 @@ export default function SolidKineticNavbar() {
   const [loading, setLoading] = useState(false)
 
   const { scrollY } = useScroll();
+  const inputRef = useRef<HTMLInputElement>(null);
+  const searchContainerRef = useRef<HTMLDivElement>(null); // Ref for click-outside detection
 
   // Smooth physics
   const smoothY = useSpring(scrollY, {
@@ -108,9 +126,9 @@ export default function SolidKineticNavbar() {
                   Tibetan
                 </h1>
                 <div className="flex items-center gap-2 mt-1">
-                  <span className="h-[1px] w-4 bg-amber-500" />
-                  <span className={`${jost.className} text-[8px] uppercase tracking-[0.8em] text-amber-700 font-semibold`}>
-                    Handicraft & Jewellery
+                  <span className="h-[1px] w-2 md:w-4 bg-amber-500" />
+                  <span className={`${jost.className} text-[6px] md:text-[8px] uppercase tracking-[0.4em] md:tracking-[0.8em] text-amber-700 font-semibold whitespace-nowrap`}>
+                  Handicraft & Jewellery
                   </span>
                 </div>
               </div>
@@ -271,21 +289,23 @@ export default function SolidKineticNavbar() {
             className="fixed inset-0 z-[100] bg-[#121212] flex flex-col"
           >
             {/* Top Bar inside Menu */}
-            <div className="p-12 flex justify-between items-center">
-              <Image src="/Logo.png" alt="Logo" width={100} height={100} className="brightness-200" />
+            <div className="p-8 md:p-12 flex justify-between items-center">
+              <div className="relative w-16 h-16 md:w-24 md:h-24">
+                 <Image src="/Logo.png" alt="Logo" fill className="object-contain brightness-200" />
+              </div>
               <button 
                 onClick={() => setIsMenuOpen(false)}
                 className="group flex items-center gap-4 text-stone-500 hover:text-white transition-all"
               >
-                <span className="text-[10px] uppercase tracking-[0.5em]">Close Vault</span>
-                <div className="p-4 border border-stone-800 rounded-full group-hover:rotate-90 transition-all duration-700">
+                <span className="text-[10px] uppercase tracking-[0.5em] hidden md:block">Close Vault</span>
+                <div className="p-3 md:p-4 border border-stone-800 rounded-full group-hover:rotate-90 transition-all duration-700">
                   <Plus size={24} className="rotate-45" />
                 </div>
               </button>
             </div>
 
-            {/* Menu Links - UPDATED NAMES HERE */}
-            <div className="flex-1 flex flex-col justify-center items-center gap-8">
+            {/* Menu Links */}
+            <div className="flex-1 flex flex-col justify-center items-center gap-6 md:gap-8">
               {["HOME", "PRODUCTS", "ABOUT", "CONTACT"].map((item, i) => (
                 <motion.div
                   key={item}
@@ -294,13 +314,12 @@ export default function SolidKineticNavbar() {
                   transition={{ delay: 0.3 + i * 0.1 }}
                 >
                   <Link 
-        // CHANGE THIS LINE:
-        href={item === "HOME" ? "/" : `/${item.toLowerCase().replace(/\s+/g, '-')}`}
-        onClick={() => setIsMenuOpen(false)}
-        className={`${cormorant.className} text-5xl md:text-8xl text-stone-700 hover:text-white hover:tracking-widest transition-all duration-1000`}
-      >
-        {item}
-      </Link>
+                    href={item === "HOME" ? "/" : `/${item.toLowerCase().replace(/\s+/g, '-')}`}
+                    onClick={() => setIsMenuOpen(false)}
+                    className={`${cormorant.className} text-4xl md:text-8xl text-stone-700 hover:text-white hover:tracking-widest transition-all duration-1000`}
+                  >
+                    {item}
+                  </Link>
                 </motion.div>
               ))}
             </div>
@@ -311,6 +330,7 @@ export default function SolidKineticNavbar() {
                  <p className={`${jost.className} text-[10px] uppercase tracking-[0.5em] text-stone-500`}>Global Concierge</p>
                  <p className="text-white text-xl">sidbodhgaya@gmail.com</p>
                </div>
+               
                <div className="flex gap-10">
 
                  <span className="w-12 h-12 border border-stone-800 rounded-full flex items-center justify-center text-stone-400 hover:text-white hover:border-white transition-all cursor-pointer">
