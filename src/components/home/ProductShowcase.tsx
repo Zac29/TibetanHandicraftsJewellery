@@ -31,7 +31,7 @@ export default function StackedSliderLoop() {
 
 
   useEffect(() => {
-  fetch("http://localhost:5000/api/product-showcase")
+  fetch("https://thj-backend.onrender.com/api/product-showcase")
     .then(res => res.json())
     .then(res => {
       setData(res);
