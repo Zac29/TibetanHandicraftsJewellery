@@ -42,7 +42,7 @@ export default function Hero() {
   useEffect(() => {
     const fetchHero = async () => {
       try {
-        const res = await axios.get("https://thj-backend.onrender.com/api/hero");
+        const res = await axios.get("https://thj-backend-production.up.railway.app/api/hero");
 
         console.log("Hero API response:", res.data);
 

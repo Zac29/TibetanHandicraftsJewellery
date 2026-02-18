@@ -31,7 +31,7 @@ export default function SolidKineticFooter() {
 
   useEffect(() => {
     axios
-      .get("https://thj-backend.onrender.com/api/footer")
+      .get("https://thj-backend-production.up.railway.app/api/footer")
       .then((res) => setData(res.data))
       .catch((err) => console.error("Footer fetch error:", err));
   }, []);
