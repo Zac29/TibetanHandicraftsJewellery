@@ -45,7 +45,7 @@ export default function Category() {
 
 
   useEffect(() => {
-    fetch("http://localhost:5000/api/category-slider")
+    fetch("https://thj-backend.onrender.com/api/category-slider")
       .then(res => res.json())
       .then(setData)
       .catch(console.error);

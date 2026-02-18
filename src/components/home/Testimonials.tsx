@@ -63,7 +63,7 @@ export default function Testimonials() {
     const fetchTestimonials = async () => {
       try {
         const res = await axios.get(
-          "http://localhost:5000/api/testimonials"
+          "https://thj-backend.onrender.com/api/testimonials"
         );
 
         if (res.data?.items?.length > 0) {
