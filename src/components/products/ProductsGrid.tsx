@@ -1,17 +1,59 @@
 "use client";
 
-import { useState } from "react";
+import { useState,useEffect } from "react";
 import Image from "next/image";
 import { Heart, Share2, ArrowRight } from "lucide-react";
 import Link from "next/link";
-import { products } from "../../lib/products";
+// import { products } from "../../lib/products";
 import { Cormorant_Garamond, Jost } from "next/font/google";
 
 const cormorant = Cormorant_Garamond({ subsets: ["latin"], weight: ["600"] });
 const jost = Jost({ subsets: ["latin"], weight: ["400", "500", "700"] });
 
+type Product = {
+  _id: string;
+  title: string;
+  image: string;
+  price: number;
+  oldPrice?: number;
+  tag?: string;
+  tagColor?: string;
+};
+
 export default function ProductsGrid() {
-  const [liked, setLiked] = useState<Record<number, boolean>>({});
+  const [products, setProducts] = useState<Product[]>([]);
+  const [liked, setLiked] = useState<Record<string, boolean>>({});
+
+  const [loading, setLoading] = useState(true);
+   useEffect(() => {
+    fetch("http://localhost:5000/api/products")
+      .then((res) => res.json())
+      .then((data) => {
+        setProducts(data || []);
+      })
+      .catch((err) => {
+        console.error("Failed to fetch products", err);
+      })
+      .finally(() => setLoading(false));
+  }, []);
+
+  /* ================= LOADING STATE ================= */
+  if (loading) {
+    return (
+      <section className="py-32 text-center text-stone-400 italic">
+        Loading masterpieces…
+      </section>
+    );
+  }
+
+  /* ================= EMPTY STATE ================= */
+  if (products.length === 0) {
+    return (
+      <section className="py-32 text-center text-stone-400 italic">
+        No products found in archive.
+      </section>
+    );
+  }
 
   return (
     <section className={`w-full bg-[#00000] py-20 ${jost.className}`}>
@@ -30,10 +72,11 @@ export default function ProductsGrid() {
 
         {/* Grid */}
         <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-x-4 gap-y-12 lg:gap-10">
-          {products.map((product) => (
+          {products.slice(0, 8).map((product) => (
+
             <Link
-              key={product.id}
-              href={`/products/${product.id}`}
+              key={product._id}
+              href={`/products/${product._id}`}
               className="group relative flex flex-col focus:outline-none"
             >
               {/* Product Card Container with Shadow */}
@@ -43,12 +86,16 @@ export default function ProductsGrid() {
                 <div className="relative aspect-[3/4] w-full overflow-hidden bg-stone-100">
                   {/* Status Badge */}
                   {product.tag && (
-                    <div className={`absolute top-4 left-4 z-20 text-[9px] uppercase tracking-widest text-white px-3 py-1 font-bold shadow-sm ${
-                      product.tag === "sale" ? "bg-amber-800" : "bg-stone-800"
-                    }`}>
-                      {product.tag === "sale" ? "Special Price" : "New Archive"}
-                    </div>
-                  )}
+  <div
+    className="absolute top-4 left-4 z-20 text-[9px] uppercase tracking-widest text-white px-3 py-1 font-bold shadow-sm"
+    style={{
+      backgroundColor: product.tagColor || "#1c1917", // 🔥 backend-driven color
+    }}
+  >
+    {product.tag}
+  </div>
+)}
+
 
                   <Image
                     src={product.image}
@@ -74,14 +121,14 @@ export default function ProductsGrid() {
                         onClick={(e) => {
                           e.preventDefault();
                           e.stopPropagation();
-                          setLiked((prev) => ({ ...prev, [product.id]: !prev[product.id] }));
+                          setLiked((prev) => ({ ...prev, [product._id]: !prev[product._id] }));
                         }}
                         className="transition-transform active:scale-125 drop-shadow-md"
                       >
                         <Heart 
                           size={18} 
                           strokeWidth={1.5}
-                          className={liked[product.id] ? "fill-amber-600 text-amber-600" : "text-white"} 
+                          className={ liked[product._id] ? "fill-amber-600 text-amber-600" : "text-white"} 
                         />
                       </button>
                     </div>

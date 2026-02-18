@@ -20,7 +20,7 @@ type FooterData = {
   brandText: string;
   socials: Record<string, string>;
   quickLinks: { label: string; url: string }[];
-  helpLinks: { label: string; url: string }[];
+  helpLinks: { label: string; url: string }[]; // kept for API compatibility
   newsletterText: string;
   companyName: string;
 };
@@ -36,7 +36,7 @@ export default function SolidKineticFooter() {
       .catch((err) => console.error("Footer fetch error:", err));
   }, []);
 
-  if (!data) return null; // or loader
+  if (!data) return null;
 
   return (
     <footer
@@ -48,8 +48,9 @@ export default function SolidKineticFooter() {
       <div className="max-w-[1440px] mx-auto px-8 lg:px-16 pt-20 pb-10">
         {/* MAIN GRID */}
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-12 gap-16 mb-20">
+
           {/* BRAND */}
-          <div className="lg:col-span-4 space-y-8">
+          <div className="lg:col-span-5 space-y-8">
             <div className="relative w-[180px] h-[100px]">
               <Image
                 src="/logoFooter.png"
@@ -65,7 +66,7 @@ export default function SolidKineticFooter() {
               {data.brandText}
             </p>
 
-            <div className="flex gap-6">
+            <div className="flex gap-6 flex-wrap">
               {Object.entries(data.socials).map(([name, url]) => (
                 <Link
                   key={name}
@@ -80,31 +81,13 @@ export default function SolidKineticFooter() {
           </div>
 
           {/* QUICK LINKS */}
-          <div className="lg:col-span-2 space-y-8">
+          <div className="lg:col-span-3 space-y-8">
             <h4 className="text-[11px] uppercase tracking-[0.4em] font-semibold text-stone-900">
               Links
             </h4>
+
             <ul className="space-y-4">
               {data.quickLinks.map((link) => (
-                <li key={link.label}>
-                  <Link
-                    href={link.url}
-                    className="text-sm text-stone-500 hover:text-stone-900 transition-all hover:pl-2"
-                  >
-                    {link.label}
-                  </Link>
-                </li>
-              ))}
-            </ul>
-          </div>
-
-          {/* HELP */}
-          <div className="lg:col-span-2 space-y-8">
-            <h4 className="text-[11px] uppercase tracking-[0.4em] font-semibold text-stone-900">
-              Help
-            </h4>
-            <ul className="space-y-4">
-              {data.helpLinks.map((link) => (
                 <li key={link.label}>
                   <Link
                     href={link.url}
@@ -130,6 +113,7 @@ export default function SolidKineticFooter() {
                   placeholder="ENTER YOUR EMAIL ADDRESS"
                   className="w-full bg-transparent border-b border-stone-300 py-3 text-[11px] tracking-widest outline-none focus:border-stone-900 placeholder:text-stone-400"
                 />
+
                 <button className="absolute right-0 bottom-3 text-[10px] font-bold tracking-[0.3em] text-stone-900 hover:text-amber-700 transition-colors uppercase">
                   Subscribe
                 </button>
@@ -140,6 +124,7 @@ export default function SolidKineticFooter() {
               </p>
             </div>
           </div>
+
         </div>
 
         {/* BOTTOM BAR */}
