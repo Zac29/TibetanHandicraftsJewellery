@@ -63,7 +63,7 @@ export default function Testimonials() {
     const fetchTestimonials = async () => {
       try {
         const res = await axios.get(
-          "https://thj-backend-production.up.railway.app/api/testimonials"
+          "https://thj-backend.onrender.com/api/testimonials"
         );
 
         if (res.data?.items?.length > 0) {

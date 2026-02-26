@@ -10,12 +10,12 @@ import { Cormorant_Garamond, Jost } from "next/font/google";
 const cormorant = Cormorant_Garamond({ subsets: ["latin"], weight: ["300", "400", "600"] });
 const jost = Jost({ subsets: ["latin"], weight: ["300", "400", "600"] });
 
-export default function AboutPage() {
+export default function Page() {
   const [data, setData] = useState<any>(null);
    /* ================= FETCH FROM BACKEND ================= */
   useEffect(() => {
     axios
-      .get("https://thj-backend-production.up.railway.app/api/about")
+      .get("https://thj-backend.onrender.com/api/about")
       .then((res) => setData(res.data))
       .catch((err) => console.error("About fetch failed", err));
   }, []);

@@ -74,6 +74,7 @@ export default function ProductsPage() {
   return (
     <Suspense fallback={null}>
     <div className={`bg-[#ffffff] min-h-screen ${jost.className}`}>
+      
       {/* HERO HEADER */}
       <PageBanner
         title={category ? category.toUpperCase() : "The Collection"}

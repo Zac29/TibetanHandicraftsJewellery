@@ -1,6 +1,6 @@
 import axios from "axios";
 
-const API_BASE_URL = "https://thj-backend-production.up.railway.app/api"; // Replace with your actual backend URL
+const API_BASE_URL = "https://thj-backend.onrender.com/api"; // Replace with your actual backend URL
 
 export const API = axios.create({
   baseURL: API_BASE_URL,

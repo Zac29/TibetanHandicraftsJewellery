@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { Mail, Phone, MessageCircle } from "lucide-react";
 import { Cormorant_Garamond, Jost } from "next/font/google";
 
 const cormorant = Cormorant_Garamond({
@@ -31,7 +32,7 @@ export default function SolidKineticFooter() {
 
   useEffect(() => {
     axios
-      .get("https://thj-backend-production.up.railway.app/api/footer")
+      .get("https://thj-backend.onrender.com/api/footer")
       .then((res) => setData(res.data))
       .catch((err) => console.error("Footer fetch error:", err));
   }, []);
@@ -101,7 +102,7 @@ export default function SolidKineticFooter() {
           </div>
 
           {/* NEWSLETTER */}
-          <div className="lg:col-span-4 space-y-8">
+          {/* <div className="lg:col-span-4 space-y-8">
             <h4 className="text-[11px] uppercase tracking-[0.4em] font-semibold text-stone-900">
               Newsletter
             </h4>
@@ -123,7 +124,79 @@ export default function SolidKineticFooter() {
                 {data.newsletterText}
               </p>
             </div>
-          </div>
+          </div> */}
+
+          
+          {/* CONTACT US */}
+<div className="lg:col-span-4 space-y-8">
+  <h4 className="text-[11px] uppercase tracking-[0.4em] font-semibold text-stone-900">
+    Contact Us
+  </h4>
+
+  <div className="space-y-6">
+
+    {/* EMAIL */}
+    <div className="flex items-start gap-4 group">
+      <Mail size={18} className="text-amber-700 mt-1" />
+      <div>
+        <p className="text-[10px] uppercase tracking-widest text-stone-400 mb-1">
+          Email
+        </p>
+        <a
+          href="mailto:sidbodhgaya@gmail.com"
+          className="text-stone-600 text-sm hover:text-amber-700 transition-colors"
+        >
+          sidbodhgaya@gmail.com
+        </a>
+      </div>
+    </div>
+
+    {/* MOBILE */}
+    <div className="flex items-start gap-4 group">
+      <Phone size={18} className="text-amber-700 mt-1" />
+      <div>
+        <p className="text-[10px] uppercase tracking-widest text-stone-400 mb-1">
+          Mobile
+        </p>
+        <a
+          href="tel:+919876543210"
+          className="text-stone-600 text-sm hover:text-amber-700 transition-colors"
+        >
+          +91&nbsp;98765&nbsp;43210
+        </a>
+      </div>
+    </div>
+
+    {/* WHATSAPP */}
+    <div className="flex items-start gap-4 group">
+      <MessageCircle size={18} className="text-amber-700 mt-1" />
+      <div>
+        <p className="text-[10px] uppercase tracking-widest text-stone-400 mb-1">
+          WhatsApp
+        </p>
+        <a
+          href="https://wa.me/919264248884"
+          target="_blank"
+          rel="noopener noreferrer"
+          className="text-stone-600 text-sm hover:text-amber-700 transition-colors"
+        >
+          +91&nbsp;92642&nbsp;48884
+        </a>
+      </div>
+    </div>
+
+  </div>
+
+  {/* SOFT CTA */}
+  <div className="pt-6">
+    <Link
+      href="/contact"
+      className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] font-bold text-amber-700 hover:text-amber-900 transition-colors"
+    >
+      Get in Touch →
+    </Link>
+  </div>
+</div>
 
         </div>
 

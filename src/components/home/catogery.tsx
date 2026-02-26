@@ -31,7 +31,7 @@ export default function Category() {
   const sectionRef = useRef<HTMLElement | null>(null);
 
   useEffect(() => {
-    fetch("https://thj-backend-production.up.railway.app/api/category-slider")
+    fetch("https://thj-backend.onrender.com/api/category-slider")
       .then(res => res.json())
       .then(setData)
       .catch(console.error);
