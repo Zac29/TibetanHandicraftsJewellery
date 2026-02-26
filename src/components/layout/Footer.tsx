@@ -127,77 +127,53 @@ export default function SolidKineticFooter() {
           </div> */}
 
           
-          {/* CONTACT US */}
-<div className="lg:col-span-4 space-y-8">
+      
+{/* CONTACT */}
+<div className="lg:col-span-4 space-y-6">
   <h4 className="text-[11px] uppercase tracking-[0.4em] font-semibold text-stone-900">
-    Contact Us
+    Contact
   </h4>
 
-  <div className="space-y-6">
-
+  {/* Icons row */}
+  <div className="flex items-center gap-6">
     {/* EMAIL */}
-    <div className="flex items-start gap-4 group">
-      <Mail size={18} className="text-amber-700 mt-1" />
-      <div>
-        <p className="text-[10px] uppercase tracking-widest text-stone-400 mb-1">
-          Email
-        </p>
-        <a
-          href="mailto:sidbodhgaya@gmail.com"
-          className="text-stone-600 text-sm hover:text-amber-700 transition-colors"
-        >
-          sidbodhgaya@gmail.com
-        </a>
-      </div>
-    </div>
+    <a
+      href="mailto:sidbodhgaya@gmail.com"
+      aria-label="Email"
+      className="text-stone-400 hover:text-stone-900 transition-colors"
+    >
+      <Mail size={18} strokeWidth={1.5} />
+    </a>
 
-    {/* MOBILE */}
-    <div className="flex items-start gap-4 group">
-      <Phone size={18} className="text-amber-700 mt-1" />
-      <div>
-        <p className="text-[10px] uppercase tracking-widest text-stone-400 mb-1">
-          Mobile
-        </p>
-        <a
-          href="tel:+919876543210"
-          className="text-stone-600 text-sm hover:text-amber-700 transition-colors"
-        >
-          +91&nbsp;98765&nbsp;43210
-        </a>
-      </div>
-    </div>
+    {/* PHONE */}
+    <a
+      href="tel:+919876543210"
+      aria-label="Phone"
+      className="text-stone-400 hover:text-stone-900 transition-colors"
+    >
+      <Phone size={18} strokeWidth={1.5} />
+    </a>
 
     {/* WHATSAPP */}
-    <div className="flex items-start gap-4 group">
-      <MessageCircle size={18} className="text-amber-700 mt-1" />
-      <div>
-        <p className="text-[10px] uppercase tracking-widest text-stone-400 mb-1">
-          WhatsApp
-        </p>
-        <a
-          href="https://wa.me/919264248884"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-stone-600 text-sm hover:text-amber-700 transition-colors"
-        >
-          +91&nbsp;92642&nbsp;48884
-        </a>
-      </div>
-    </div>
-
-  </div>
-
-  {/* SOFT CTA */}
-  <div className="pt-6">
-    <Link
-      href="/contact"
-      className="inline-flex items-center gap-2 text-[10px] uppercase tracking-[0.3em] font-bold text-amber-700 hover:text-amber-900 transition-colors"
+    <a
+      href="https://wa.me/919264248884"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="WhatsApp"
+      className="text-stone-400 hover:text-stone-900 transition-colors"
     >
-      Get in Touch →
-    </Link>
+      <MessageCircle size={18} strokeWidth={1.5} />
+    </a>
   </div>
-</div>
 
+  {/* Get in touch */}
+  <Link
+    href="/contact"
+    className="inline-block text-[10px] uppercase tracking-[0.35em] font-semibold text-stone-400 hover:text-stone-900 transition-colors"
+  >
+    Get in touch →
+  </Link>
+</div>
         </div>
 
         {/* BOTTOM BAR */}
