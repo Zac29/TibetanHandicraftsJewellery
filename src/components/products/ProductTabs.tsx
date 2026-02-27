@@ -137,9 +137,9 @@ export default function ProductTabs({ product }: { product: Product }) {
                   Based on {product.reviewsCount} verified artisan evaluations
                 </p>
                 <div className="pt-8">
-                   <button className="text-[10px] uppercase tracking-[0.3em] font-bold border-b border-stone-900 pb-2 hover:text-amber-700 hover:border-amber-700 transition-colors">
+                   {/* <button className="text-[10px] uppercase tracking-[0.3em] font-bold border-b border-stone-900 pb-2 hover:text-amber-700 hover:border-amber-700 transition-colors">
                      Submit a Review
-                   </button>
+                   </button> */}
                 </div>
               </motion.div>
             )}

@@ -4,7 +4,7 @@ import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import Image from "next/image";
 import { Cormorant_Garamond, Jost } from "next/font/google";
-
+import Link from "next/link";
 const cormorant = Cormorant_Garamond({ subsets: ["latin"], weight: ["600", "700"] });
 const jost = Jost({ subsets: ["latin"], weight: ["400", "500", "700"] });
 
@@ -96,7 +96,7 @@ export default function StackedSliderLoop() {
           <p className="text-stone-500 text-[16px] lg:text-[18px] leading-relaxed max-w-sm mx-auto lg:mx-0 font-light">
            {data?.description}
           </p>
-          <a href={data?.buttonLink || "#"}>
+          <a href="/products">
           <button
     style={{
       backgroundColor: data?.buttonBgColor,

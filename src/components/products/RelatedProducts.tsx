@@ -74,7 +74,7 @@ export default function RelatedProducts() {
           {products.slice(0, 4).map((product) => (
             <div key={product._id} className="group relative">
               <Link
-                href={`/products/${product._id}`}
+                href={`/product?id=${product._id}`}
                 className="block bg-transparent overflow-hidden relative focus:outline-none"
               >
                 {/* TAG / BADGE (Minimalist) */}

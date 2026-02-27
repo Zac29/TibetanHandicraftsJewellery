@@ -74,6 +74,7 @@ export default function ProductsPage() {
   return (
     <Suspense fallback={null}>
     <div className={`bg-[#ffffff] min-h-screen ${jost.className}`}>
+      
       {/* HERO HEADER */}
       <PageBanner
         title={category ? category.toUpperCase() : "The Collection"}
@@ -118,7 +119,7 @@ export default function ProductsPage() {
               {/* shadow-[0_4px_20px_rgba(0,0,0,0.03)] container from second block */}
               <div className="relative flex flex-col bg-white rounded-sm overflow-hidden transition-all duration-500 shadow-[0_4px_20px_rgba(0,0,0,0.03)] group-hover:shadow-[0_20px_40px_rgba(0,0,0,0.08)] group-hover:-translate-y-1">
                 
-                <Link href={`/products/${product._id}`} className="block relative aspect-[3/4] w-full overflow-hidden bg-stone-100">
+                <Link href={`/product?id=${product._id}`} className="block relative aspect-[3/4] w-full overflow-hidden bg-stone-100">
                   {/* Status Badge */}
                  {product.tag && (
   <div

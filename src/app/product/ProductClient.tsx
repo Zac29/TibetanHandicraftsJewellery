@@ -1,20 +1,19 @@
-import { notFound } from "next/navigation";
-//import { products } from "../../../lib/products";
-import ProductPageBanner from "../../../components/common/ProductPageBanner";
-import ProductTabs from "../../../components/products/ProductTabs";
-import RelatedProducts from "../../../components/products/RelatedProducts";
-import { Facebook, Linkedin, Twitter, Star } from "lucide-react";
+"use client";
+
+import { useEffect, useState } from "react";
+import { useSearchParams, notFound } from "next/navigation";
+import { Facebook, Linkedin, Loader2, Star, Twitter } from "lucide-react";
+
+import ProductPageBanner from "../../components/common/ProductPageBanner";
+import ProductTabs from "../../components/products/ProductTabs";
+import RelatedProducts from "../../components/products/RelatedProducts";
 import Gallery from "./Gallery";
-import ProductActions from "../../../components/products/ProductActions";
+import ProductActions from "../../components/products/ProductActions";
+
 import { Cormorant_Garamond, Jost } from "next/font/google";
 
 const cormorant = Cormorant_Garamond({ subsets: ["latin"], weight: ["400", "500"] });
 const jost = Jost({ subsets: ["latin"], weight: ["300", "400", "600"] });
-
-// export async function generateStaticParams() {
-//   return products.map((product) => ({ id: String(product.id) }));
-// }
-
 
 type Product = {
   _id: string;
@@ -33,31 +32,61 @@ type Product = {
   sizes?: string[];
 };
 
-async function getProduct(id: string): Promise<Product | null> {
-  const res = await fetch(`${process.env.API_URL}/products/${id}`, {
-    next: { revalidate: 60 }, // ISR: refresh every 60s
-  });
+export default function ProductClient() {
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
 
-  if (!res.ok) return null;
-  return res.json();
-}
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
-type Props = { params: Promise<{ id: string }> };
+  useEffect(() => {
+    if (!id) {
+      setError(true);
+      setLoading(false);
+      return;
+    }
 
-// type Props = {
-//   params: { id: string };
-// };
+    async function fetchProduct() {
+      try {
+        const res = await fetch(
+          `https://thj-backend.onrender.com/api/products/${id}`,
+          { cache: "no-store" }
+        );
 
+        if (!res.ok) {
+          setError(true);
+          return;
+        }
 
-export default async function ProductPage({ params }: Props) {
-  const { id } = await params;
-const product = await getProduct(id);
+        const data = await res.json();
+        setProduct(data);
+      } catch (err) {
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
+    }
 
-// const product = await getProduct(params.id);
-   if (!product) return notFound();
-   
-  // const product = products.find((p) => p.id === Number(id));
-  // if (!product) return notFound();
+    fetchProduct();
+  }, [id]);
+
+  // 🔄 LOADING STATE
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#fcfaf7]">
+        <Loader2 className="animate-spin text-amber-700 mb-4" size={40} />
+        <p className={`${jost.className} text-stone-500 tracking-widest uppercase text-xs`}>
+          Retrieving Artisan Piece...
+        </p>
+      </div>
+    );
+  }
+
+  // ❌ ERROR / INVALID ID
+  if (error || !product) {
+    return notFound();
+  }
 
   const rating = product.rating ?? 5;
   const reviews = product.reviewsCount ?? 0;

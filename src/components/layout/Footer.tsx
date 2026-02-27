@@ -4,6 +4,7 @@ import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import axios from "axios";
+import { Mail, Phone, MessageCircle } from "lucide-react";
 import { Cormorant_Garamond, Jost } from "next/font/google";
 
 const cormorant = Cormorant_Garamond({
@@ -101,7 +102,7 @@ export default function SolidKineticFooter() {
           </div>
 
           {/* NEWSLETTER */}
-          <div className="lg:col-span-4 space-y-8">
+          {/* <div className="lg:col-span-4 space-y-8">
             <h4 className="text-[11px] uppercase tracking-[0.4em] font-semibold text-stone-900">
               Newsletter
             </h4>
@@ -123,8 +124,56 @@ export default function SolidKineticFooter() {
                 {data.newsletterText}
               </p>
             </div>
-          </div>
+          </div> */}
 
+          
+      
+{/* CONTACT */}
+<div className="lg:col-span-4 space-y-6">
+  <h4 className="text-[11px] uppercase tracking-[0.4em] font-semibold text-stone-900">
+    Contact
+  </h4>
+
+  {/* Icons row */}
+  <div className="flex items-center gap-6">
+    {/* EMAIL */}
+    <a
+      href="mailto:sidbodhgaya@gmail.com"
+      aria-label="Email"
+      className="text-stone-400 hover:text-stone-900 transition-colors"
+    >
+      <Mail size={18} strokeWidth={1.5} />
+    </a>
+
+    {/* PHONE */}
+    <a
+      href="tel:+919876543210"
+      aria-label="Phone"
+      className="text-stone-400 hover:text-stone-900 transition-colors"
+    >
+      <Phone size={18} strokeWidth={1.5} />
+    </a>
+
+    {/* WHATSAPP */}
+    <a
+      href="https://wa.me/919264248884"
+      target="_blank"
+      rel="noopener noreferrer"
+      aria-label="WhatsApp"
+      className="text-stone-400 hover:text-stone-900 transition-colors"
+    >
+      <MessageCircle size={18} strokeWidth={1.5} />
+    </a>
+  </div>
+
+  {/* Get in touch */}
+  <Link
+    href="/contact"
+    className="inline-block text-[10px] uppercase tracking-[0.35em] font-semibold text-stone-400 hover:text-stone-900 transition-colors"
+  >
+    Get in touch →
+  </Link>
+</div>
         </div>
 
         {/* BOTTOM BAR */}
