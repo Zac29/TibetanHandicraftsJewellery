@@ -76,7 +76,7 @@ export default function ProductsGrid() {
 
             <Link
               key={product._id}
-              href={`/products/${product._id}`}
+              href={`/product?id=${product._id}`}
               className="group relative flex flex-col focus:outline-none"
             >
               {/* Product Card Container with Shadow */}

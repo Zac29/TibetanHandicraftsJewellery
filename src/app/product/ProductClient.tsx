@@ -1,17 +1,19 @@
-import { notFound } from "next/navigation";
-//import { products } from "../../../lib/products";
-import ProductPageBanner from "../../../components/common/ProductPageBanner";
-import ProductTabs from "../../../components/products/ProductTabs";
-import RelatedProducts from "../../../components/products/RelatedProducts";
-import { Facebook, Linkedin, Twitter, Star } from "lucide-react";
+"use client";
+
+import { useEffect, useState } from "react";
+import { useSearchParams, notFound } from "next/navigation";
+import { Facebook, Linkedin, Loader2, Star, Twitter } from "lucide-react";
+
+import ProductPageBanner from "../../components/common/ProductPageBanner";
+import ProductTabs from "../../components/products/ProductTabs";
+import RelatedProducts from "../../components/products/RelatedProducts";
 import Gallery from "./Gallery";
-import ProductActions from "../../../components/products/ProductActions";
+import ProductActions from "../../components/products/ProductActions";
+
 import { Cormorant_Garamond, Jost } from "next/font/google";
 
 const cormorant = Cormorant_Garamond({ subsets: ["latin"], weight: ["400", "500"] });
 const jost = Jost({ subsets: ["latin"], weight: ["300", "400", "600"] });
-
-
 
 type Product = {
   _id: string;
@@ -30,62 +32,61 @@ type Product = {
   sizes?: string[];
 };
 
+export default function ProductClient() {
+  const searchParams = useSearchParams();
+  const id = searchParams.get("id");
 
+  const [product, setProduct] = useState<Product | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
 
-// async function getProduct(id: string): Promise<Product | null> {
-//   const res = await fetch(`${process.env.API_URL}/products/${id}`, {
-//     next: { revalidate: 60 }, // ISR: refresh every 60s
-//   });
+  useEffect(() => {
+    if (!id) {
+      setError(true);
+      setLoading(false);
+      return;
+    }
 
-//   if (!res.ok) return null;
-//   return res.json();
-// }
+    async function fetchProduct() {
+      try {
+        const res = await fetch(
+          `https://thj-backend.onrender.com/api/products/${id}`,
+          { cache: "no-store" }
+        );
 
-// type Props = { params: Promise<{ id: string }> };
+        if (!res.ok) {
+          setError(true);
+          return;
+        }
 
-export async function generateStaticParams() {
-  const res = await fetch(
-    "https://thj-backend.onrender.com/api/products",
-    { cache: "force-cache" }
-  );
+        const data = await res.json();
+        setProduct(data);
+      } catch (err) {
+        setError(true);
+      } finally {
+        setLoading(false);
+      }
+    }
 
-  const products = await res.json();
+    fetchProduct();
+  }, [id]);
 
-  return products.map((product: any) => ({
-    id: product._id.toString(),
-  }));
-}
+  // 🔄 LOADING STATE
+  if (loading) {
+    return (
+      <div className="min-h-screen flex flex-col items-center justify-center bg-[#fcfaf7]">
+        <Loader2 className="animate-spin text-amber-700 mb-4" size={40} />
+        <p className={`${jost.className} text-stone-500 tracking-widest uppercase text-xs`}>
+          Retrieving Artisan Piece...
+        </p>
+      </div>
+    );
+  }
 
-
-
-// export default async function ProductPage({ params }: Props) {
-//   const { id } = await params;
-// const product = await getProduct(id);
-
-
-//    if (!product) return notFound();
-   
- async function getProduct(id: string): Promise<Product | null> {
-  const res = await fetch(
-    `https://thj-backend.onrender.com/api/products/${id}`,
-    { cache: "force-cache" }
-  );
-
-  if (!res.ok) return null;
-  return res.json();
-}
-
-/* ================= PAGE ================= */
-type Props = {
-  params: Promise<{ id: string }>;
-};
-
-
-export default async function ProductPage({ params }: Props) {
-   const { id } = await params;
-  const product = await getProduct(id);
-
-  if (!product) return notFound();
+  // ❌ ERROR / INVALID ID
+  if (error || !product) {
+    return notFound();
+  }
 
   const rating = product.rating ?? 5;
   const reviews = product.reviewsCount ?? 0;
