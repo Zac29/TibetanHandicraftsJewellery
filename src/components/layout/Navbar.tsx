@@ -64,7 +64,14 @@ export default function SolidKineticNavbar() {
 
     const timer = setTimeout(async () => {
       setLoading(true);
-      const res = await fetch(`https://thj-backend.onrender.com/api/search?q=${query}`);
+      const freshQuery = encodeURIComponent(query);
+     const res = await fetch(
+    `https://thj-backend.onrender.com/api/search?q=${freshQuery}&nocache=${Date.now()}`, 
+    { 
+      method: "GET",
+      headers: { "Cache-Control": "no-cache" } 
+    }
+  );
       const data = await res.json();
       setResults(data);
       setLoading(false);
@@ -229,7 +236,7 @@ export default function SolidKineticNavbar() {
                       {results.products.map((p: any) => (
                         <Link
                           key={p._id}
-                          href={`/products/${p._id}`}
+                          href={`/product?id=${p._id}`}
                           onClick={() => setSearchOpen(false)}
                           className="flex gap-6 group items-center"
                         >
