@@ -1,0 +1,13 @@
+{
+  "name": "Tibetan Handicrafts Jewellery",
+  "short_name": "THJ Store",
+  "description": "Authentic Tibetan handicrafts, jewellery and sacred artifacts",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#fcfaf7",
+  "theme_color": "#92400e",
+  "icons": [
+    { "src": "/logo.png", "sizes": "192x192", "type": "image/png" },
+    { "src": "/logo.png", "sizes": "512x512", "type": "image/png" }
+  ]
+}

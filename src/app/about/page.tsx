@@ -10,7 +10,7 @@ import { Cormorant_Garamond, Jost } from "next/font/google";
 const cormorant = Cormorant_Garamond({ subsets: ["latin"], weight: ["300", "400", "600"] });
 const jost = Jost({ subsets: ["latin"], weight: ["300", "400", "600"] });
 
-export default function AboutPage() {
+export default function Page() {
   const [data, setData] = useState<any>(null);
    /* ================= FETCH FROM BACKEND ================= */
   useEffect(() => {
