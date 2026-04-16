@@ -4,6 +4,7 @@ export const dynamic = "force-dynamic";
 import { useState, useMemo,useEffect, Suspense } from "react";
 import Image from "next/image";
 import Link from "next/link";
+import Script from "next/script";
 import { motion } from "framer-motion";
 import {
   Heart,
@@ -23,6 +24,8 @@ const cormorant = Cormorant_Garamond({ subsets: ["latin"], weight: ["400", "500"
 const jost = Jost({ subsets: ["latin"], weight: ["300", "400", "500", "600", "700"] });
 
 const PER_PAGE = 16;
+const BASE_URL = "https://tibetandhammashop.com";
+
 
 export default function ProductsPage() {
   const [products, setProducts] = useState<any[]>([]);
@@ -71,8 +74,102 @@ export default function ProductsPage() {
   const from = (page - 1) * PER_PAGE + 1;
   const to = Math.min(page * PER_PAGE, products.length);
 
+
+    const itemListSchema = {
+    "@context": "https://schema.org",
+    "@type": "ItemList",
+    name: category
+      ? `Tibetan ${category} Collection`
+      : "Tibetan Handicrafts & Jewellery Collection",
+    description: category
+      ? `Authentic handcrafted Tibetan ${category} by Himalayan master artisans.`
+      : "Authentic Tibetan handicrafts, jewellery, statues, mandala art, and sacred artifacts.",
+    url: category
+      ? `${BASE_URL}/products?category=${category}`
+      : `${BASE_URL}/products`,
+    numberOfItems: products.length,
+    itemListElement: pageProducts.map((product, index) => ({
+      "@type": "ListItem",
+      position: (page - 1) * PER_PAGE + index + 1,
+      item: {
+        "@type": "Product",
+        name: product.title,
+        url: `${BASE_URL}/product?id=${product._id}`,
+        image: product.image,
+        description: product.description || `Authentic handcrafted ${product.title} by Tibetan artisans.`,
+        sku: product.sku || product._id,
+        brand: {
+          "@type": "Brand",
+          name: "Tibetan Handicrafts Jewellery",
+        },
+        offers: {
+          "@type": "Offer",
+          priceCurrency: "INR",
+          price: product.price,
+          availability: "https://schema.org/InStock",
+          url: `${BASE_URL}/product?id=${product._id}`,
+        },
+        ...(product.rating && {
+          aggregateRating: {
+            "@type": "AggregateRating",
+            ratingValue: product.rating,
+            reviewCount: product.reviewsCount ?? 1,
+            bestRating: 5,
+            worstRating: 1,
+          },
+        }),
+      },
+    })),
+  };
+
+  // ── JSON-LD: BreadcrumbList schema ──
+  const breadcrumbSchema = {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    itemListElement: [
+      {
+        "@type": "ListItem",
+        position: 1,
+        name: "Home",
+        item: BASE_URL,
+      },
+      {
+        "@type": "ListItem",
+        position: 2,
+        name: "Products",
+        item: `${BASE_URL}/products`,
+      },
+      ...(category
+        ? [
+            {
+              "@type": "ListItem",
+              position: 3,
+              name: category,
+              item: `${BASE_URL}/products?category=${category}`,
+            },
+          ]
+        : []),
+    ],
+  };
+
   return (
     <Suspense fallback={null}>
+
+      {!loading && products.length > 0 && (
+        <>
+          <Script
+            id="products-itemlist-schema"
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(itemListSchema) }}
+          />
+          <Script
+            id="products-breadcrumb-schema"
+            type="application/ld+json"
+            dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }}
+          />
+        </>
+      )}
+
     <div className={`bg-[#ffffff] min-h-screen ${jost.className}`}>
       
       {/* HERO HEADER */}
